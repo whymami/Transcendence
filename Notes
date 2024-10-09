@@ -1,0 +1,29 @@
+python manage.py runserver // sv çalıştırır
+
+python manage.py makemigrations // database değişikliklerini yapar
+
+python manage.py migrate  // database değişiklikleri kaydeder
+
+source (enviroment adı)trenvironment/bin/activate   // python enviroment aktileştirir
+
+deactivate     // enviromenti kapatır
+
+python manage.py startapp Pong(ad)  // bir uygulama başlatır
+
+django-admin startproject ft_transcendence(adı) // djangoyla bir proje başlatır
+
+python3 -m venv trenvironment(env adı)  // enviroment başlatır  
+
+Kullanıcı adı:mersahin
+Şifre:intra şifresi
+
+url:http://127.0.0.1:8000/
+
+Enviroment çalışmadan python komutları çalışmaz
+
+psql -d postgres // postgreSQLbağlanmak için
+
+CREATE ROLE goku LOGIN SUPERUSER PASSWORD '1234'(şifre)// Yeni bir rol oluşturmak için:
+
+psql -U goku(user) -d DragonBall(database) // Bir veritabanına bağlanmak için
+
