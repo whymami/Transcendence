@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    {% block head %}
+    {% endblock %}
+  </head>
+  <body>
+    <div id="root">
+      {% block root %}
+      <div>
+        <h1 class="text-red-500">Transbackend</h1>
+        <p>Transbackend is a simple backend template for your project.</p>
+      </div>
+      {% endblock %}
+    </div>
+  </body>
+  <script src="{% static 'js/routes.js' %}"></script>
+</html>
