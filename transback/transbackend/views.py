@@ -6,6 +6,14 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.urls import reverse
 from django.contrib.auth.forms import SetPasswordForm
+from django.shortcuts import render
+
+def home_view(request):
+    return render(request, 'transbackend/home.html')
+
+
+def login_view(request):
+    return render(request, 'transbackend/login.html')
 
 
 def request_password_reset(request):
