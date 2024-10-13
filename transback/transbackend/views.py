@@ -5,7 +5,6 @@ from django.core.mail import send_mail
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.urls import reverse
-from django.contrib.auth.forms import SetPasswordForm
 from .models import User
 from django.views.decorators.csrf import csrf_exempt
 import json
@@ -93,18 +92,29 @@ def register(request):
 
     return JsonResponse({"error": "Invalid request method."}, status=405)
 
+def custom_authenticate(email, password):
+    try:
+        user = User.objects.get(email=email)
+        if user.check_password(password):
+            return user
+    except User.DoesNotExist:
+        return None
+
+@csrf_exempt
 def login(request):
     if request.method == 'POST':
-        if request.user.is_authenticated:
-            return JsonResponse({"message": "Already logged in."}, status=200)
+        try:
+            data = json.loads(request.body)
+            email = data.get('email')
+            password = data.get('password')
 
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        user = authenticate(request, username=username, password=password)
-        if user is not None:
-            auth_login(request, user)
-            return JsonResponse({"message": "Login successful!"}, status=200)
-        else:
-            return JsonResponse({"error": "Invalid username or password."}, status=401)
+            user = custom_authenticate(email, password)
+            if user is not None:
+                return JsonResponse({"message": "Login successful!"}, status=200)
+            else:
+                return JsonResponse({"error": "Invalid email or password."}, status=401)
+
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON data."}, status=400)
 
     return JsonResponse({"error": "Invalid request method."}, status=405)
