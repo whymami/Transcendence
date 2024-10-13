@@ -13,6 +13,9 @@ class User(models.Model):
     def __str__(self):
         return self.username
 
+    def id(self):
+        return self.userId
+
     def set_password(self, raw_password):
         self.password = make_password(raw_password)
         self.save()

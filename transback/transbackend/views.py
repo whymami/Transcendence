@@ -10,6 +10,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import render
+from rest_framework_simplejwt.tokens import RefreshToken
 
 def home_view(request):
     return render(request, 'transbackend/home.html')
@@ -110,7 +111,12 @@ def login(request):
 
             user = custom_authenticate(email, password)
             if user is not None:
-                return JsonResponse({"message": "Login successful!"}, status=200)
+                refresh = RefreshToken.for_user(user)
+                return JsonResponse({
+                    "message": "Login successful!",
+                    "access": str(refresh.access_token),
+                    "refresh": str(refresh),
+                }, status=200)
             else:
                 return JsonResponse({"error": "Invalid email or password."}, status=401)
 
