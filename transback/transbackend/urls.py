@@ -9,6 +9,6 @@ urlpatterns = [
     path('login/', login_view, name='login'),
     path('api/register/', register, name='register'),
     path('api/login/', login, name='login'),
-    path('request-password-reset/', request_password_reset, name='request_password_reset'),
-    path('reset-password/<uidb64>/<token>/', reset_password, name='reset_password'),
+    path('api/request-password-reset/', request_password_reset, name='request_password_reset'),
+    path('api/reset-password/<uidb64>/<token>/', reset_password, name='reset_password'),
 ]
