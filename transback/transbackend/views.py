@@ -32,7 +32,7 @@ def request_password_reset(request):
             send_mail(
                 "Password Reset Requested",
                 f"To reset your password, click the link: {reset_link}",
-                'from@example.com',  # email lazım
+                'from@example.com',
                 [email],
             )
             return JsonResponse({"message": "Password reset email sent!"}, status=200)
