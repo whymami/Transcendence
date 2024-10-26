@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   db:
     image: postgres
@@ -13,8 +11,8 @@ services:
       - app-network
 
   web:
-    build: .
-    command: gunicorn ft_transcendence.wsgi:application --bind 0.0.0.0:8000
+    build: ./transback
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - .:/app
     ports:
