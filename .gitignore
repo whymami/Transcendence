@@ -1,2 +1,4 @@
 trenvironment/
 env/
+__pycache__/
+.pyc
