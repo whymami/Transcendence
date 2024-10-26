@@ -1,7 +1,14 @@
 {% extends 'transbackend/base.html' %}
+{% load static %}
+
+{% block head %}
+<link rel="stylesheet" href="{% static 'css/home.css' %}" />
+<title >Transbackend home</title>
+{% endblock %}
+
 {% block root%}
-<div>
-  <h1 class="text-red-500">Transbackend homee</h1>
+<div class="home-container">
+  <h1>Transbackend homee</h1>
 </div>
 {% endblock %}
 

@@ -3,31 +3,30 @@
 
 {% comment %} head {% endcomment %}
 {% block head %}
-    <title>Login</title>
     <link rel="stylesheet" href="{% static 'css/login.css' %}" />
+    <title>Login</title>
 {% endblock %}
 
 {% comment %} root {% endcomment %}
 {% block root %}
-
-    <div class="container" id="container">
+    <div class="login-container">
         <div class="form-container sign-up-container">
-            <form action="#">
+            <form id="registerForm">
                 <h1>Create Account</h1>
-                <input type="text" placeholder="Name" />
-                <input type="email" placeholder="Email" />
-                <input type="password" placeholder="Password" />
-                <button>Sign Up</button>
+                <input id="register-username" type="text" placeholder="UserName" />
+                <input id="register-email" type="email" placeholder="Email" />
+                <input id="register-password" type="password" placeholder="Password" />
+                <button type="submit" >Sign Up</button>
                 <button class="ghost" id="signInButton">Sign In</button>
             </form>
         </div>
         <div class="form-container sign-in-container">
-            <form action="#">
+            <form id="signInForm">
                 <h1>Sign in</h1>
-                <input type="email" placeholder="Email" />
-                <input type="password" placeholder="Password" />
+                <input id="login-email" type="email" placeholder="Email" />
+                <input id="login-password" type="password" placeholder="Password" />
                 <a href="#">Forgot your password?</a>
-                <button>Sign In</button>
+                <button id="login-button" type="submit" >Sign In</button>
             </form>
         </div>
         <div class="overlay-container">
@@ -50,5 +49,5 @@
 
 {% comment %} scripts {% endcomment %}
 {% block scripts %}
-    <script src="{% static 'js/login.js' %}"></script>
+    <script type="text/javascript" src="{% static "js/login.js" %}"></script>
 {% endblock %}
