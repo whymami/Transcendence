@@ -78,14 +78,13 @@ WSGI_APPLICATION = 'transback.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'DragonBall',
-        'USER': 'goku',
-        'PASSWORD': '1234',
-        'HOST': '45.9.30.21',
+        'NAME': 'ft_transcendence',
+        'USER': 'your_db_user',
+        'PASSWORD': 'your_db_password',
+        'HOST': 'localhost',
         'PORT': '5432',
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
