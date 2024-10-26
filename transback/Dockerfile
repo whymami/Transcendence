@@ -10,7 +10,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . /transback/
 
 COPY ./entrypoint.sh /transback/entrypoint.sh
-RUN chmod +x /app/entrypoint.sh
+RUN chmod +x /transback/entrypoint.sh
 
 EXPOSE 8000
 
