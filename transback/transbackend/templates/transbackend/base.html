@@ -4,33 +4,71 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'css/base.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/toast.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/modal.css' %}" />
     {% block head %} {% endblock %}
+    <meta name="csrf-token" content="{{ csrf_token }}" />
   </head>
   <body>
-    <div id="root">
-      <nav>
-        <a href="/home/" >Home</a>
-        <a href="/login/" >login</a>
-
-        {% if user.is_authenticated %}
-        <!-- Kullanıcı giriş yapmışsa -->
-        <a href="#" onclick="loadPage('profile')">Profile</a>
-        {% comment %} <a href="{% url 'logout' %}">Logout</a> {% endcomment %}
-        {% else %}
-        <!-- Kullanıcı giriş yapmamışsa -->
-        {% comment %} <a href="{% url 'login' %}">Login</a> {% endcomment %}
-        {% comment %} <a href="{% url 'signup' %}">Sign Up</a> {% endcomment %}
-        {% endif %}
+      <nav class="navbar">
+        <div class="navbar-container">
+          <div class="navbar-content">
+            <div class="logo">
+              <a href="/" class="logo-link">
+                <span class="logo-text">Transbackend</span>
+              </a>
+            </div>
+            <div class="nav-links">
+              <a href="/" class="nav-link">Home</a>
+              <a href="/login" class="nav-link">Login</a>
+              <a href="/services" class="nav-link">Services</a>
+              <a href="/contact" class="nav-link">Contact</a>
+              {% if user.is_authenticated %}
+              <!-- Kullanıcı giriş yapmışsa -->
+              <a href="#" onclick="loadPage('profile')">Profile</a>
+              {% comment %} <a href="{% url 'logout' %}">Logout</a> {% endcomment %}
+              {% else %}
+              <!-- Kullanıcı giriş yapmamışsa -->
+              {% comment %} <a href="{% url 'login' %}">Login</a> {% endcomment %} {%comment %} <a href="{% url 'signup' %}">Sign Up</a> {% endcomment %} 
+              {% endif %}
+            </div>
+          </div>
+        </div>
       </nav>
-      {% block root %}
-      <div>
-        <h1 class="text-red-500">Transbackend</h1>
-        <p>Transbackend is a simple backend template for your project.</p>
+      <div class="container" id="container">
+        {% block root %}
+        <div>
+          <h1 class="text-red-500">Transbackend</h1>
+          <p>Transbackend is a simple backend template for your project.</p>
+        </div>
+        {% endblock %}
       </div>
-      {% endblock %}
     </div>
+    {% comment %}
+    <div>
+      <button type="button" onclick="openModal()">Open Modal</button>
+      <button
+        onclick="showToast('success', 'yarraasfjkhsajkhasfjhafsjhbaksjfhjaskbfjasbjfbasjkfbasjbjkfbajksfbjkasbjkf')"
+      >
+        Show Toast
+      </button>
+      <button onclick="showToast('warning', 'yarra')">Show Toast</button>
+      <button onclick="showToast('error', 'yarra')">Show Toast</button>
+    </div>
+    {% endcomment %}
+    <div id="modal" class="modal">
+      <div class="modal-content">
+        <span class="close" onclick="closeModal()">&times;</span>
+        <h2 id="modal-title">Modal Title</h2>
+        <p id="modal-content">{% lorem 3 b random %}</p>
+      </div>
+    </div>
+    <div id="toast-container"></div>
   </body>
   <script src="{% static 'js/routes.js' %}"></script>
+  <script src="{% static 'js/base.js' %}"></script>
+  <script src="{% static 'js/toast.js' %}"></script>
+  <script src="{% static 'js/modal.js' %}"></script>
   {% block scripts %} {% endblock %}
 </html>
