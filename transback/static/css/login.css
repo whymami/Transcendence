@@ -38,6 +38,7 @@ form {
   align-items: center;
   justify-content: center;
   flex-direction: column;
+  padding: 0 50px;
   height: 100%;
   text-align: center;
 }
@@ -195,6 +196,10 @@ a {
 }
 
 @media (max-width: 768px) {
+  .form {
+      padding: 0;
+  }
+
   .login-container {
       height: 80dvh;
       margin: 0 auto;
