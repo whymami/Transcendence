@@ -25,7 +25,7 @@ function showToast(type, message) {
     
     setTimeout(() => {
         removeToast(toast);
-    }, 50000000);
+    }, 2500);
 }
 
 function removeToast(toast) {
