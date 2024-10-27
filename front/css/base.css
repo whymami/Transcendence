@@ -83,3 +83,9 @@ input {
   /* padding: 0 40px; */
   transition: transform 0.6s ease-in-out;
 }
+
+@media (max-width: 768px) {
+  .container {
+    width: 80%;
+  }
+}

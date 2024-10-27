@@ -82,7 +82,7 @@ DATABASES = {
         'NAME': 'ft_transcendence',
         'USER': 'your_db_user',
         'PASSWORD': 'your_db_password',
-        'HOST': '45.9.30.21',
+        'HOST': 'db',
         'PORT': '5432',
     }
 }
