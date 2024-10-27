@@ -42,24 +42,4 @@
         {% endblock %}
       </div>
     </div>
-    {% comment %}
-    <div>
-      <button type="button" onclick="openModal()">Open Modal</button>
-      <button
-        onclick="showToast('success', 'yarraasfjkhsajkhasfjhafsjhbaksjfhjaskbfjasbjfbasjkfbasjbjkfbajksfbjkasbjkf')"
-      >
-        Show Toast
-      </button>
-      <button onclick="showToast('warning', 'yarra')">Show Toast</button>
-      <button onclick="showToast('error', 'yarra')">Show Toast</button>
-    </div>
-    {% endcomment %}
-    <div id="modal" class="modal">
-      <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <h2 id="modal-title">Modal Title</h2>
-        <p id="modal-content">{% lorem 3 b random %}</p>
-      </div>
-    </div>
-    <div id="toast-container"></div>
     {% block scripts %} {% endblock %}

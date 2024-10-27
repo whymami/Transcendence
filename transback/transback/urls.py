@@ -22,3 +22,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('transbackend.urls')),
 ]
+
+urlpatterns += static('/api/static/', document_root=settings.STATIC_ROOT)

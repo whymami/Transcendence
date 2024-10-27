@@ -1,10 +1,19 @@
+const routes = {
+  '/': 'home/',
+  'login': '/login/'
+}
+
+
 function loadScript(url) {
   return new Promise((resolve, reject) => {
-    document.getElementsByClassName("dynamic-js").forEach((script) => {
-      if (script.src == url) {
-        script.remove();
-      }
-    })
+    const js = document.getElementsByClassName("dynamic-js");
+    if (js.length != 0) {
+      js.forEach((script) => {
+        if (script.src == url) {
+          script.remove();
+        }
+      })
+    }
 
     const script = document.createElement("script");
     script.src = url;
@@ -33,7 +42,8 @@ function loadPage(page, updateHistory = true) {
     .then((response) => response.text())
     .then((html) => {
       console.log(html);
-      document.getElementById("app").innerHTML = html;
+      const app = document.getElementById("app");
+      app.innerHTML = html;
       if (updateHistory) {
         page == "home"
           ? history.pushState({}, "", "/")
@@ -44,7 +54,7 @@ function loadPage(page, updateHistory = true) {
       console.error("Error loading page:", error);
     });
   try {
-    loadScript(`/static/js/${page}.js`);
+    loadScript(`/api/static/js/${page}.js`);
   } catch (error) {
     console.error("Error loading script:", error);
   }
