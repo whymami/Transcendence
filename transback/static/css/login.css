@@ -50,41 +50,13 @@ h1 {
 }
 
 .form-container input {
-border-radius: 10px;
+  border-radius: 10px;
   background-color: #eee;
   border: none;
   padding: 12px 15px;
   margin: 8px 0;
   width: 100%;
   font-size: 14px;
-}
-
-button {
-  border-radius: 20px;
-  border: 1px solid #2575fc;
-  background-color: #2575fc;
-  color: #ffffff;
-  font-size: 12px;
-  font-weight: bold;
-  padding: 12px 45px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-  transition: transform 80ms ease-in;
-  cursor: pointer;
-  margin-top: 15px;
-}
-
-button:active {
-  transform: scale(0.95);
-}
-
-button:focus {
-  outline: none;
-}
-
-button.ghost {
-  background-color: transparent;
-  border-color: #ffffff;
 }
 
 .overlay-container {
@@ -182,7 +154,6 @@ a {
   color: #333;
   font-size: 14px;
   text-decoration: none;
-  margin: 15px 0;
 }
 
 #login-button {
@@ -222,4 +193,92 @@ a {
 
 #login-button:disabled:focus {
   outline: none;
+}
+@media (max-width: 768px) {
+  .login-container {
+    height: 80dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .overlay-container {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 50%;
+    top: auto;
+    left: 0;
+    transform: translateY(-100%);
+    transition: transform 0.6s ease-in-out;
+  }
+
+  .container.right-panel-active .overlay-container {
+    transform: translateY(0);
+  }
+
+  .overlay {
+    position: relative;
+    width: 100%;
+    height: 200%;
+    transform: translateY(0);
+    left: 0;
+  }
+
+  .container.right-panel-active .overlay {
+    transform: translateY(50%);
+  }
+
+  /* Form elemanları */
+  .form-container {
+    width: 100%;
+    padding: 20px;
+  }
+}
+
+/* Mobil için (max-width: 480px) */
+@media (max-width: 480px) {
+  .container {
+    max-width: 100%;
+    padding: 15px;
+  }
+
+  .overlay-container {
+    height: 50%;
+    width: 100%;
+    top: auto;
+    left: 0;
+    transform: translateY(50%);
+  }
+
+  .overlay {
+    width: 100%;
+    height: 200%;
+    transform: translateY(0);
+    left: 0;
+  }
+
+  .container.right-panel-active .overlay-container {
+    transform: translateY(0);
+  }
+
+  .container.right-panel-active .overlay {
+    transform: translateY(50%);
+  }
+
+  /* Form başlık ve butonlar */
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  button {
+    padding: 10px 20px;
+    font-size: 1rem;
+  }
+
+  /* Input alanları */
+  input {
+    padding: 8px;
+    font-size: 0.9rem;
+  }
 }

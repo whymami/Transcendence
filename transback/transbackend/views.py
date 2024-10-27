@@ -15,7 +15,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.template.response import TemplateResponse
 
 class HomeView(APIView):
-    # permission_classes = [IsAuthenticated]  # Sadece oturum açmış kullanıcılar erişebilir
+    permission_classes = [IsAuthenticated]  # Sadece oturum açmış kullanıcılar erişebilir
     
     def get(self, request):
         user = request.user

@@ -1,22 +1,18 @@
 const routes = {
   '/': 'home/',
   'login': '/login/'
-}
+};
 
+const container = document.getElementById("container");
 
 function loadScript(url) {
   return new Promise((resolve, reject) => {
-    const js = document.getElementsByClassName("dynamic-js");
-    if (js.length != 0) {
-      js.forEach((script) => {
-        if (script.src == url) {
-          script.remove();
-        }
-      })
-    }
+    const js = Array.from(document.getElementsByClassName("dynamic-js"));
+    js.forEach((e) => e.remove());
 
     const script = document.createElement("script");
     script.src = url;
+    script.className = "dynamic-js";
     script.onload = () => resolve(script);
     script.onerror = () => reject(new Error(`Script load error for ${url}`));
     document.body.append(script);
@@ -25,9 +21,12 @@ function loadScript(url) {
 
 function loadCss(url) {
   return new Promise((resolve, reject) => {
+    const css = Array.from(document.getElementsByClassName("dynamic-css"));
+    css.forEach((e) => e.remove());
+
     const link = document.createElement("link");
-    link.href;
     link.rel = "stylesheet";
+    link.href = url;
     link.className = "dynamic-css";
     link.onload = () => resolve(link);
     link.onerror = () => reject(new Error(`CSS load error for ${url}`));
@@ -38,41 +37,43 @@ function loadCss(url) {
 function loadPage(page, updateHistory = true) {
   page = page || "home";
   console.log("Loading page:", page);
-  fetch(page == "home" ? "/" : `/${page}/`)
+  container.innerHTML = `<div class="base-container">Loading...</div>`;
+
+  fetch(`/api/${page}/`)
     .then((response) => response.text())
     .then((html) => {
-      console.log(html);
-      const app = document.getElementById("app");
-      app.innerHTML = html;
       if (updateHistory) {
-        page == "home"
+        page === "home"
           ? history.pushState({}, "", "/")
           : history.pushState({ page: page }, "", `/${page}/`);
       }
+
+      return Promise.all([
+        loadScript(`/api/static/js/${page}.js`),
+        loadCss(`/api/static/css/${page}.css`)
+      ]).then(() => {
+        container.innerHTML = html;
+        document.title = page;
+      });
+    })
+    .then(() => {
+      document.querySelectorAll("a").forEach((link) => {
+        link.addEventListener("click", (e) => {
+          e.preventDefault();
+          const page = link.getAttribute("href").split("/").filter(Boolean).pop();
+          loadPage(page);
+        });
+      });
     })
     .catch((error) => {
       console.error("Error loading page:", error);
+      container.innerHTML = `<div class="base-container">Error loading page. Please try again.</div>`;
     });
-  try {
-    loadScript(`/api/static/js/${page}.js`);
-  } catch (error) {
-    console.error("Error loading script:", error);
-  }
 }
 
-document.querySelectorAll("a").forEach((link) => {
-  link.addEventListener("click", function (e) {
-    console.log(link.href);
-    e.preventDefault();
-    const page = this.getAttribute("href").split("/").filter(Boolean).pop();
-    loadPage(page);
-  });
-});
-
-window.onpopstate = function (event) {
-  if (event.state && event.state.page) {
-    loadPage(event.state.page, false);
-  }
+window.onpopstate = function (e) {
+  const page = e.state?.page || location.pathname.split("/").filter(Boolean).pop() || "home";
+  loadPage(page, false);
 };
 
 window.onload = function () {

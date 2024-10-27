@@ -5,10 +5,10 @@ from .views import HomeView, LoginView
 from django.views.generic import TemplateView
 
 urlpatterns = [
-    path('', HomeView.as_view(), name='home'),
-    path('login/', LoginView.as_view(), name='login'),
-    path('api/register/', register, name='register'),
-    path('api/login/', login, name='login'),
-    path('api/request-password-reset/', request_password_reset, name='request_password_reset'),
-    path('api/reset-password/<uidb64>/<token>/', reset_password, name='reset_password'),
+    # path('', HomeView.as_view(), name='home'),
+    path('api/home/', HomeView.as_view(), name='home'),
+    path('api/login/', LoginView.as_view(), name='login'),
+    # path('api/register/', register, name='register'),
+    # path('api/request-password-reset/', request_password_reset, name='request_password_reset'),
+    # path('api/reset-password/<uidb64>/<token>/', reset_password, name='reset_password'),
 ]
