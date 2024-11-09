@@ -17,7 +17,7 @@ services:
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
       - ./front:/usr/share/nginx/html  # Frontend dosyalarının Nginx ile paylaşımı
-      - ./transback/static:/static  # Django statik dosyaları
+      - ./static:/static  # Django statik dosyaları
       - ./transback/media:/media  # Django medya dosyaları
     ports:
       - "80:80"

@@ -14,6 +14,12 @@ from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from django.template.response import TemplateResponse
 
+class HeaderView(APIView):
+    
+    def get(self, request):
+        user = request.user
+        return TemplateResponse(request, 'transbackend/header.html', { "user": user })
+
 class HomeView(APIView):
     permission_classes = [IsAuthenticated]  # Sadece oturum açmış kullanıcılar erişebilir
     

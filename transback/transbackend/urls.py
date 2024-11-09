@@ -1,11 +1,12 @@
 from django.urls import path
 from django.urls import path
 from .views import request_password_reset, reset_password, register, login
-from .views import HomeView, LoginView
+from .views import HomeView, LoginView, HeaderView
 from django.views.generic import TemplateView
 
 urlpatterns = [
     # path('', HomeView.as_view(), name='home'),
+    path('api/header/', HeaderView.as_view(), name='header'),
     path('api/home/', HomeView.as_view(), name='home'),
     path('api/login/', LoginView.as_view(), name='login'),
     # path('api/register/', register, name='register'),

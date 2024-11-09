@@ -1,11 +1,16 @@
+pullHeader();
+const called = [];
+
 const routes = {
   '/': 'home/',
-  'login': '/login/'
+  'login': '/login'
 };
 
 const container = document.getElementById("container");
 
 function loadScript(url) {
+  if (called.includes(url)) return;
+  called.push(url);
   return new Promise((resolve, reject) => {
     const js = Array.from(document.getElementsByClassName("dynamic-js"));
     js.forEach((e) => e.remove());
@@ -35,26 +40,23 @@ function loadCss(url) {
 }
 
 function loadPage(page, updateHistory = true) {
-  page = page || "home";
-  console.log("Loading page:", page);
+  if (page in routes) {
+    page = routes[page];
+  }
+
   container.innerHTML = `<div class="base-container">Loading...</div>`;
 
-  fetch(`/api/${page}/`)
+  fetch(`/api${page}`)
     .then((response) => response.text())
     .then((html) => {
-      if (updateHistory) {
+      if (updateHistory && page !== history.state?.page) {
         page === "home"
           ? history.pushState({}, "", "/")
-          : history.pushState({ page: page }, "", `/${page}/`);
+          : history.pushState({ page: page }, "", `${page}/`);
       }
 
-      return Promise.all([
-        loadScript(`/api/static/js/${page}.js`),
-        loadCss(`/api/static/css/${page}.css`)
-      ]).then(() => {
-        container.innerHTML = html;
-        document.title = page;
-      });
+      container.innerHTML = html;
+      document.title = page;
     })
     .then(() => {
       document.querySelectorAll("a").forEach((link) => {
@@ -80,3 +82,16 @@ window.onload = function () {
   const page = location.pathname.split("/").filter(Boolean).pop();
   loadPage(page);
 };
+
+function pullHeader() {
+  const header = document.getElementById("header");
+  if (header !== null) return;
+  fetch("/api/header/")
+    .then((response) => response.text())
+    .then((html) => {
+      document.body.insertAdjacentHTML("afterbegin", html);
+    })
+    .catch((error) => {
+      console.error("Error loading header:", error);
+    });
+}
