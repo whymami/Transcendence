@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Page</title>
+  <style>
+    /* (Your CSS styling remains the same as before) */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background-color: #121212;
+      font-family: Arial, sans-serif;
+      color: #ffffff;
+    }
+
+    .login-card {
+      width: 300px;
+      padding: 20px;
+      background-color: #1e1e1e;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+
+    .login-card h2 {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+    }
+
+    .login-card p {
+      font-size: 0.9em;
+      color: #aaaaaa;
+      margin-bottom: 20px;
+    }
+
+    .input-group {
+      margin-bottom: 15px;
+      position: relative;
+    }
+
+    .input-group label {
+      display: block;
+      font-size: 0.85em;
+      margin-bottom: 5px;
+      color: #cccccc;
+      text-align: left;
+    }
+
+    .input-group input {
+      width: 100%;
+      padding: 10px;
+      font-size: 0.9em;
+      background-color: #333;
+      border: 1px solid #444;
+      border-radius: 4px;
+      color: #ffffff;
+    }
+
+    .toggle-password {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #888888;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+      font-size: 0.85em;
+      color: #cccccc;
+      margin-bottom: 20px;
+    }
+
+    .remember-me input {
+      margin-right: 5px;
+    }
+
+    .login-btn {
+      width: 100%;
+      padding: 10px;
+      font-size: 1em;
+      font-weight: bold;
+      background-color: #6a0dad;
+      color: #ffffff;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    .login-btn:hover {
+      background-color: #4c0a8c;
+    }
+
+    .register-link {
+      margin-top: 15px;
+      font-size: 0.85em;
+      color: #888888;
+    }
+
+    .register-link a {
+      color: #6a0dad;
+      text-decoration: none;
+    }
+
+    .register-link a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-card">
+    <h2>Welcome Back</h2>
+    <p>Please login to your account</p>
+    <form id="loginForm">
+      <div class="input-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Enter your username" required>
+      </div>
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter your password" required>
+        <span class="toggle-password" onclick="togglePassword()">👁️</span>
+      </div>
+      <div class="remember-me">
+        <input type="checkbox" id="remember">
+        <label for="remember">Remember me</label>
+      </div>
+      <button type="button" class="login-btn" onclick="login()">Log In</button>
+    </form>
+    <div class="register-link">
+      Don't have an account? <a href="#">Register here</a>
+    </div>
+  </div>
+
+  <script>
+    function togglePassword() {
+      const passwordField = document.getElementById('password');
+      if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+      } else {
+        passwordField.type = 'password';
+      }
+    }
+
+    function login() {
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      if (username && password) {
+        alert(Logged in as: ${username});
+      } else {
+        alert('Please enter both username and password.');
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+services:
+  db:
+    image: postgres
+    environment:
+      POSTGRES_DB: ft_transcendence
+      POSTGRES_USER: your_db_user
+      POSTGRES_PASSWORD: your_db_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+    ports:
+      - "5432:5432"
+
+  nginx:
+    image: nginx:latest
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./front:/usr/share/nginx/html  # Frontend dosyalarının Nginx ile paylaşımı
+      - ./transback/static:/static  # Django statik dosyaları
+      - ./transback/media:/media  # Django medya dosyaları
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+    networks:
+      - app-network
+
+  web:
+    build: ./transback
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      DATABASE: postgres
+      SQL_HOST: db
+      SQL_PORT: 5432
+      SQL_USER: your_db_user
+      SQL_PASSWORD: your_db_password
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data:

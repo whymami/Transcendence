@@ -10,14 +10,31 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import render
-from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+from django.template.response import TemplateResponse
 
-def home_view(request):
-    return render(request, 'transbackend/home.html')
+class HeaderView(APIView):
+    
+    def get(self, request):
+        user = request.user
+        return TemplateResponse(request, 'transbackend/header.html', { "user": user })
 
-
-def login_view(request):
-    return render(request, 'transbackend/login.html')
+class HomeView(APIView):
+    permission_classes = [IsAuthenticated]  # Sadece oturum açmış kullanıcılar erişebilir
+    
+    def get(self, request):
+        user = request.user
+        # Ekstra veriler ekleyebilirsiniz, örneğin kullanıcı bilgileri
+        return TemplateResponse(request, 'transbackend/home.html', { "user": user })
+    def post(self, request):
+        return JsonResponse({"message": "Hello, World!"})
+    
+class LoginView(APIView):
+    # Bu view için oturum açmış olma zorunluluğu yok, herkes erişebilir.
+    
+    def get(self, request):
+        return TemplateResponse(request, 'transbackend/login.html')
 
 def request_password_reset(request):
     if request.method == 'POST':
