@@ -8,36 +8,13 @@ const routes = {
 
 const container = document.getElementById("container");
 
-function loadScript(url) {
-  if (called.includes(url)) return;
-  called.push(url);
-  return new Promise((resolve, reject) => {
-    const js = Array.from(document.getElementsByClassName("dynamic-js"));
-    js.forEach((e) => e.remove());
-
-    const script = document.createElement("script");
-    script.src = url;
-    script.className = "dynamic-js";
-    script.onload = () => resolve(script);
-    script.onerror = () => reject(new Error(`Script load error for ${url}`));
-    document.body.append(script);
+function clearStaticFiles() {
+  const staticFiles = document.querySelectorAll("link[rel=stylesheet], script");
+  staticFiles.forEach((element) => {
+    element.remove();
   });
 }
 
-function loadCss(url) {
-  return new Promise((resolve, reject) => {
-    const css = Array.from(document.getElementsByClassName("dynamic-css"));
-    css.forEach((e) => e.remove());
-
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = url;
-    link.className = "dynamic-css";
-    link.onload = () => resolve(link);
-    link.onerror = () => reject(new Error(`CSS load error for ${url}`));
-    document.head.append(link);
-  });
-}
 
 function loadPage(page, updateHistory = true) {
   if (page in routes) {
@@ -54,9 +31,29 @@ function loadPage(page, updateHistory = true) {
           ? history.pushState({}, "", "/")
           : history.pushState({ page: page }, "", `${page}/`);
       }
+      html = new DOMParser().parseFromString(html, "text/html");
+      console.log("after: ", html);
 
-      container.innerHTML = html;
-      document.title = page;
+      container.innerHTML = html.body.innerHTML;
+
+      const head = html?.head;
+      document.title = head?.querySelector("title")?.innerHTML;
+
+      const meta = head.querySelectorAll("meta");
+      meta.forEach((element) => {
+        document.head?.appendChild(element);
+      });
+
+      const link = head.querySelectorAll("link");
+      link.forEach((element) => {
+        document.head?.appendChild(element);
+      });
+
+      const script = head.querySelectorAll("script");
+      script.forEach((element) => {
+        document.head?.appendChild(element);
+      });
+
     })
     .then(() => {
       document.querySelectorAll("a").forEach((link) => {
