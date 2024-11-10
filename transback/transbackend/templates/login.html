@@ -1,0 +1,42 @@
+{% load static %}
+<head>
+  <link rel="stylesheet" type="text/css" href="{% static "/css/login.css" %}" data-static="true">
+  <title>Login</title>
+</head>
+
+<body>
+  <div class="login-card">
+    <h2>Welcome Back</h2>
+    <p>Please login to your account</p>
+    <form id="loginForm">
+      <div class="input-group">
+        <label for="username">Username</label>
+        <input
+          type="text"
+          id="username"
+          placeholder="Enter your username"
+          required
+        />
+      </div>
+      <div class="input-group">
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          placeholder="Enter your password"
+          required
+        />
+        <span class="toggle-password" onclick="togglePassword()">👁️</span>
+      </div>
+      <div class="remember-me">
+        <input type="checkbox" id="remember" />
+        <label for="remember">Remember me</label>
+      </div>
+      <button type="button" class="login-btn" onclick="login()">Log In</button>
+    </form>
+    <div class="register-link">
+      Don't have an account? <a href="#">Register here</a>
+    </div>
+  </div>
+  <Script src="{% static "/js/login.js" %}" data-static="true"></Script>
+</body>
