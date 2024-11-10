@@ -42,10 +42,28 @@ INSTALLED_APPS = [
     'rest_framework',
 ]
 
+AUTH_USER_MODEL = 'transbackend.User'
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ],
+}
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=20),  # Set access token expiration time (5 minutes)
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),    # Set refresh token expiration time (1 day)
+    'ROTATE_REFRESH_TOKENS': False,                  # Whether to rotate refresh tokens
+    'BLACKLIST_AFTER_ROTATION': True,                # Whether to blacklist old refresh tokens after rotation
+    'UPDATE_LAST_LOGIN': False,                      # Whether to update the last login on refresh
 }
 
 MIDDLEWARE = [
@@ -88,7 +106,7 @@ DATABASES = {
         'NAME': 'ft_transcendence',
         'USER': 'your_db_user',
         'PASSWORD': 'your_db_password',
-        'HOST': 'db',
+        'HOST': '45.9.30.21',
         'PORT': '5432',
     }
 }

@@ -6,49 +6,107 @@ from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from django.urls import reverse
 from .models import User
+from rest_framework_simplejwt.tokens import RefreshToken
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import render
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, BasePermission
+from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.template.response import TemplateResponse
+from django.contrib.auth import get_user_model
+
 
 class IsAnonymousUser(BasePermission):
     """
-    Bu sınıf, sadece oturum açmamış kullanıcılara izin verir.
+    This permission class allows access only to anonymous users.
     """
     def has_permission(self, request, view):
         return not request.user.is_authenticated
 
-
 class HeaderView(APIView):
-    
     def get(self, request):
         user = request.user
-        return TemplateResponse(request, 'header.html', { "user": user })
-    
+        return TemplateResponse(request, 'header.html', {"user": user})
+
 class RegisterView(APIView):
-    permissin_classes = [IsAnonymousUser]  # Sadece oturum açmamış kullanıcılar erişebilir
-    
+    permission_classes = [IsAnonymousUser]
+    authentication_classes = []
+
     def get(self, request):
         return TemplateResponse(request, 'register.html')
 
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+            username = data.get('username')
+            email = data.get('email')
+            password = data.get('password')
+
+            if username and email and password:
+                if User.objects.filter(username=username).exists():
+                    return JsonResponse({"error": "Username already taken."}, status=400)
+                if User.objects.filter(email=email).exists():
+                    return JsonResponse({"error": "Email already in use."}, status=400)
+
+                user = User(username=username, email=email)
+                user.set_password(password)
+                user.save()
+                return JsonResponse({"message": "Registration successful!"}, status=201)
+            else:
+                return JsonResponse({"error": "All fields are required."}, status=400)
+
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON data."}, status=400)
+
+
 class HomeView(APIView):
-    permission_classes = [IsAuthenticated]  # Sadece oturum açmış kullanıcılar erişebilir
-    
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         user = request.user
-        # Ekstra veriler ekleyebilirsiniz, örneğin kullanıcı bilgileri
-        return TemplateResponse(request, 'home.html', { "user": user })
+        return TemplateResponse(request, 'home.html', {"user": user})
+
+class LoginView(APIView):
+    permission_classes = [IsAnonymousUser]
+    authentication_classes = []
+
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+            email = data.get('email')
+            password = data.get('password')
+            User = get_user_model()
+
+            try:
+                user = User.objects.get(email=email)
+                if user.check_password(password):
+                    refresh = RefreshToken.for_user(user)
+                    return JsonResponse({
+                        "message": "Login successful!",
+                        "access": str(refresh.access_token),
+                        "refresh": str(refresh),
+                    }, status=200)
+                else:
+                    return JsonResponse({"error": "Invalid email or password."}, status=401)
+            except User.DoesNotExist:
+                return JsonResponse({"error": "Invalid email or password."}, status=401)
+
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON data."}, status=400)
+
+
+class GameView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        return TemplateResponse(request, 'game.html')
+
     def post(self, request):
         return JsonResponse({"message": "Hello, World!"})
-    
-class LoginView(APIView):
-    permissin_classes = [IsAnonymousUser]  # Sadece oturum açmamış kullanıcılar erişebilir
-    
-    def get(self, request):
-        return TemplateResponse(request, 'login.html')
+
 
 def request_password_reset(request):
     if request.method == 'POST':
@@ -91,67 +149,3 @@ def reset_password(request, uidb64, token):
                 return JsonResponse({"error": "New password is required."}, status=400)
 
     return JsonResponse({"error": "Invalid token or user."}, status=400)
-
-
-def hello_world(request):
-    return HttpResponse("Hello, World!")
-
-@csrf_exempt
-def register(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            username = data.get('username')
-            email = data.get('email')
-            password = data.get('password')
-
-            if username and email and password:
-                if User.objects.filter(username=username).exists():
-                    return JsonResponse({"error": "Username already taken."}, status=400)
-                if User.objects.filter(email=email).exists():
-                    return JsonResponse({"error": "Email already in use."}, status=400)
-
-                hashed_password = make_password(password)  # Şifreyi hashle
-                user = User(username=username, email=email, password=hashed_password)
-                user.save()
-
-                return JsonResponse({"message": "Registration successful!"}, status=201)
-            else:
-                return JsonResponse({"error": "All fields are required."}, status=400)
-
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON data."}, status=400)
-
-    return JsonResponse({"error": "Invalid request method."}, status=405)
-
-def custom_authenticate(email, password):
-    try:
-        user = User.objects.get(email=email)
-        if user.check_password(password):
-            return user
-    except User.DoesNotExist:
-        return None
-
-@csrf_exempt
-def login(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            email = data.get('email')
-            password = data.get('password')
-
-            user = custom_authenticate(email, password)
-            if user is not None:
-                refresh = RefreshToken.for_user(user)
-                return JsonResponse({
-                    "message": "Login successful!",
-                    "access": str(refresh.access_token),
-                    "refresh": str(refresh),
-                }, status=200)
-            else:
-                return JsonResponse({"error": "Invalid email or password."}, status=401)
-
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON data."}, status=400)
-
-    return JsonResponse({"error": "Invalid request method."}, status=405)
