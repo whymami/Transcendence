@@ -11,14 +11,28 @@ import json
 from django.contrib.auth.hashers import make_password
 from django.shortcuts import render
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, BasePermission
 from django.template.response import TemplateResponse
+
+class IsAnonymousUser(BasePermission):
+    """
+    Bu sınıf, sadece oturum açmamış kullanıcılara izin verir.
+    """
+    def has_permission(self, request, view):
+        return not request.user.is_authenticated
+
 
 class HeaderView(APIView):
     
     def get(self, request):
         user = request.user
-        return TemplateResponse(request, 'transbackend/header.html', { "user": user })
+        return TemplateResponse(request, 'header.html', { "user": user })
+    
+class RegisterView(APIView):
+    permissin_classes = [IsAnonymousUser]  # Sadece oturum açmamış kullanıcılar erişebilir
+    
+    def get(self, request):
+        return TemplateResponse(request, 'register.html')
 
 class HomeView(APIView):
     permission_classes = [IsAuthenticated]  # Sadece oturum açmış kullanıcılar erişebilir
@@ -26,15 +40,15 @@ class HomeView(APIView):
     def get(self, request):
         user = request.user
         # Ekstra veriler ekleyebilirsiniz, örneğin kullanıcı bilgileri
-        return TemplateResponse(request, 'transbackend/home.html', { "user": user })
+        return TemplateResponse(request, 'home.html', { "user": user })
     def post(self, request):
         return JsonResponse({"message": "Hello, World!"})
     
 class LoginView(APIView):
-    # Bu view için oturum açmış olma zorunluluğu yok, herkes erişebilir.
+    permissin_classes = [IsAnonymousUser]  # Sadece oturum açmamış kullanıcılar erişebilir
     
     def get(self, request):
-        return TemplateResponse(request, 'transbackend/login.html')
+        return TemplateResponse(request, 'login.html')
 
 def request_password_reset(request):
     if request.method == 'POST':
