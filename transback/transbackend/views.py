@@ -26,8 +26,11 @@ class IsAnonymousUser(BasePermission):
         return not request.user.is_authenticated
 
 class HeaderView(APIView):
+    permission_classes = [IsAnonymousUser]
+
     def get(self, request):
         user = request.user
+        print("user: ",user)
         return TemplateResponse(request, 'header.html', {"user": user})
 
 class RegisterView(APIView):
@@ -62,7 +65,7 @@ class RegisterView(APIView):
 
 
 class HomeView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAnonymousUser]
 
     def get(self, request):
         user = request.user
@@ -71,6 +74,9 @@ class HomeView(APIView):
 class LoginView(APIView):
     permission_classes = [IsAnonymousUser]
     authentication_classes = []
+
+    def get(self, request):
+        return TemplateResponse(request, 'login.html')
 
     def post(self, request):
         try:

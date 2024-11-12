@@ -1,4 +1,4 @@
-pullHeader();
+pullHeader(true);
 
 const routes = {
   '/': '/home',
@@ -26,7 +26,14 @@ function loadPage(page, updateHistory = true) {
   container.innerHTML = '<div class="base-container">Loading...</div>';
 
   fetch(`/api${page}`)
-    .then((response) => response.text())
+    .then((response) => {
+      console.log(response)
+      if (!response.ok) {
+        throw new Error("Error loading page");
+      }
+      return response.text();
+    }
+    )
     .then((html) => {
       if (updateHistory && page !== history.state?.page) {
         const path = page === "home" ? "/" : page
@@ -34,6 +41,7 @@ function loadPage(page, updateHistory = true) {
           history.pushState({ page: page }, "", path);
         }
       }
+
 
       clearStaticFiles();
 
@@ -51,8 +59,6 @@ function loadPage(page, updateHistory = true) {
         if (src) {
           const script = document.createElement("script");
           script.src = src;
-          script.defer = true;
-          script.async = false;
           script.setAttribute("data-static", "true");
           document.body.appendChild(script);
         }
@@ -62,7 +68,7 @@ function loadPage(page, updateHistory = true) {
         link.addEventListener("click", (e) => {
           e.preventDefault();
           const url = link.getAttribute("href").split("/").filter(Boolean).pop();
-          
+
           if ("/" + url === page) return;
 
           loadPage(url);
@@ -85,15 +91,25 @@ window.onload = function () {
   loadPage(page);
 };
 
-function pullHeader() {
-  const header = document.getElementById("header");
-  if (header !== null) return;
-  fetch("/api/header/")
-    .then((response) => response.text())
-    .then((html) => {
-      document.body.insertAdjacentHTML("afterbegin", html);
-    })
-    .catch((error) => {
-      console.error("Error loading header:", error);
+async function pullHeader(rePull = false) {
+  const header = document.getElementsByTagName("header");
+  if (!rePull && header !== null) return;
+
+  try {
+    const res = await fetch("/api/header/");
+    const html = await res.text();
+    const parsedHtml = new DOMParser().parseFromString(html, "text/html");
+    const header = parsedHtml.body.getElementsByTagName("header")[0];
+
+    if (rePull && header) header.remove();
+    document.body.insertAdjacentHTML("afterbegin", header.outerHTML);
+    console.log("Header loaded", header);
+    const links = parsedHtml.head.querySelectorAll("link");
+    links.forEach((element) => {
+      document.head.appendChild(element.cloneNode(true));
     });
+  } catch (error) {
+    console.error("Error loading header:", error);
+  }
+
 }

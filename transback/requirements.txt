@@ -4,3 +4,4 @@ psycopg2-binary
 channels
 django-allauth
 pillow
+djangorestframework-simplejwt

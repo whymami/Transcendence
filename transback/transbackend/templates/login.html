@@ -1,8 +1,11 @@
 {% load static %}
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="stylesheet" type="text/css" href="{% static '/css/login.css' %}" />
+  <link
+    data-static="true"
+    rel="stylesheet"
+    type="text/css"
+    href="{% static '/css/login.css' %}"
+  />
   <title>Login</title>
 </head>
 <body>
@@ -12,17 +15,10 @@
     <form id="loginForm" onsubmit="event.preventDefault(); login();">
       <!-- Username Input -->
       <div class="input-group">
-        <label for="username">Username</label>
-        <input
-          type="text"
-          id="username"
-          placeholder="Enter your username"
-          required
-          minlength="4"
-        />
-        <span class="error-message" id="usernameError"></span>
+        <label for="email">Email</label>
+        <input type="text" id="email" placeholder="Enter your email" />
+        <span class="error-message" id="emailError"></span>
       </div>
-
       <!-- Password Input -->
       <div class="input-group">
         <label for="password">Password</label>
@@ -30,8 +26,6 @@
           type="password"
           id="password"
           placeholder="Enter your password"
-          required
-          minlength="4"
         />
         <span
           id="togglePassword"
