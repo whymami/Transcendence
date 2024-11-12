@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 import os
+from datetime import timedelta
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'transbackend',
     'rest_framework',
+    'channels',
 ]
 
 AUTH_USER_MODEL = 'transbackend.User'
@@ -47,6 +49,7 @@ AUTH_USER_MODEL = 'transbackend.User'
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
+ASGI_APPLICATION = "transbackend.asgi.application"
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -56,14 +59,21 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
-from datetime import timedelta
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
 
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=20),  # Set access token expiration time (5 minutes)
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),    # Set refresh token expiration time (1 day)
-    'ROTATE_REFRESH_TOKENS': False,                  # Whether to rotate refresh tokens
-    'BLACKLIST_AFTER_ROTATION': True,                # Whether to blacklist old refresh tokens after rotation
-    'UPDATE_LAST_LOGIN': False,                      # Whether to update the last login on refresh
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=2),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': False,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'UPDATE_LAST_LOGIN': False,
 }
 
 MIDDLEWARE = [
