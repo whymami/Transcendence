@@ -43,11 +43,34 @@
 
 .toggle-password {
   position: absolute;
-  right: 10px;
+  right: 5px;
   top: 50%;
-  transform: translateY(-50%);
+  transform: translateX(-50%);
   cursor: pointer;
   color: #888888;
+}
+
+.toggle-password:hover {
+  color: #cccccc;
+}
+
+.toggle-password svg {
+  width: 20px;
+  height: 20px;
+  
+}
+
+.error-message {
+  color: #ff4d4d;
+  font-size: 0.85em;
+  text-align: left;
+  margin-top: 5px;
+}
+
+.general-error-message {
+  color: #ff4d4d;
+  font-size: 0.9em;
+  margin-top: 10px;
 }
 
 .remember-me {
@@ -79,17 +102,37 @@
   background-color: #4c0a8c;
 }
 
-.register-link {
-  margin-top: 15px;
+.forgot-password {
+  float: right;
   font-size: 0.85em;
   color: #888888;
 }
 
-.register-link a {
+.forgot-password a {
   color: #6a0dad;
   text-decoration: none;
 }
 
-.register-link a:hover {
+.forgot-password a:hover {
   text-decoration: underline;
+}
+
+.register-link {
+  margin-top: 20px;
+  font-size: 0.85em;
+  color: #888888;
+}
+
+@media screen and (max-width: 768px) {
+  .login-card {
+    width: 80%;
+  }
+
+}
+
+@media screen and (max-width: 480px) {
+  .login-card {
+    width: 90%;
+  }
+
 }
