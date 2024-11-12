@@ -1,4 +1,6 @@
 {% load static %}
+{% load i18n %}
+
 <head>
   <link rel="stylesheet" type="text/css" href="{% static '/css/header.css' %}" />
 </head>
@@ -13,12 +15,12 @@
           </a>
         </div>
         <div class="nav-links">
-          <a href="/" class="nav-link">Home</a>
+          <a href="/" class="nav-link">{% trans "Home" %}</a>
           {% if user.is_authenticated %}
-            <a href="/profile" class="nav-link">Profile</a>
+            <a href="/profile" class="nav-link">{% trans "profile" %}</a>
             <a href="/logout" class="nav-link">Logout</a>
           {% else %}
-            <a href="/login" class="nav-link">Login</a>
+            <a href="/login" class="nav-link">{% trans "Login" %}</a>
           {% endif %}
         </div>
       </div>
