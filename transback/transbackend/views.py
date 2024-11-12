@@ -9,10 +9,8 @@ from .models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.views.decorators.csrf import csrf_exempt
 import json
-from django.contrib.auth.hashers import make_password
-from django.shortcuts import render
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated, BasePermission
+from rest_framework.permissions import IsAuthenticated, BasePermission, AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.template.response import TemplateResponse
 from django.contrib.auth import get_user_model
@@ -23,19 +21,20 @@ class IsAnonymousUser(BasePermission):
     This permission class allows access only to anonymous users.
     """
     def has_permission(self, request, view):
+        print(request.user)
         return not request.user.is_authenticated
 
 class HeaderView(APIView):
-    permission_classes = [IsAnonymousUser]
+    permission_classes = [AllowAny]
+    authentication_classes = [JWTAuthentication]
 
     def get(self, request):
         user = request.user
-        print("user: ",user)
         return TemplateResponse(request, 'header.html', {"user": user})
 
 class RegisterView(APIView):
     permission_classes = [IsAnonymousUser]
-    authentication_classes = []
+    authentication_classes = [JWTAuthentication]
 
     def get(self, request):
         return TemplateResponse(request, 'register.html')
@@ -73,7 +72,7 @@ class HomeView(APIView):
 
 class LoginView(APIView):
     permission_classes = [IsAnonymousUser]
-    authentication_classes = []
+    authentication_classes = [JWTAuthentication]
 
     def get(self, request):
         return TemplateResponse(request, 'login.html')
