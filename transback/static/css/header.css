@@ -54,5 +54,5 @@
 }
 
 .nav-link:hover {
-    color: #3182ce;
+    color: var(--primary-color);
 }

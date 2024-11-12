@@ -64,7 +64,8 @@ class RegisterView(APIView):
 
 
 class HomeView(APIView):
-    permission_classes = [IsAnonymousUser]
+    permission_classes = [AllowAny]
+    authentication_classes = [JWTAuthentication]
 
     def get(self, request):
         user = request.user

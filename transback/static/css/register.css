@@ -10,6 +10,7 @@
 .register-card h2 {
   font-size: 1.5em;
   margin-bottom: 10px;
+  color: white;
 }
 
 .register-card p {
@@ -47,7 +48,6 @@
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
-  color: ;
 }
 
 .register-btn {
@@ -74,12 +74,13 @@
 }
 
 .login-link a {
-  color: #6a0dad;
+  color: var(--primary-color);
   text-decoration: none;
 }
 
 .login-link a:hover {
   text-decoration: underline;
+  color: var(--secondary-color)
 }
 
 .toggle-password svg {

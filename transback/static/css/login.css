@@ -10,6 +10,7 @@
 .login-card h2 {
   font-size: 1.5em;
   margin-bottom: 10px;
+  color: white
 }
 
 .login-card p {
@@ -102,12 +103,23 @@
 
 .forgot-password a:hover {
   text-decoration: underline;
+  color: var(--secondary-color);
 }
 
 .register-link {
   margin-top: 20px;
   font-size: 0.85em;
   color: var(--text-color);
+}
+
+.register-link a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+  color: var(--secondary-color);
 }
 
 @media screen and (max-width: 768px) {
