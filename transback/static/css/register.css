@@ -1,7 +1,7 @@
 .register-card {
   width: 400px;
   padding: 30px;
-  background-color: #1e1e1e;
+  background-color: var(--background-color);
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   text-align: center;
@@ -14,7 +14,7 @@
 
 .register-card p {
   font-size: 0.9em;
-  color: #aaaaaa;
+  color: var(--text-color);
   margin-bottom: 20px;
 }
 
@@ -27,7 +27,7 @@
   display: block;
   font-size: 0.85em;
   margin-bottom: 5px;
-  color: #cccccc;
+  color: var(--text-color);
   text-align: left;
 }
 
@@ -38,7 +38,7 @@
   background-color: #333;
   border: 1px solid #444;
   border-radius: 4px;
-  color: #ffffff;
+  color: var(--text-color);
 }
 
 .toggle-password {
@@ -47,7 +47,7 @@
   top: 50%;
   transform: translateY(-50%);
   cursor: pointer;
-  color: #888888;
+  color: ;
 }
 
 .register-btn {
