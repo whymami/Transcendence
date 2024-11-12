@@ -14,7 +14,7 @@ from rest_framework.permissions import IsAuthenticated, BasePermission, AllowAny
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.template.response import TemplateResponse
 from django.contrib.auth import get_user_model
-
+from django.contrib.auth import logout as auth_logout
 
 class IsAnonymousUser(BasePermission):
     """
@@ -64,7 +64,8 @@ class RegisterView(APIView):
 
 
 class HomeView(APIView):
-    permission_classes = [IsAnonymousUser]
+    permission_classes = [AllowAny]
+    authentication_classes = [JWTAuthentication]
 
     def get(self, request):
         user = request.user
@@ -101,56 +102,36 @@ class LoginView(APIView):
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON data."}, status=400)
 
-
 class GameView(APIView):
-    authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
 
     def get(self, request):
-        return TemplateResponse(request, 'game.html')
+        user = request.user
+        return TemplateResponse(request, 'game.html', {"user": user})
+    
+class ProfileView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
 
+    def get(self, request):
+        user = request.user
+        return TemplateResponse(request, 'profile.html', {"user": user})
+    
     def post(self, request):
-        return JsonResponse({"message": "Hello, World!"})
-
-
-def request_password_reset(request):
-    if request.method == 'POST':
-        email = request.POST.get('email')
         try:
-            user = User.objects.get(email=email)
-            token = default_token_generator.make_token(user)
-            uid = urlsafe_base64_encode(force_bytes(user.pk))
-            reset_link = request.build_absolute_uri(
-                reverse('reset_password', kwargs={'uidb64': uid, 'token': token})
-            )
-            send_mail(
-                "Password Reset Requested",
-                f"To reset your password, click the link: {reset_link}",
-                'from@example.com',
-                [email],
-            )
-            return JsonResponse({"message": "Password reset email sent!"}, status=200)
-        except User.DoesNotExist:
-            return JsonResponse({"error": "Email not found."}, status=404)
-
-    return JsonResponse({"error": "Invalid request method."}, status=405)
-
-
-def reset_password(request, uidb64, token):
-    try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-        user = None
-
-    if user is not None and default_token_generator.check_token(user, token):
-        if request.method == 'POST':
-            new_password = request.POST.get('new_password')
-            if new_password:
-                user.set_password(new_password)
-                user.save()
-                return JsonResponse({"message": "Password has been reset!"}, status=200)
-            else:
-                return JsonResponse({"error": "New password is required."}, status=400)
-
-    return JsonResponse({"error": "Invalid token or user."}, status=400)
+            data = request.data
+            user = request.user
+            if data.get('username'):
+                user.username = data.get('username')
+            if data.get('email'):
+                user.email = data.get('email')
+            if data.get('profile_picture'):
+                user.profile_picture = data.get('profile_picture')
+            if data.get('password'):
+                user.password = data.get('password')
+            user.save()
+            return JsonResponse({"message": "Profile updated successfully!"}, status=200)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON data."}, status=400)
+        
