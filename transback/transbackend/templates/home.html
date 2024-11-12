@@ -7,7 +7,11 @@
   <div class="home-container">
     <h1>Ping Pong'a Hoş Geldiniz!</h1>
     <p>Reflekslerini test etmeye hazır mısın?</p>
-    <button id="startButton">Oyuna Başla</button>
+    {% if user.is_authenticated %}
+      <a href="/game" class="play-button">Oyna</a>
+    {% else %}
+      <a href="/login" class="play-button">Go To Login</a>
+    {% endif %}
   </div>
   <script src="{% static 'js/home.js' %}"></script>
 </body>  

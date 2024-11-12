@@ -27,15 +27,15 @@ function loadPage(page, updateHistory = true) {
 
   const token = getCookie("access_token");
 
-  fetch(`/api${page}`, {
+  fetch(`/api${page}`, token && {
     headers: {
       Authorization: `Bearer ${token}`
     }
   })
     .then((response) => {
-      console.log(response)
+      // console.log(response)
       if (!response.ok) {
-        throw new Error("Error loading page");
+        throw response
       }
       return response.text();
     }
@@ -71,10 +71,13 @@ function loadPage(page, updateHistory = true) {
       });
 
       document.querySelectorAll("a").forEach((link) => {
+        console.log("Link:", link);
         link.addEventListener("click", (e) => {
           e.preventDefault();
           const url = link.getAttribute("href").split("/").filter(Boolean).pop();
 
+          console.log("Loading page:", url);
+          console.log("Current page:", page);
           if ("/" + url === page) return;
 
           loadPage(url);
@@ -83,7 +86,8 @@ function loadPage(page, updateHistory = true) {
     })
     .catch((error) => {
       console.error("Error loading page:", error);
-      container.innerHTML = '<div class="base-container">Error loading page. Please try again.</div>';
+      if(error?.redirected)
+        window.location.href = "/"
     });
 }
 
@@ -99,29 +103,43 @@ window.onload = function () {
 
 async function pullHeader(rePull = false) {
   const header = document.getElementsByTagName("header");
-  if (!rePull && header !== null) return;
+  if (!rePull && header.length > 0) return;
 
   const token = getCookie("access_token");
 
+  // console.log("repull: ", rePull);
+  // console.log("header: ", header);
+
   try {
-    const res = await fetch("/api/header/", {
+    const res = await fetch("/api/header", token && {
       headers: {
         Authorization: `Bearer ${token}`
       }
     });
     const html = await res.text();
     const parsedHtml = new DOMParser().parseFromString(html, "text/html");
-    const header = parsedHtml.body.getElementsByTagName("header")[0];
-
-    if (rePull && header) header.remove();
-    document.body.insertAdjacentHTML("afterbegin", header.outerHTML);
-    console.log("Header loaded", header);
+  
+    const resHeader = parsedHtml.body.getElementsByTagName("header")[0];
+    // console.log("resHeader: ", resHeader?.outerHTML);
+  
+    const currentHeader = document.body.getElementsByTagName("header")[0];
+  
+    if (resHeader) {
+      if (currentHeader) {
+        currentHeader.innerHTML = resHeader.innerHTML;
+        // console.log("Header güncellendi:", resHeader.outerHTML);
+      } else {
+        document.body.insertAdjacentHTML("afterbegin", resHeader.outerHTML);
+        // console.log("Header body'nin en üstüne eklendi:", resHeader.outerHTML);
+      }
+    }
+  
     const links = parsedHtml.head.querySelectorAll("link");
     links.forEach((element) => {
       document.head.appendChild(element.cloneNode(true));
     });
   } catch (error) {
-    console.error("Error loading header:", error);
+    console.error("Header yüklenirken hata oluştu:", error);
   }
 
 }

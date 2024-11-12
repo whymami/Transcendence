@@ -13,8 +13,9 @@
           </a>
         </div>
         <div class="nav-links">
-          <a href="/home" class="nav-link">Home</a>
+          <a href="/" class="nav-link">Home</a>
           {% if user.is_authenticated %}
+            <a href="/profile" class="nav-link">Profile</a>
             <a href="/logout" class="nav-link">Logout</a>
           {% else %}
             <a href="/login" class="nav-link">Login</a>

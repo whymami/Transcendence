@@ -4,6 +4,7 @@
   border-radius: 12px;
   text-align: center;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  color: var(--text-color);
 }
 
 h1 {
@@ -16,17 +17,10 @@ p {
   margin-bottom: 30px;
 }
 
-button {
-  background-color: #ff4757; /* Buton rengi */
-  color: #fff;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-button:hover {
-  background-color: #ff6b81; /* Hover durumu */
+.play-button {
+  color: white;
+  background-color: var(--primary-color);
+  text-decoration: none;
+  padding: 12px 45px;
+  border-radius: 10px;
 }

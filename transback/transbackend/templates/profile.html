@@ -1,0 +1,67 @@
+{% load static %}
+<head>
+  <title>User Settings</title>
+  <link rel="stylesheet" href="/css/profile.css" />
+</head>
+<body>
+  <div class="settings-container">
+    <h2>Profil Ayarları</h2>
+
+    <!-- Profil Resmi -->
+    <div class="profile-picture-section">
+      <img id="profilePic" src="default-avatar.png" alt="Profil Resmi" />
+      <input type="file" id="uploadProfilePic" accept="image/*" />
+      <button id="chooseDefaultPic">Varsayılan Resim Seç</button>
+    </div>
+
+    <!-- Profil Bilgileri Formu -->
+    <form id="userSettingsForm">
+      <!-- Kullanıcı Adı -->
+      <label for="username">Kullanıcı Adı</label>
+      <input type="text" id="username" value="MevcutKullanıcıAdı" required />
+      <span class="error-message" id="usernameError"></span>
+
+      <!-- E-posta -->
+      <label for="email">E-posta</label>
+      <input type="email" id="email" value="mevcutemail@example.com" required />
+      <span class="error-message" id="emailError"></span>
+
+      <!-- Yeni Şifre -->
+      <label for="password">Yeni Şifre</label>
+      <input
+        type="password"
+        id="password"
+        placeholder="Yeni şifrenizi girin"
+        required
+      />
+      <span class="error-message" id="passwordError"></span>
+
+      <!-- Şifre Tekrar -->
+      <label for="confirmPassword">Şifre Tekrar</label>
+      <input
+        type="password"
+        id="confirmPassword"
+        placeholder="Şifrenizi tekrar girin"
+        required
+      />
+      <span class="error-message" id="confirmPasswordError"></span>
+
+      <button type="submit">Kaydet</button>
+    </form>
+  </div>
+
+  <!-- Varsayılan Profil Resimleri Modal -->
+  <div class="modal" id="defaultPicModal">
+    <div class="modal-content">
+      <h3>Varsayılan Resim Seç</h3>
+      <div class="default-pics">
+        <img src="avatar1.png" alt="Avatar 1" class="default-avatar" />
+        <img src="avatar2.png" alt="Avatar 2" class="default-avatar" />
+        <img src="avatar3.png" alt="Avatar 3" class="default-avatar" />
+      </div>
+      <button id="closeModal">Kapat</button>
+    </div>
+  </div>
+
+  <script src="/js/profile.js"></script>
+</body>
