@@ -1,5 +1,6 @@
 function setCookie(name, value, days) {
     let expires = "";
+    // console.log('Cookie set:', name, value, days)
     if (days) {
         const date = new Date();
         date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));

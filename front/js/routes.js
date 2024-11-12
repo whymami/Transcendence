@@ -25,7 +25,13 @@ function loadPage(page, updateHistory = true) {
 
   container.innerHTML = '<div class="base-container">Loading...</div>';
 
-  fetch(`/api${page}`)
+  const token = getCookie("access_token");
+
+  fetch(`/api${page}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
     .then((response) => {
       console.log(response)
       if (!response.ok) {
@@ -95,8 +101,14 @@ async function pullHeader(rePull = false) {
   const header = document.getElementsByTagName("header");
   if (!rePull && header !== null) return;
 
+  const token = getCookie("access_token");
+
   try {
-    const res = await fetch("/api/header/");
+    const res = await fetch("/api/header/", {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
     const html = await res.text();
     const parsedHtml = new DOMParser().parseFromString(html, "text/html");
     const header = parsedHtml.body.getElementsByTagName("header")[0];

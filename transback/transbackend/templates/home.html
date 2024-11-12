@@ -1,3 +1,13 @@
-<div class="home-container">
-  <h1>Transbackend homee</h1>
-</div>
+{% load static %}
+<head>
+  <link data-static="true" rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}">
+</head>
+
+<body>
+  <div class="home-container">
+    <h1>Ping Pong'a Hoş Geldiniz!</h1>
+    <p>Reflekslerini test etmeye hazır mısın?</p>
+    <button id="startButton">Oyuna Başla</button>
+  </div>
+  <script src="{% static 'js/home.js' %}"></script>
+</body>  

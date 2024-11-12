@@ -1,7 +1,7 @@
 .login-card {
   width: 400px;
   padding: 30px;
-  background-color: #1e1e1e;
+  background-color: var(--background-color);
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
   text-align: center;
@@ -14,7 +14,7 @@
 
 .login-card p {
   font-size: 0.9em;
-  color: #aaaaaa;
+  color: var(--text-color);
   margin-bottom: 20px;
 }
 
@@ -27,7 +27,7 @@
   display: block;
   font-size: 0.85em;
   margin-bottom: 5px;
-  color: #cccccc;
+  color: var(--text-color);
   text-align: left;
 }
 
@@ -38,7 +38,7 @@
   background-color: #333;
   border: 1px solid #444;
   border-radius: 4px;
-  color: #ffffff;
+  color: white;
 }
 
 .toggle-password {
@@ -47,17 +47,16 @@
   top: 50%;
   transform: translateX(-50%);
   cursor: pointer;
-  color: #888888;
+  color: var(--text-color);
 }
 
 .toggle-password:hover {
-  color: #cccccc;
+  color: var(--text-color);
 }
 
 .toggle-password svg {
   width: 20px;
   height: 20px;
-  
 }
 
 .error-message {
@@ -73,25 +72,13 @@
   margin-top: 10px;
 }
 
-.remember-me {
-  display: flex;
-  align-items: center;
-  font-size: 0.85em;
-  color: #cccccc;
-  margin-bottom: 20px;
-}
-
-.remember-me input {
-  margin-right: 5px;
-}
-
 .login-btn {
   width: 100%;
   padding: 10px;
   font-size: 1em;
   font-weight: bold;
-  background-color: #6a0dad;
-  color: #ffffff;
+  background-color: var(--primary-color);
+  color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
@@ -99,17 +86,17 @@
 }
 
 .login-btn:hover {
-  background-color: #4c0a8c;
+  background-color: var(--secondary-color);
 }
 
 .forgot-password {
   float: right;
   font-size: 0.85em;
-  color: #888888;
+  color: var(--text-color);
 }
 
 .forgot-password a {
-  color: #6a0dad;
+  color: var(--primary-color);
   text-decoration: none;
 }
 
@@ -120,19 +107,17 @@
 .register-link {
   margin-top: 20px;
   font-size: 0.85em;
-  color: #888888;
+  color: var(--text-color);
 }
 
 @media screen and (max-width: 768px) {
   .login-card {
     width: 80%;
   }
-
 }
 
 @media screen and (max-width: 480px) {
   .login-card {
     width: 90%;
   }
-
 }

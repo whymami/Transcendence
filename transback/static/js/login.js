@@ -62,12 +62,12 @@ async function login() {
       showToast('error', data?.error);
       return;
     }
-    console.log('Data:', data)
-    // access_token ve refresh_token'ları cookie olarak kaydet
-    setCookie('access_token', data.access_token, 1);
-    setCookie('refresh_token', data.refresh_token, 1);
+    // console.log('Data:', data)
+    
+    setCookie('access_token', data.access, 1);
+    setCookie('refresh_token', data.refresh, 1);
 
-    showToast('success', 'Login successful. Redirecting...');
+    showToast('success', data.massage);
     // window.location.href = '/dashboard';
     pullHeader(true);
 
