@@ -2,7 +2,8 @@ pullHeader();
 
 const routes = {
   '/': '/home',
-  'login': '/login'
+  'login': '/login',
+  'register': '/register'
 };
 
 const container = document.getElementById("container");

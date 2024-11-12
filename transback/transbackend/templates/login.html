@@ -1,14 +1,16 @@
 {% load static %}
 <head>
-  <link rel="stylesheet" type="text/css" href="{% static "/css/login.css" %}" data-static="true">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" type="text/css" href="{% static '/css/login.css' %}" />
   <title>Login</title>
 </head>
-
 <body>
   <div class="login-card">
     <h2>Welcome Back</h2>
     <p>Please login to your account</p>
-    <form id="loginForm">
+    <form id="loginForm" onsubmit="event.preventDefault(); login();">
+      <!-- Username Input -->
       <div class="input-group">
         <label for="username">Username</label>
         <input
@@ -16,8 +18,12 @@
           id="username"
           placeholder="Enter your username"
           required
+          minlength="4"
         />
+        <span class="error-message" id="usernameError"></span>
       </div>
+
+      <!-- Password Input -->
       <div class="input-group">
         <label for="password">Password</label>
         <input
@@ -25,18 +31,32 @@
           id="password"
           placeholder="Enter your password"
           required
+          minlength="4"
         />
-        <span class="toggle-password" onclick="togglePassword()">👁️</span>
+        <span
+          id="togglePassword"
+          class="toggle-password"
+          onclick="togglePassword()"
+        >
+        </span>
+        <span class="error-message" id="passwordError"></span>
       </div>
-      <div class="remember-me">
-        <input type="checkbox" id="remember" />
-        <label for="remember">Remember me</label>
+
+      <!-- Forgot Password Link -->
+      <div class="forgot-password">
+        <a href="/forgot-password">Forgot your password?</a>
       </div>
-      <button type="button" class="login-btn" onclick="login()">Log In</button>
+      <!-- General Error Message -->
+      <p class="general-error-message" id="generalError"></p>
+
+      <!-- Login Button -->
+      <button type="submit" class="login-btn">Log In</button>
     </form>
     <div class="register-link">
-      Don't have an account? <a href="#">Register here</a>
+      Don't have an account? <a href="/register">Register here</a>
     </div>
   </div>
-  <Script src="{% static "/js/login.js" %}" data-static="true"></Script>
+
+  <script src="{% static '/js/login.js' %}"></script>
+  <script src="{% static '/js/cookie.js' %}"></script>
 </body>
