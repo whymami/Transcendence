@@ -1,26 +1,53 @@
-.register-card {
+/* Genel Kart Stili */
+.settings-card {
   width: 400px;
   padding: 30px;
   background-color: var(--background-color);
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  margin: 20px auto;
   text-align: center;
 }
 
-.register-card h2 {
+.settings-card h2 {
   font-size: 1.5em;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   color: white;
 }
 
-.register-card p {
+.settings-card p {
   font-size: 0.9em;
   color: var(--text-color);
   margin-bottom: 20px;
 }
 
-.input-group {
+/* Profil Resmi Stili */
+.profile-picture {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
   margin-bottom: 15px;
+  border: 3px solid var(--primary-color);
+}
+
+.upload-btn {
+  margin-top: 10px;
+  font-size: 0.85em;
+  color: var(--primary-color);
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.upload-btn:hover {
+  color: var(--secondary-color);
+}
+
+/* Input Grupları */
+.input-group {
+  margin-bottom: 20px;
   position: relative;
 }
 
@@ -39,66 +66,7 @@
   background-color: #333;
   border: 1px solid #444;
   border-radius: 4px;
-  color: var(--text-color);
-}
-
-.toggle-password {
-  position: absolute;
-  right: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  cursor: pointer;
-}
-
-.register-btn {
-  width: 100%;
-  padding: 10px;
-  font-size: 1em;
-  font-weight: bold;
-  background-color: #6a0dad;
-  color: #ffffff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.register-btn:hover {
-  background-color: #4c0a8c;
-}
-
-.login-link {
-  margin-top: 15px;
-  font-size: 0.85em;
-  color: #888888;
-}
-
-.login-link a {
-  color: var(--primary-color);
-  text-decoration: none;
-}
-
-.login-link a:hover {
-  text-decoration: underline;
-  color: var(--secondary-color)
-}
-
-.toggle-password svg {
-  width: 20px;
-  height: 20px;
-}
-
-.toggle-password:hover {
-  color: #cccccc;
-}
-
-.toggle-password {
-  position: absolute;
-  right: 5px;
-  top: 50%;
-  transform: translateX(-50%);
-  cursor: pointer;
-  color: #888888;
+  color: white;
 }
 
 .error-message {
@@ -108,8 +76,70 @@
   margin-top: 5px;
 }
 
-.general-error-message {
-  color: #ff4d4d;
-  font-size: 0.9em;
+/* Buton Stilleri */
+.save-btn {
+  width: 100%;
+  padding: 12px;
+  font-size: 1em;
+  font-weight: bold;
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
   margin-top: 10px;
+}
+
+.save-btn:hover {
+  background-color: var(--secondary-color);
+}
+
+/* Modal için Stil */
+.modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: var(--background-color);
+  padding: 20px;
+  border-radius: 8px;
+  width: 300px;
+  text-align: center;
+}
+
+.modal img {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.close-modal {
+  cursor: pointer;
+  color: var(--primary-color);
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+/* Mobil Uyumluluk */
+@media screen and (max-width: 768px) {
+  .settings-card {
+    width: 80%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .settings-card {
+    width: 90%;
+  }
 }

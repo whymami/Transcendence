@@ -3,7 +3,9 @@ pullHeader(true);
 const routes = {
   '/': '/home',
   'login': '/login',
-  'register': '/register'
+  'register': '/register',
+  'profile': '/profile',
+  'new-password': '/new-password',
 };
 
 const container = document.getElementById("container");
@@ -86,7 +88,7 @@ function loadPage(page, updateHistory = true) {
     })
     .catch((error) => {
       console.error("Error loading page:", error);
-      if(error?.redirected)
+      if (error?.redirected)
         window.location.href = "/"
     });
 }
@@ -118,12 +120,12 @@ async function pullHeader(rePull = false) {
     });
     const html = await res.text();
     const parsedHtml = new DOMParser().parseFromString(html, "text/html");
-  
+
     const resHeader = parsedHtml.body.getElementsByTagName("header")[0];
     // console.log("resHeader: ", resHeader?.outerHTML);
-  
+
     const currentHeader = document.body.getElementsByTagName("header")[0];
-  
+
     if (resHeader) {
       if (currentHeader) {
         currentHeader.innerHTML = resHeader.innerHTML;
@@ -133,10 +135,20 @@ async function pullHeader(rePull = false) {
         // console.log("Header body'nin en üstüne eklendi:", resHeader.outerHTML);
       }
     }
-  
+
     const links = parsedHtml.head.querySelectorAll("link");
     links.forEach((element) => {
       document.head.appendChild(element.cloneNode(true));
+    });
+    const scripts = parsedHtml.head.querySelectorAll("script");
+    scripts.forEach((element) => {
+      const src = element.getAttribute("src");
+      if (src) {
+        const script = document.createElement("script");
+        script.src = src;
+        script.setAttribute("data-static", "true");
+        document.head.appendChild(script);
+      }
     });
   } catch (error) {
     console.error("Header yüklenirken hata oluştu:", error);
