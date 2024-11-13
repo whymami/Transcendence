@@ -2,9 +2,6 @@ from django.contrib.auth import authenticate, login as auth_login
 from django.http import JsonResponse, HttpResponse
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
-from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
-from django.utils.encoding import force_bytes, force_str
-from django.urls import reverse
 from .models import User
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.views.decorators.csrf import csrf_exempt
@@ -109,7 +106,7 @@ class GameView(APIView):
     def get(self, request):
         user = request.user
         return TemplateResponse(request, 'game.html', {"user": user})
-    
+
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]

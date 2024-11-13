@@ -33,15 +33,16 @@ ALLOWED_HOSTS = ["localhost", "127.0.0.1", "45.9.30.21"]
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
+    'transback',
+    'transbackend',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'transbackend',
     'rest_framework',
-    'channels',
 ]
 
 AUTH_USER_MODEL = 'transbackend.User'
@@ -49,7 +50,7 @@ AUTH_USER_MODEL = 'transbackend.User'
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
-ASGI_APPLICATION = "transbackend.asgi.application"
+# ASGI_APPLICATION = "transback.asgi.application"
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -59,6 +60,7 @@ REST_FRAMEWORK = {
         'rest_framework.permissions.IsAuthenticated',
     ],
 }
+
 CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
