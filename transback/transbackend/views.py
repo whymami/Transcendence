@@ -183,3 +183,22 @@ class VerifyCodeView(APIView):
                 return JsonResponse({"error": "Invalid verification code or email."}, status=400)
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON data."}, status=400)
+
+class ChangePasswordView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+            email = data.get('email')
+            new_password = data.get('new_password')
+
+            user = User.objects.filter(email=email).first()
+            if user:
+                user.set_password(new_password)
+                user.save()
+            else:
+                return JsonResponse({"error": "User with this email does not exist."}, status=400)
+            return JsonResponse({"message": "Password changed successfully!"}, status=200)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON data."}, status=400)
