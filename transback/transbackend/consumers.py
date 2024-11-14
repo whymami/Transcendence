@@ -44,7 +44,7 @@ class GameConsumer(AsyncWebsocketConsumer):
                     'username': self.user.username
                 }
             )
-    
+
     async def game_message(self, event):
         # Odaya gönderilen mesajı al ve kullanıcıya ilet
         message = event['message']
@@ -106,7 +106,7 @@ class GameConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps({
                 'game_state': self.get_game_state(game)
             }))
-
+    
     @database_sync_to_async
     def get_user(self, user_id):
         # Get the user from the database using the user_id

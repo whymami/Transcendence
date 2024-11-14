@@ -1,10 +1,8 @@
 from django.contrib.auth import authenticate, login as auth_login
 from django.http import JsonResponse, HttpResponse
-from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from .models import User
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.views.decorators.csrf import csrf_exempt
 import json
 from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated, BasePermission, AllowAny
@@ -28,7 +26,7 @@ class HeaderView(APIView):
     def get(self, request):
         user = request.user
         return TemplateResponse(request, 'header.html', {"user": user})
-
+    
 class RegisterView(APIView):
     permission_classes = [IsAnonymousUser]
     authentication_classes = [JWTAuthentication]
@@ -58,7 +56,6 @@ class RegisterView(APIView):
 
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON data."}, status=400)
-
 
 class HomeView(APIView):
     permission_classes = [AllowAny]
@@ -114,7 +111,7 @@ class ProfileView(APIView):
     def get(self, request):
         user = request.user
         return TemplateResponse(request, 'profile.html', {"user": user})
-    
+
     def post(self, request):
         try:
             data = request.data
@@ -131,4 +128,22 @@ class ProfileView(APIView):
             return JsonResponse({"message": "Profile updated successfully!"}, status=200)
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON data."}, status=400)
-        
+
+class ChangePassword(APIView):
+    permission_classes = [AllowAny]
+    authentication_classes = [JWTAuthentication]
+
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+            user = request.user
+            old_password = data.get('old_password')
+            new_password = data.get('new_password')
+            if user.check_password(old_password):
+                user.set_password(new_password)
+                user.save()
+                return JsonResponse({"message": "Password changed successfully!"}, status=200)
+            else:
+                return JsonResponse({"error": "Invalid old password."}, status=400)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON data."}, status=400)
