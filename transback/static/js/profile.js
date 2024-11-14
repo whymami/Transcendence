@@ -76,7 +76,7 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
                 method: 'POST',
                 body: formData,
                 headers: {
-                    'Accept': 'application/json',
+                    'Accept': 'multipart/form-data',
                     "Authorization": "Bearer " + token
                 }
             });

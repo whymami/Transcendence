@@ -84,17 +84,17 @@
 
 /* Burger Drawer */
 .burger-menu {
-    transform: translateX(100%);
+    display: none;
+    transform: translateX(0);
     position: fixed;
     top: 0;
-    right: 0;
+    right: -300px;
     width: 250px;
     height: 100vh;
     background-color: var(--component-bg-color);
     transition: transform 0.3s ease-in-out;
     box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
     z-index: 21;
-    display: flex;
     flex-direction: column;
     padding: 1rem;
 }
@@ -109,7 +109,7 @@
 }
 
 .burger-menu.active {
-    transform: translateX(0);
+    transform: translateX(-100%);
 }
 
 @media screen and (max-width: 768px) {
@@ -118,6 +118,10 @@
     }
 
     .hamburger {
+        display: flex;
+    }
+
+    .burger-menu {
         display: flex;
     }
 }

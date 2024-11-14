@@ -2,7 +2,8 @@
   let burgers = document.querySelectorAll('.hamburger');
   let menu = document.getElementById('burger-drawer');
 
-  function burgerClick() {
+  function burgerClick(e) {
+    e.preventDefault();
     burgers.forEach((burger) => {
       burger.classList.toggle('active');
     })

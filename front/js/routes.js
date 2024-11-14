@@ -1,157 +1,136 @@
-pullHeader(true);
+document.addEventListener("click", (e) => {
+  const { target } = e;
+  if (!target.matches("nav a")) {
+    return;
+  }
+  e.preventDefault();
+  urlRoute();
+});
 
-const routes = {
-  '/': '/home',
-  'login': '/login',
-  'register': '/register',
-  'profile': '/profile',
-  'new-password': '/new-password',
-};
-
-const container = document.getElementById("container");
-
-function clearStaticFiles() {
-  const staticFiles = document.querySelectorAll("link[rel=stylesheet], script");
-  staticFiles.forEach((element) => {
-    if (element.getAttribute("data-static") === "true") {
-      element.parentNode.removeChild(element);
+async function getToken() {
+  const token = await getCookie('access_token');
+  if (!token) {
+    const refreshToken = await getCookie('refresh_token');
+    if (!refreshToken) {
+      showToast('error', 'Session expired, please log in again.');
+      window.location.href = '/login';
+      return;
     }
-  });
+
+  }
+  return token;
 }
 
-function loadPage(page, updateHistory = true) {
-  if (page == undefined || page == "home") page = "/"
-  if (page in routes) {
-    page = routes[page];
+
+function createScript(src) {
+  const script = document.createElement('script');
+  const url = new URL(src, window.location.origin);
+  script.src = url.pathname;
+  return script;
+}
+
+const urlRoutes = {
+  404: {
+    endPoint: "/404",
+  },
+  "/": {
+    endPoint: "/api/home/",
+  },
+  "/profile": {
+    endPoint: "/api/profile/",
+  },
+  "/login": {
+    endPoint: "/api/login/",
+  },
+  "/register": {
+    endPoint: "/api/register/",
+  },
+  "/new-password": {
+    endPoint: "/api/new-password/",
+  },
+};
+
+const urlRoute = (event) => {
+  event = event || window.event;
+  event.preventDefault();
+  // window.history.pushState(state, unused, target link);
+  window.history.pushState({}, "", event.target.href);
+  urlLocationHandler();
+};
+
+const urlLocationHandler = async () => {
+  const location = window.location.pathname;
+  if (location.length == 0) {
+    location = "/";
   }
 
-  container.innerHTML = '<div class="base-container">Loading...</div>';
+  const token = await getCookie('access_token');
 
-  const token = getCookie("access_token");
-
-  fetch(`/api${page}`, token && {
-    headers: {
-      Authorization: `Bearer ${token}`
-    }
-  })
-    .then((response) => {
-      // console.log(response)
-      if (!response.ok) {
-        throw response
-      }
-      return response.text();
-    }
-    )
-    .then((html) => {
-      if (updateHistory && page !== history.state?.page) {
-        const path = page === "home" ? "/" : page
-        if (location.pathname !== path) {
-          history.pushState({ page: page }, "", path);
-        }
-      }
-
-
-      clearStaticFiles();
-
-      const parsedHtml = new DOMParser().parseFromString(html, "text/html");
-      container.innerHTML = parsedHtml.body.innerHTML;
-
-      document.title = parsedHtml.head.querySelector("title")?.innerText || document.title;
-
-      parsedHtml.head.querySelectorAll("meta, link").forEach((element) => {
-        document.head.appendChild(element.cloneNode(true));
-      });
-
-      parsedHtml.body.querySelectorAll("script").forEach((element) => {
-        const src = element.getAttribute("src");
-        if (src) {
-          const script = document.createElement("script");
-          script.src = src;
-          script.setAttribute("data-static", "true");
-          document.body.appendChild(script);
-        }
-      });
-
-      document.querySelectorAll("a").forEach((link) => {
-        console.log("Link:", link);
-        link.addEventListener("click", (e) => {
-          e.preventDefault();
-          const url = link.getAttribute("href").split("/").filter(Boolean).pop();
-
-          console.log("Loading page:", url);
-          console.log("Current page:", page);
-          if ("/" + url === page) return;
-
-          loadPage(url);
-        });
-      });
-    })
-    .catch((error) => {
-      console.error("Error loading page:", error);
-      if (error?.redirected)
-        window.location.href = "/"
-    });
-}
-
-window.onpopstate = function (e) {
-  const page = e.state?.page || location.pathname.split("/").filter(Boolean).pop() || "home";
-  loadPage(page, false);
-};
-
-window.onload = function () {
-  const page = location.pathname.split("/").filter(Boolean).pop();
-  loadPage(page);
-};
-
-async function pullHeader(rePull = false) {
-  const header = document.getElementsByTagName("header");
-  if (!rePull && header.length > 0) return;
-
-  const token = getCookie("access_token");
-
-  // console.log("repull: ", rePull);
-  // console.log("header: ", header);
-
+  const route = urlRoutes[location] || urlRoutes["404"];
+  const container = document.getElementById("container")
   try {
-    const res = await fetch("/api/header", token && {
-      headers: {
-        Authorization: `Bearer ${token}`
+    const response = await fetch(route.endPoint,
+      token && {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-    });
-    const html = await res.text();
-    const parsedHtml = new DOMParser().parseFromString(html, "text/html");
-
-    const resHeader = parsedHtml.body.getElementsByTagName("header")[0];
-    // console.log("resHeader: ", resHeader?.outerHTML);
-
-    const currentHeader = document.body.getElementsByTagName("header")[0];
-
-    if (resHeader) {
-      if (currentHeader) {
-        currentHeader.innerHTML = resHeader.innerHTML;
-        // console.log("Header güncellendi:", resHeader.outerHTML);
-      } else {
-        document.body.insertAdjacentHTML("afterbegin", resHeader.outerHTML);
-        // console.log("Header body'nin en üstüne eklendi:", resHeader.outerHTML);
-      }
+    )
+    if (!response.ok) {
+      throw new Error(response.statusText);
     }
-
-    const links = parsedHtml.head.querySelectorAll("link");
-    links.forEach((element) => {
-      document.head.appendChild(element.cloneNode(true));
-    });
-    const scripts = parsedHtml.head.querySelectorAll("script");
-    scripts.forEach((element) => {
-      const src = element.getAttribute("src");
-      if (src) {
-        const script = document.createElement("script");
-        script.src = src;
-        script.setAttribute("data-static", "true");
-        document.head.appendChild(script);
-      }
+    const html = await response.text();
+    container.innerHTML = html;
+    const parsedHtml = new DOMParser().parseFromString(html, "text/html");
+    document.title = parsedHtml.title;
+    document
+      .querySelector('meta[name="description"]')
+      .setAttribute("content", parsedHtml.description);
+    document.head.appendChild(parsedHtml.head.querySelector('link[rel="stylesheet"]'));
+    parsedHtml.body.querySelectorAll('script').forEach(script => {
+      document.body.appendChild(createScript(script.src));
     });
   } catch (error) {
-    console.error("Header yüklenirken hata oluştu:", error);
+    console.error("Error:", error);
+    showToast("error", "Error: " + error,);
+    container.innerHTML = "Error: " + error;
+  }
+};
+
+
+async function pullHeader() {
+  const header = document.getElementById('header');
+  if (header) {
+    return;
   }
 
+  const token = await getCookie('access_token');
+
+  fetch('/api/header/',
+    token && {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    }
+  )
+    .then(response => response.text())
+    .then(data => {
+      const parsedHtml = new DOMParser().parseFromString(data, 'text/html');
+      const header = parsedHtml.querySelector('header');
+      document.body.insertAdjacentHTML('afterbegin', header.outerHTML);
+      document.head.appendChild(parsedHtml.head.querySelector('link[rel="stylesheet"]'));
+      parsedHtml.head.querySelectorAll('script').forEach(script => {
+        document.body.appendChild(createScript(script.src));
+      });
+
+    }).catch(error => {
+      console.error('Error:', error);
+      showToast('Error: ' + error, 'error');
+    });
 }
+
+
+window.onpopstate = urlLocationHandler;
+window.route = urlRoute;
+urlLocationHandler();
+pullHeader();
