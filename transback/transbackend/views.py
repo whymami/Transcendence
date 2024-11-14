@@ -10,7 +10,10 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.template.response import TemplateResponse
 from django.contrib.auth import get_user_model
 from django.contrib.auth import logout as auth_logout
-
+import random
+from datetime import timedelta
+from django.utils import timezone
+from django.conf import settings
 class IsAnonymousUser(BasePermission):
     """
     This permission class allows access only to anonymous users.
@@ -21,7 +24,6 @@ class IsAnonymousUser(BasePermission):
 
 class HeaderView(APIView):
     permission_classes = [AllowAny]
-    authentication_classes = [JWTAuthentication]
 
     def get(self, request):
         user = request.user
@@ -128,22 +130,56 @@ class ProfileView(APIView):
             return JsonResponse({"message": "Profile updated successfully!"}, status=200)
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON data."}, status=400)
-
-class ChangePassword(APIView):
+        
+class ResetPasswordView(APIView):
     permission_classes = [AllowAny]
-    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        return TemplateResponse(request, 'new-password.html', {"user": request.user})
 
     def post(self, request):
         try:
             data = json.loads(request.body)
-            user = request.user
-            old_password = data.get('old_password')
-            new_password = data.get('new_password')
-            if user.check_password(old_password):
-                user.set_password(new_password)
-                user.save()
-                return JsonResponse({"message": "Password changed successfully!"}, status=200)
+            email = data.get('email')
+            user = User.objects.filter(email=email).first()
+
+            if user:
+                user.set_verification_code()
+
+                send_mail(
+                    'Password Reset Code',
+                    f'Your password reset code is {user.verification_code}. It expires in 3 minutes.',
+                    settings.DEFAULT_FROM_EMAIL,
+                    [email],
+                    fail_silently=False,
+                )
+
+                return JsonResponse({"message": "Verification code sent to email."}, status=200)
             else:
-                return JsonResponse({"error": "Invalid old password."}, status=400)
+                return JsonResponse({"error": "User with this email does not exist."}, status=400)
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON data."}, status=400)
+
+class VerifyCodeView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+            email = data.get('email')
+            verification_code = data.get('verify_code')
+            user = User.objects.filter(email=email).first()
+
+            if user and user.verification_code == int(verification_code):
+                if timezone.now() > user.code_expiration:
+                    return JsonResponse({"error": "Verification code has expired."}, status=400)
+
+                user.verification_code = None
+                user.code_expiration = None
+                user.save()
+
+                return JsonResponse({"message": "Password reset successful!"}, status=200)
+            else:
+                return JsonResponse({"error": "Invalid verification code or email."}, status=400)
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON data."}, status=400)

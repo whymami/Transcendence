@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
 from django.contrib.auth.base_user import BaseUserManager
 from django.db import models
+from django.utils import timezone
 
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password=None, **extra_fields):
@@ -32,6 +33,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     status = models.CharField(max_length=50, default='active')
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
+    verification_code = models.IntegerField(max_length=6, blank=True, null=True)
+    code_expiration = models.DateTimeField(blank=True, null=True)
 
     objects = UserManager()
 
@@ -40,6 +43,12 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
+
+    def set_verification_code(self):
+        import random
+        self.verification_code = str(random.randint(100000, 999999))
+        self.code_expiration = timezone.now() + timezone.timedelta(minutes=3)
+        self.save()
 
 
 class GameRoom(models.Model):
