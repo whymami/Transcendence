@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Pong Game (DRF API)</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #121212; margin: 0; }
+        .game-area { position: relative; width: 800px; height: 500px; background-color: #333; }
+        .paddle, .ball { position: absolute; background-color: #fff; }
+        .paddle { width: 10px; height: 100px; }
+        .ball { width: 10px; height: 10px; border-radius: 50%; }
+    </style>
+</head>
+<body>
+    <div class="game-area" id="gameArea">
+        <div id="playerPaddle" class="paddle" style="left: 0;"></div>
+        <div id="computerPaddle" class="paddle" style="right: 0;"></div>
+        <div id="ball" class="ball"></div>
+    </div>
+
+    <script>
+        const playerPaddle = document.getElementById('playerPaddle');
+        const computerPaddle = document.getElementById('computerPaddle');
+        const ball = document.getElementById('ball');
+        
+        // Oyun durumunu API'den almak ve güncellemek
+        async function fetchGameState(action = null) {
+            let response;
+            if (action) {
+                response = await fetch('/api/pong/', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action })
+                });
+            } else {
+                response = await fetch('/api/pong/');
+            }
+            return await response.json();
+        }
+
+        async function updateGame() {
+            const gameState = await fetchGameState();
+
+            // Paddle ve top pozisyonlarını güncelle
+            playerPaddle.style.top = gameState.player_paddle + 'px';
+            computerPaddle.style.top = gameState.computer_paddle + 'px';
+            ball.style.left = gameState.ball.x + 'px';
+            ball.style.top = gameState.ball.y + 'px';
+        }
+
+        // Klavye kontrolleri
+        window.addEventListener('keydown', async (e) => {
+            if (e.key === 'ArrowUp') await fetchGameState('up');
+            if (e.key === 'ArrowDown') await fetchGameState('down');
+        });
+
+        // Oyun döngüsü
+        setInterval(updateGame, 100);
+    </script>
+</body>
+</html>

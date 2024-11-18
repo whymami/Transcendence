@@ -118,11 +118,11 @@ WSGI_APPLICATION = 'transback.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'ft_transcendence',
-        'USER': 'your_db_user',
-        'PASSWORD': 'your_db_password',
-        'HOST': '45.9.30.21',
-        'PORT': '5432',
+        'NAME': env('DB_NAME'),
+        'USER': env('DB_USER'),
+        'PASSWORD': env('DB_PASSWORD'),
+        'HOST': env('DB_HOST'),
+        'PORT': env('DB_PORT'),
     }
 }
 
