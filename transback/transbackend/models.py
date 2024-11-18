@@ -33,7 +33,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     status = models.CharField(max_length=50, default='active')
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
-    verification_code = models.IntegerField(max_length=6, blank=True, null=True)
+    verification_code = models.IntegerField(blank=True, null=True)
     code_expiration = models.DateTimeField(blank=True, null=True)
 
     objects = UserManager()
