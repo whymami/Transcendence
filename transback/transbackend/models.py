@@ -27,14 +27,15 @@ class UserManager(BaseUserManager):
 
 class User(AbstractBaseUser, PermissionsMixin):
     id = models.AutoField(primary_key=True)
-    username = models.CharField(max_length=150, unique=True)
-    email = models.EmailField(unique=True)
+    username = models.CharField(max_length=255, unique=True)
+    email = models.EmailField(max_length=255)
     profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
     status = models.CharField(max_length=50, default='active')
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     verification_code = models.IntegerField(blank=True, null=True)
     code_expiration = models.DateTimeField(blank=True, null=True)
+    is_verified = models.BooleanField(default=False)
 
     objects = UserManager()
 
@@ -43,7 +44,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.username
-
+    
     def set_verification_code(self):
         import random
         self.verification_code = str(random.randint(100000, 999999))
