@@ -13,6 +13,6 @@ urlpatterns = [
     path('api/register/', RegisterView.as_view(), name='register'),
     path('api/profile/', ProfileView.as_view(), name='profile'),
     path('api/game/', GameView.as_view(), name='game'),
-    path('api/reset-password', ResetPasswordView.as_view(), name='reset_password'),
-    path('api/verify-code', VerifyCodeView.as_view(), name='verify_code'),
+    path('api/reset-password/', ResetPasswordView.as_view(), name='reset_password'),
+    path('api/verify-code/', VerifyCodeView.as_view(), name='verify_code'),
 ]

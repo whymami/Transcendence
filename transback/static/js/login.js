@@ -8,10 +8,9 @@
     fetch(svgPath)
       .then(response => response.text())
       .then(data => {
-        // console.log('SVG yüklendi:', data);
         toggleButton.innerHTML = data;
       })
-      .catch(error => console.error('SVG yüklenirken hata oluştu:', error));
+      .catch(error => console.error('Error:', error));
   }
 
   function togglePassword() {
@@ -29,14 +28,12 @@ async function login() {
   const passwordError = document.getElementById("passwordError");
   const generalError = document.getElementById("generalError");
 
-  // Hata mesajlarını sıfırla
   emailError.textContent = "";
   passwordError.textContent = "";
   generalError.textContent = "";
 
   let isValid = true;
 
-  // E-mail doğrulaması
   const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailPattern.test(email)) {
     emailError.textContent = "Please enter a valid email address.";
@@ -62,7 +59,6 @@ async function login() {
       showToast('error', data?.error);
       return;
     }
-    // console.log('Data:', data)
     
     setCookie('access_token', data.access, 1);
     setCookie('refresh_token', data.refresh, 1);

@@ -1,0 +1,31 @@
+{% load static %}
+<head>
+  <title>2FA Verification</title>
+  <link rel="stylesheet" href="{% static '/css/2fa.css' %}" />
+</head>
+<body>
+  <div class="twofa-card">
+    <h2>2FA Verification</h2>
+    <p>Enter the code sent to your phone</p>
+    <form id="twoFaForm" onsubmit="event.preventDefault(); verify2FA();">
+      <!-- 2FA Code Input -->
+      <div class="input-group">
+        <label for="twoFaCode">2FA Code</label>
+        <input
+          type="text"
+          id="twoFaCode"
+          placeholder="Enter 6-digit code"
+          maxlength="6"
+        />
+        <span class="error-message" id="twoFaError"></span>
+      </div>
+      <!-- Verify Button -->
+      <button type="submit" class="verify-btn">Verify</button>
+    </form>
+    <div class="resend-link">
+      Didn't receive a code? <a href="/resend-2fa">Resend Code</a>
+    </div>
+  </div>
+
+  <script data-static="true" src="{% static '/js/2fa.js' %}"></script>
+</body>

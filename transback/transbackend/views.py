@@ -135,7 +135,7 @@ class ResetPasswordView(APIView):
     permission_classes = [AllowAny]
 
     def get(self, request):
-        return TemplateResponse(request, 'new-password.html', {"user": request.user})
+        return TemplateResponse(request, 'reset-password.html', {"user": request.user})
 
     def post(self, request):
         try:
