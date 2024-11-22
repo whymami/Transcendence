@@ -22,11 +22,12 @@ async function getToken() {
 }
 
 
-function createScript(src) {
-  const script = document.createElement('script');
-  const url = new URL(src, window.location.origin);
-  script.src = url.pathname;
-  return script;
+function createScript(script) {
+  const newScript = document.createElement('script');
+  const url = new URL(script.src, window.location.origin);
+  newScript.src = url.pathname;
+  newScript.dataset.static = script.getAttribute('data-static');
+  return newScript;
 }
 
 const urlRoutes = {
@@ -45,8 +46,8 @@ const urlRoutes = {
   "/register": {
     endPoint: "/api/register/",
   },
-  "/new-password": {
-    endPoint: "/api/new-password/",
+  "/reset-password": {
+    endPoint: "/api/reset-password/",
   },
 };
 
@@ -87,8 +88,14 @@ const urlLocationHandler = async () => {
       .querySelector('meta[name="description"]')
       .setAttribute("content", parsedHtml.description);
     document.head.appendChild(parsedHtml.head.querySelector('link[rel="stylesheet"]'));
+    const oldScript = document.querySelectorAll('script[data-static="true"]');
+    if (oldScript) {
+      oldScript.forEach(script => {
+        script.remove();
+      });
+    }
     parsedHtml.body.querySelectorAll('script').forEach(script => {
-      document.body.appendChild(createScript(script.src));
+      document.body.appendChild(createScript(script));
     });
   } catch (error) {
     console.error("Error:", error);
@@ -120,7 +127,9 @@ async function pullHeader() {
       document.body.insertAdjacentHTML('afterbegin', header.outerHTML);
       document.head.appendChild(parsedHtml.head.querySelector('link[rel="stylesheet"]'));
       parsedHtml.head.querySelectorAll('script').forEach(script => {
-        document.body.appendChild(createScript(script.src));
+        const created = createScript(script)
+        if (created)
+          document.head.appendChild(created);
       });
 
     }).catch(error => {

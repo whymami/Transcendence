@@ -85,14 +85,14 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
 
             if (response.ok) {
                 console.log("Profil başarıyla güncellendi:", result);
-                alert("Ayarlar başarıyla kaydedildi!");
+                showToast("error", "Ayarlar başarıyla kaydedildi!");
             } else {
                 console.error("Hata:", result);
-                alert("Bir hata oluştu: " + (result.message || 'Bilinmeyen hata'));
+                showToast("error", "Bir hata oluştu: " + (result?.message || result?.detail || 'Bilinmeyen hata'));
             }
         } catch (error) {
             console.error("Fetch Hatası:", error);
-            alert("Bir hata oluştu: " + error.message);
+            showToast("error", "Bir hata oluştu: " + error.message);
         }
     }
 });

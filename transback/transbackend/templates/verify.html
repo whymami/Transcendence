@@ -1,0 +1,31 @@
+{% load static %}
+<head>
+  <title>Email Verification</title>
+  <link rel="stylesheet" href="{% static '/css/verify.css' %}" />
+</head>
+<body>
+  <div class="verification-card">
+    <h2>Email Verification</h2>
+    <p>Please enter the code sent to your email</p>
+    <form id="verifyForm" onsubmit="event.preventDefault(); verifyEmail();">
+      <!-- Verification Code Input -->
+      <div class="input-group">
+        <label for="verificationCode">Verification Code</label>
+        <input
+          type="text"
+          id="verificationCode"
+          placeholder="Enter 6-digit code"
+          maxlength="6"
+        />
+        <span class="error-message" id="verificationError"></span>
+      </div>
+      <!-- Verify Button -->
+      <button type="submit" class="verify-btn">Verify</button>
+    </form>
+    <div class="resend-link">
+      Didn't receive a code? <a href="/resend-code">Resend Code</a>
+    </div>
+  </div>
+
+  <script data-static="true" src="{% static '/js/verify.js' %}"></script>
+</body>
