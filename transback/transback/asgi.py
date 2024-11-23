@@ -6,7 +6,7 @@ from transbackend.consumers import PongConsumer as GameConsumer
 from channels.auth import AuthMiddlewareStack
 from django.urls import path
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pong.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'transback.settings')
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
