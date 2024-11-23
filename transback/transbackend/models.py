@@ -36,6 +36,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     verification_code = models.IntegerField(blank=True, null=True)
     code_expiration = models.DateTimeField(blank=True, null=True)
     is_verified = models.BooleanField(default=False)
+    is_online = models.BooleanField(default=False)
 
     objects = UserManager()
 
