@@ -13,7 +13,8 @@ async function getToken() {
     const refreshToken = await getCookie('refresh_token');
     if (!refreshToken) {
       showToast('error', 'Session expired, please log in again.');
-      window.location.href = '/login';
+      history.pushState({}, "", "/login");
+      urlLocationHandler();
       return;
     }
 
@@ -48,6 +49,12 @@ const urlRoutes = {
   },
   "/reset-password": {
     endPoint: "/api/reset-password/",
+  },
+  "/verify": {
+    endPoint: "/api/verify-account/"
+  },
+  "/2fa": { 
+    endPoint: "/api/verify-login/"
   },
 };
 

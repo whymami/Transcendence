@@ -1,53 +1,26 @@
-/* Genel Kart Stili */
-.settings-card {
+.register-card {
   width: 400px;
   padding: 30px;
   background-color: var(--background-color);
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-  margin: 20px auto;
   text-align: center;
 }
 
-.settings-card h2 {
+.register-card h2 {
   font-size: 1.5em;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   color: white;
 }
 
-.settings-card p {
+.register-card p {
   font-size: 0.9em;
   color: var(--text-color);
   margin-bottom: 20px;
 }
 
-/* Profil Resmi Stili */
-.profile-picture {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: cover;
-  margin-bottom: 15px;
-  border: 3px solid var(--primary-color);
-}
-
-.upload-btn {
-  margin-top: 10px;
-  font-size: 0.85em;
-  color: var(--primary-color);
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.upload-btn:hover {
-  color: var(--secondary-color);
-}
-
-/* Input Grupları */
 .input-group {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   position: relative;
 }
 
@@ -69,6 +42,19 @@
   color: white;
 }
 
+.toggle-password {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: var(--text-color);
+}
+
+.toggle-password:hover {
+  color: var(--text-color);
+}
+
 .error-message {
   color: #ff4d4d;
   font-size: 0.85em;
@@ -76,10 +62,15 @@
   margin-top: 5px;
 }
 
-/* Buton Stilleri */
-.save-btn {
+.general-error-message {
+  color: #ff4d4d;
+  font-size: 0.9em;
+  margin-top: 10px;
+}
+
+.register-btn {
   width: 100%;
-  padding: 12px;
+  padding: 10px;
   font-size: 1em;
   font-weight: bold;
   background-color: var(--primary-color);
@@ -88,58 +79,44 @@
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s;
-  margin-top: 10px;
 }
 
-.save-btn:hover {
+.register-btn:hover {
   background-color: var(--secondary-color);
 }
 
-/* Modal için Stil */
-.modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.7);
-  justify-content: center;
-  align-items: center;
+.login-link {
+  margin-top: 20px;
+  font-size: 0.85em;
+  color: var(--text-color);
 }
 
-.modal-content {
-  background-color: var(--background-color);
-  padding: 20px;
-  border-radius: 8px;
-  width: 300px;
-  text-align: center;
-}
-
-.modal img {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  cursor: pointer;
-  margin: 10px;
-}
-
-.close-modal {
-  cursor: pointer;
+.login-link a {
   color: var(--primary-color);
-  font-weight: bold;
-  margin-top: 15px;
+  text-decoration: none;
 }
 
-/* Mobil Uyumluluk */
+.login-link a:hover {
+  text-decoration: underline;
+  color: var(--secondary-color);
+}
+
 @media screen and (max-width: 768px) {
-  .settings-card {
+  .register-card {
     width: 80%;
   }
 }
 
 @media screen and (max-width: 480px) {
-  .settings-card {
+  .register-card {
     width: 90%;
   }
+}
+
+#togglePassword > svg {
+  width: 20px;
+  height: 20px;
+  position: absolute;
+  right: 5px;
+  
 }

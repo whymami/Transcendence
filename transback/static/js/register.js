@@ -36,6 +36,9 @@ async function register() {
     const confirmPasswordError = document.getElementById("confirmPasswordError");
     const generalError = document.getElementById("generalError");
 
+    const registerBtn = document.querySelector(".register-btn");
+    const inputs = document.querySelectorAll("input");
+
     // Hata mesajlarını sıfırla
     usernameError.textContent = "";
     emailError.textContent = "";
@@ -70,6 +73,11 @@ async function register() {
     if (!isValid) return;
 
     try {
+        // **Loading Durumuna Geçiş**
+        registerBtn.textContent = "Loading...";
+        registerBtn.disabled = true;
+        inputs.forEach(input => input.disabled = true);
+
         const response = await fetch('/api/register/', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -78,16 +86,25 @@ async function register() {
 
         if (!response.ok) {
             const errorData = await response.json();
-            showToast('error', errorData.message || 'Registration failed.');
+            showToast('error', errorData.error || 'Registration failed.');
             return;
         }
 
         const data = await response.json();
         showToast('success', 'Registration successful. Redirecting...');
-        window.location.href = '/login';
+        localStorage.setItem("email", email);
+
+        setTimeout(() => {
+            history.pushState({}, "", "/verify");
+            urlLocationHandler();
+        }, 2000);
 
     } catch (error) {
         console.error('Error:', error);
         generalError.textContent = 'An error occurred. Please try again later.';
+    } finally {
+        registerBtn.textContent = "Register";
+        registerBtn.disabled = false;
+        inputs.forEach(input => input.disabled = false);
     }
 }

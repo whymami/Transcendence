@@ -4,7 +4,8 @@ function verify2FA() {
 
     if (code === "654321") {
         alert("2FA verification successful!");
-        window.location.href = '/dashboard';
+        history.pushState({}, "", "/dashboard");
+        urlLocationHandler();
     } else {
         twoFaError.textContent = "Invalid 2FA code.";
     }

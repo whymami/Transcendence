@@ -3,7 +3,8 @@ async function refreshAccessToken() {
 
     if (!refreshToken) {
         alert('Session expired, please log in again.');
-        window.location.href = '/login';
+        history.pushState({}, "", "/login");
+        urlLocationHandler();
         return;
     }
 
@@ -22,10 +23,12 @@ async function refreshAccessToken() {
         } else {
             deleteCookie('access_token');
             deleteCookie('refresh_token');
-            window.location.href = '/login';
+            history.pushState({}, "", "/login");
+            urlLocationHandler();
         }
     } catch (error) {
         console.error('Error refreshing token:', error);
-        window.location.href = '/login';
+        history.pushState({}, "", "/login");
+        urlLocationHandler();
     }
 }
