@@ -15,5 +15,5 @@ echo "Collecting static files"
 python manage.py collectstatic --noinput
 
 echo "Starting Django development server"
-python manage.py runserver 0.0.0.0:8000
-daphne transback.asgi:application --bind 0.0.0.0 --port 8001
+daphne -b 0.0.0.0 -p 8000 transback.asgi:application
+# python manage.py runserver 0.0.0.0:8000
