@@ -54,12 +54,12 @@ class RegisterView(APIView):
 
             if username and email and password:
 
-                if User.objects.filter(email=email, is_active=True).exists():
+                if User.objects.filter(email=email, is_verified=True).exists():
                     return JsonResponse({"error": "Email already in use."}, status=400)
                 if User.objects.filter(username=username).exists():
                     return JsonResponse({"error": "Username already in use."}, status=400)
 
-                existing_user = User.objects.filter(email=email, username=username, is_active=False).first()
+                existing_user = User.objects.filter(email=email, username=username, is_verified=False).first()
                 if existing_user:
                     existing_user.username = username
                     existing_user.email = email
@@ -89,7 +89,7 @@ class RegisterView(APIView):
 
                 user = User(username=username, email=email)
                 user.set_password(password)
-                user.is_active = False
+                user.is_verified = False
                 verification_code = random.randint(100000, 999999)
                 user.verification_code = verification_code
                 user.code_expiration = now() + timedelta(minutes=10)
@@ -126,26 +126,34 @@ class LoginView(APIView):
     def post(self, request):
         try:
             data = json.loads(request.body)
-            email = data.get('email')
+            username = data.get('username')
             password = data.get('password')
 
             try:
-                user = User.objects.get(email=email)
+                user = User.objects.get(username=username)
                 if not user.is_verified:
                     verification_code = random.randint(100000, 999999)
                     user.verification_code = verification_code
                     user.code_expiration = now() + timedelta(minutes=10)
                     user.save()
 
-                    send_mail(
-                        "Reactivate Your Account",
-                        f"Your account is inactive. Use the code {verification_code} to activate it.",
-                        "noreply@example.com",
-                        [email],
-                    )
+                    try:
+                        send_mail(
+                            "Reactivate Your Account",
+                            f"Your account is not verified. Use the code {verification_code} to activate it.",
+                            "noreply@example.com",
+                            [user.email],
+                        )
+                    
+                    except BadHeaderError:
+                        return JsonResponse({"error": "Failed to send email."}, status=500)
+                    
+                    except Exception as e:
+                        return JsonResponse({"error": f"Failed to send email: {str(e)}"}, status=500)
+
                     return JsonResponse({
-                        "message": "Your account is inactive. A verification code has been sent to your email."
-                    }, status=400)
+                        "message": "Your account is not verified. A verification code has been sent to your email."
+                    }, status=403)
 
                 if user.check_password(password):
                     verification_code = random.randint(100000, 999999)
@@ -157,8 +165,8 @@ class LoginView(APIView):
                         send_mail(
                             "Your Login Verification Code",
                             f"Use the code {verification_code} to log in.",
-                            "noreply@example.com",
-                            [email],
+                            "",
+                            [user.email],
                         )
                     
                     except BadHeaderError:
@@ -182,15 +190,16 @@ class LoginView(APIView):
 
 class VerifyLoginView(APIView):
     permission_classes = [IsAnonymousUser]
+    authentication_classes = [JWTAuthentication]
 
     def post(self, request):
         try:
             data = json.loads(request.body)
-            email = data.get('email')
+            username = data.get('username')
             verification_code = data.get('verification_code')
 
             try:
-                user = User.objects.get(email=email)
+                user = User.objects.get(username=username)
 
                 if verification_code is None:
                     return JsonResponse({"error": "Verification code is required."}, status=400)
@@ -204,6 +213,9 @@ class VerifyLoginView(APIView):
 
                 if user.code_expiration <= now():
                     return JsonResponse({"error": "Verification code has expired."}, status=400)
+
+                if not user.is_verified:
+                    user.is_verified = True
 
                 user.verification_code = None
                 user.code_expiration = None
@@ -291,8 +303,9 @@ class ResetPasswordView(APIView):
             return JsonResponse({"error": "Invalid JSON data."}, status=400)
 
 class VerifyAccountView(APIView):
-    permission_classes = [AllowAny]
-    
+    permission_classes = [IsAnonymousUser]
+    authentication_classes = [JWTAuthentication]
+
     def post(self, request):
         try:
             data = json.loads(request.body)
@@ -343,10 +356,6 @@ class ChangePasswordView(APIView):
             return JsonResponse({"message": "Password changed successfully!"}, status=200)
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON data."}, status=400)
-    
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
 
 class PongGame:
     def __init__(self, mode='single'):
@@ -430,9 +439,9 @@ class PongAPIView(APIView):
             game_instance.move_computer_paddle()
         
         game_state = game_instance.get_game_state()
-        return Response(game_state, status=status.HTTP_200_OK)
+        return JsonResponse(game_state, status=200)
 
     def put(self, request):
         mode = request.data.get('mode', 'single')
         game_instance._init_(mode)
-        return Response({"message": "Game mode updated", "mode": mode})
+        return JsonResponse({"message": "Game mode changed successfully!"}, status=200)
