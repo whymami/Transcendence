@@ -64,15 +64,13 @@ class RegisterView(APIView):
                     existing_user.username = username
                     existing_user.email = email
                     existing_user.set_password(password)
-                    verification_code = random.randint(100000, 999999)
-                    existing_user.verification_code = verification_code
-                    existing_user.code_expiration = now() + timedelta(minutes=10)
+                    user.set_verification_code()
                     existing_user.save()
 
                     try:
                         send_mail(
                             "Activate Your Account",
-                            f"Your verification code is: {verification_code}",
+                            f"Your verification code is: {user.verification_code}",
                             "noreply@example.com",
                             [email],
                         )
@@ -90,15 +88,13 @@ class RegisterView(APIView):
                 user = User(username=username, email=email)
                 user.set_password(password)
                 user.is_verified = False
-                verification_code = random.randint(100000, 999999)
-                user.verification_code = verification_code
-                user.code_expiration = now() + timedelta(minutes=10)
+                user.set_verification_code()
                 user.save()
 
                 try:
                     send_mail(
                         "Activate Your Account",
-                        f"Your verification code is: {verification_code}",
+                        f"Your verification code is: {user.verification_code}",
                         "noreply@example.com",
                         [email],
                     )
@@ -135,15 +131,12 @@ class LoginView(APIView):
             try:
                 user = User.objects.get(username=username)
                 if not user.is_verified:
-                    verification_code = random.randint(100000, 999999)
-                    user.verification_code = verification_code
-                    user.code_expiration = now() + timedelta(minutes=10)
-                    user.save()
+                    user.set_verification_code()
 
                     try:
                         send_mail(
                             "Reactivate Your Account",
-                            f"Your account is not verified. Use the code {verification_code} to activate it.",
+                            f"Your account is not verified. Use the code {user.verification_code} to activate it.",
                             "noreply@example.com",
                             [user.email],
                         )
@@ -159,15 +152,12 @@ class LoginView(APIView):
                     }, status=201)
 
                 if user.check_password(password):
-                    verification_code = random.randint(100000, 999999)
-                    user.verification_code = verification_code
-                    user.code_expiration = now() + timedelta(minutes=5)
-                    user.save()
+                    user.set_verification_code()
 
                     try:
                         send_mail(
                             "Your Login Verification Code",
-                            f"Use the code {verification_code} to log in.",
+                            f"Use the code {user.verification_code} to log in.",
                             "",
                             [user.email],
                         )
@@ -206,7 +196,7 @@ class VerifyLoginView(APIView):
 
             try:
                 user = User.objects.get(username=username)
-
+                print(now())
                 if verification_code is None:
                     return JsonResponse({"error": "Verification code is required."}, status=400)
                 try:
@@ -319,11 +309,11 @@ class VerifyAccountView(APIView):
     def post(self, request):
         try:
             data = json.loads(request.body)
-            email = data.get('email')
+            username = data.get('username')
             verification_code = data.get('verification_code')
 
             try:
-                user = User.objects.get(email=email)
+                user = User.objects.get(username=username)
 
                 if user.verification_code is None or verification_code is None:
                     return JsonResponse({"error": "Verification code is missing."}, status=400)
