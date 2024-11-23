@@ -64,7 +64,8 @@ async function login() {
     setCookie('refresh_token', data.refresh, 1);
 
     showToast('success', data.massage);
-    window.location.href = '/';
+    history.pushState({}, "", "/");
+    urlLocationHandler();
     pullHeader(true);
 
   } catch (error) {

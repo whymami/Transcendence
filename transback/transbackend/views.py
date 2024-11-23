@@ -123,6 +123,9 @@ class LoginView(APIView):
     permission_classes = [IsAnonymousUser]
     authentication_classes = [JWTAuthentication]
 
+    def get(self, request):
+        return TemplateResponse(request, 'login.html')
+
     def post(self, request):
         try:
             data = json.loads(request.body)
@@ -182,6 +185,9 @@ class LoginView(APIView):
 
 class VerifyLoginView(APIView):
     permission_classes = [IsAnonymousUser]
+
+    def get(self, request):
+        return TemplateResponse(request, '2fa.html')
 
     def post(self, request):
         try:
@@ -292,7 +298,10 @@ class ResetPasswordView(APIView):
 
 class VerifyAccountView(APIView):
     permission_classes = [AllowAny]
-    
+
+    def get(self, request):
+        return TemplateResponse(request, 'verify.html')
+  
     def post(self, request):
         try:
             data = json.loads(request.body)
