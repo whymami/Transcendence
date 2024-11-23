@@ -30,12 +30,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     username = models.CharField(max_length=255, unique=True)
     email = models.EmailField(max_length=255)
     profile_picture = models.ImageField(upload_to='profile_pictures/', blank=True, null=True)
-    status = models.CharField(max_length=50, default='active')
     is_staff = models.BooleanField(default=False)
-    is_active = models.BooleanField(default=True)
     verification_code = models.IntegerField(blank=True, null=True)
     code_expiration = models.DateTimeField(blank=True, null=True)
     is_verified = models.BooleanField(default=False)
+    is_online = models.BooleanField(default=False)
 
     objects = UserManager()
 

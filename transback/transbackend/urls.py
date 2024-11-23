@@ -1,8 +1,9 @@
 from django.urls import path
 from django.urls import path
-from .views import HomeView, LoginView, HeaderView, RegisterView, GameView, ProfileView, ResetPasswordView, VerifyLoginView, PongAPIView, VerifyAccountView
-from django.views.generic import TemplateView
+# from .views import HomeView, LoginView, HeaderView, RegisterView, GameView, ProfileView, ResetPasswordView, VerifyLoginView, PongAPIView, VerifyAccountView
 from rest_framework_simplejwt.views import TokenRefreshView,TokenObtainPairView
+from .views.auth import RegisterView, LoginView
+from .views.template_views import HomeView, HeaderView, GameView, ProfileView, ResetPasswordView, VerifyAccountView, VerifyLoginView, PongAPIView
 
 urlpatterns = [
     path('api/header/', HeaderView.as_view(), name='header'),

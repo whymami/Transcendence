@@ -1,195 +1,16 @@
-from django.contrib.auth import authenticate, login as auth_login
-from django.http import JsonResponse, HttpResponse
-from django.core.mail import send_mail, BadHeaderError
-from rest_framework.response import Response
-from .models import User
-from rest_framework_simplejwt.tokens import RefreshToken
-import json
 from rest_framework.views import APIView
-from rest_framework.permissions import IsAuthenticated, BasePermission, AllowAny
-from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.template.response import TemplateResponse
-from django.contrib.auth import get_user_model
-from django.contrib.auth import logout as auth_logout
-import random
-from datetime import timedelta
+from rest_framework.permissions import AllowAny
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from django.http import JsonResponse
+from django.core.mail import send_mail, BadHeaderError
 from django.utils.timezone import now
-
-class IsAnonymousUser(BasePermission):
-    """
-    This permission class allows access only to anonymous users.
-    """
-    def has_permission(self, request, view):
-        print(request.user)
-        return not request.user.is_authenticated
-
-class HeaderView(APIView):
-    permission_classes = [AllowAny]
-
-    def get(self, request):
-        user = request.user
-        return TemplateResponse(request, 'header.html', {"user": user})
-
-class HomeView(APIView):
-    permission_classes = [AllowAny]
-    authentication_classes = [JWTAuthentication]
-
-    def get(self, request):
-        user = request.user
-        return TemplateResponse(request, 'home.html', {"user": user})
-
-class RegisterView(APIView):
-    permission_classes = [IsAnonymousUser]
-    authentication_classes = [JWTAuthentication]
-
-    def get(self, request):
-        return TemplateResponse(request, 'register.html')
-
-    def post(self, request):
-        try:
-            data = json.loads(request.body)
-            username = data.get('username')
-            email = data.get('email')
-            password = data.get('password')
-
-            if username and email and password:
-
-                if User.objects.filter(email=email, is_verified=True).exists():
-                    return JsonResponse({"error": "Email already in use."}, status=400)
-                if User.objects.filter(username=username).exists():
-                    return JsonResponse({"error": "Username already in use."}, status=400)
-
-                existing_user = User.objects.filter(email=email, username=username, is_verified=False).first()
-                if existing_user:
-                    existing_user.username = username
-                    existing_user.email = email
-                    existing_user.set_password(password)
-                    verification_code = random.randint(100000, 999999)
-                    existing_user.verification_code = verification_code
-                    existing_user.code_expiration = now() + timedelta(minutes=10)
-                    existing_user.save()
-
-                    try:
-                        send_mail(
-                            "Activate Your Account",
-                            f"Your verification code is: {verification_code}",
-                            "noreply@example.com",
-                            [email],
-                        )
-
-                    except BadHeaderError:
-                        return JsonResponse({"error": "Failed to send email."}, status=500)
-
-                    except Exception as e:
-                        return JsonResponse({"error": f"Failed to send email: {str(e)}"}, status=500)
-
-                    return JsonResponse({
-                        "message": "A verification code has been sent to your email."
-                    }, status=201)
-
-                user = User(username=username, email=email)
-                user.set_password(password)
-                user.is_verified = False
-                verification_code = random.randint(100000, 999999)
-                user.verification_code = verification_code
-                user.code_expiration = now() + timedelta(minutes=10)
-                user.save()
-
-                try:
-                    send_mail(
-                        "Activate Your Account",
-                        f"Your verification code is: {verification_code}",
-                        "noreply@example.com",
-                        [email],
-                    )
-
-                except BadHeaderError:
-                    return JsonResponse({"error": "Failed to send email."}, status=500)
-                
-                except Exception as e:
-                    return JsonResponse({"error": f"Failed to send email: {str(e)}"}, status=500)
-
-                return JsonResponse({
-                    "message": "Registration successful! A verification code has been sent to your email."
-                }, status=201)
-
-            else:
-                return JsonResponse({"error": "All fields are required."}, status=400)
-
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON data."}, status=400)
-
-class LoginView(APIView):
-    permission_classes = [IsAnonymousUser]
-    authentication_classes = [JWTAuthentication]
-
-    def get(self, request):
-        return TemplateResponse(request, 'login.html')
-
-    def post(self, request):
-        try:
-            data = json.loads(request.body)
-            username = data.get('username')
-            password = data.get('password')
-
-            try:
-                user = User.objects.get(username=username)
-                if not user.is_verified:
-                    verification_code = random.randint(100000, 999999)
-                    user.verification_code = verification_code
-                    user.code_expiration = now() + timedelta(minutes=10)
-                    user.save()
-
-                    try:
-                        send_mail(
-                            "Reactivate Your Account",
-                            f"Your account is not verified. Use the code {verification_code} to activate it.",
-                            "noreply@example.com",
-                            [user.email],
-                        )
-                    
-                    except BadHeaderError:
-                        return JsonResponse({"error": "Failed to send email."}, status=500)
-                    
-                    except Exception as e:
-                        return JsonResponse({"error": f"Failed to send email: {str(e)}"}, status=500)
-
-                    return JsonResponse({
-                        "message": "Your account is not verified. A verification code has been sent to your email."
-                    }, status=201)
-
-                if user.check_password(password):
-                    verification_code = random.randint(100000, 999999)
-                    user.verification_code = verification_code
-                    user.code_expiration = now() + timedelta(minutes=5)
-                    user.save()
-
-                    try:
-                        send_mail(
-                            "Your Login Verification Code",
-                            f"Use the code {verification_code} to log in.",
-                            "",
-                            [user.email],
-                        )
-                    
-                    except BadHeaderError:
-                        return JsonResponse({"error": "Failed to send email."}, status=500)
-                    
-                    except Exception as e:
-                        return JsonResponse({"error": f"Failed to send email: {str(e)}"}, status=500)
-
-                    return JsonResponse({
-                        "message": "Verification code sent to your email."
-                    }, status=200)
-
-                else:
-                    return JsonResponse({"error": "Invalid email or password."}, status=401)
-
-            except User.DoesNotExist:
-                return JsonResponse({"error": "Invalid email or password."}, status=401)
-
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON data."}, status=400)
+from django.contrib.auth import get_user_model
+from rest_framework.permissions import IsAuthenticated
+import json
+from transbackend.models import User
+from .permissions import IsAnonymousUser
+from rest_framework_simplejwt.tokens import RefreshToken
 
 class VerifyLoginView(APIView):
     permission_classes = [IsAnonymousUser]
@@ -206,7 +27,7 @@ class VerifyLoginView(APIView):
 
             try:
                 user = User.objects.get(username=username)
-
+                print(now())
                 if verification_code is None:
                     return JsonResponse({"error": "Verification code is required."}, status=400)
                 try:
@@ -239,6 +60,21 @@ class VerifyLoginView(APIView):
 
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON data."}, status=400)
+
+class HeaderView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        user = request.user
+        return TemplateResponse(request, 'header.html', {"user": user})
+
+class HomeView(APIView):
+    permission_classes = [AllowAny]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        user = request.user
+        return TemplateResponse(request, 'home.html', {"user": user})
 
 class GameView(APIView):
     permission_classes = [AllowAny]
@@ -319,11 +155,11 @@ class VerifyAccountView(APIView):
     def post(self, request):
         try:
             data = json.loads(request.body)
-            email = data.get('email')
+            username = data.get('username')
             verification_code = data.get('verification_code')
 
             try:
-                user = User.objects.get(email=email)
+                user = User.objects.get(username=username)
 
                 if user.verification_code is None or verification_code is None:
                     return JsonResponse({"error": "Verification code is missing."}, status=400)
@@ -435,7 +271,7 @@ class PongAPIView(APIView):
         if game_instance.mode == 'single':
             game_instance.move_computer_paddle()
         game_state = game_instance.get_game_state()
-        return Response(game_state)
+        return JsonResponse(game_state, status=200)
 
     def post(self, request):
         action = request.data.get('action')

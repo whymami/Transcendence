@@ -1,8 +1,40 @@
 
-import json
 from channels.generic.websocket import AsyncWebsocketConsumer
+from django.contrib.auth import get_user_model
+from asgiref.sync import sync_to_async
+import json
 import asyncio
 import random
+from channels.db import database_sync_to_async
+from django.conf import settings
+import jwt
+from urllib.parse import parse_qs
+
+async def get_user_from_token(query_string: str):
+    """
+    Token'ı query_string'den alır, doğrular ve kullanıcıyı döner.
+    """
+    # Token'ı query string'den al
+    token = parse_qs(query_string).get('token', [None])[0]
+    
+    if not token:
+        return None
+    
+    try:
+        # Token'ı decode et ve payload'ı al
+        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
+        user_id = payload.get('user_id')
+        
+        if not user_id:
+            return None
+        
+        # Kullanıcıyı veritabanından al
+        User = get_user_model()
+        user = await database_sync_to_async(User.objects.get)(id=user_id)
+        return user
+
+    except (jwt.ExpiredSignatureError, jwt.DecodeError, jwt.InvalidTokenError):
+        return None
 
 class PongConsumer(AsyncWebsocketConsumer):
     players = 0
@@ -108,3 +140,35 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def game_start(self, event):
         await self.send(text_data=json.dumps({"status": "start", "message": event["message"]}))
+
+class OnlineStatusConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        query_string = self.scope.get('query_string', b'').decode('utf-8')
+        
+        user = await get_user_from_token(query_string)
+        
+        if user:
+            self.user = user
+            await self.channel_layer.group_add("online_users", self.channel_name)
+
+            self.user.is_online = True
+            await database_sync_to_async(self.user.save)()
+            await self.accept()
+        else:
+            await self.close()
+
+    async def disconnect(self, close_code):
+        await self.set_user_active_status(self.user, False)
+
+        await self.channel_layer.group_discard("online_users", self.channel_name)
+
+    async def receive(self, text_data):
+        data = json.loads(text_data)
+
+    async def online_users(self, event):
+        await self.send(text_data=json.dumps(event["content"]))
+
+    @sync_to_async
+    def set_user_active_status(self, user, status):
+        user.is_online = status
+        user.save()
