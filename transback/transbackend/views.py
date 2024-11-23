@@ -236,6 +236,7 @@ class VerifyLoginView(APIView):
 
 class GameView(APIView):
     permission_classes = [AllowAny]
+    authentication_classes = [JWTAuthentication]
 
     def get(self, request):
         user = request.user
