@@ -156,7 +156,7 @@ class LoginView(APIView):
 
                     return JsonResponse({
                         "message": "Your account is not verified. A verification code has been sent to your email."
-                    }, status=403)
+                    }, status=201)
 
                 if user.check_password(password):
                     verification_code = random.randint(100000, 999999)
