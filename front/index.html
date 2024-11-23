@@ -6,34 +6,30 @@
     <link rel="stylesheet" href="/css/base.css" />
     <link rel="stylesheet" href="/css/modal.css" />
     <link rel="stylesheet" href="/css/toast.css" />
-    <link rel="stylesheet" href="/css/navbar.css" />
-    <link rel="stylesheet" href="../transback/static/css/login.css">
+    <title>TRANS</title>
+    <meta name="description" content="description" />
     <!-- <meta name="csrf-token" content="{{ csrf_token }}" /> -->
   </head>
   <body>
-    <div id="container" class="container">
+    <section id="container" class="container">
       <!-- spa app content  -->
-    </div>
-    <!-- <div>
-      <button type="button" onclick="openModal()">Open Modal</button>
-      <button
-        onclick="showToast('success', 'yarraasfjkhsajkhasfjhafsjhbaksjfhjaskbfjasbjfbasjkfbasjbjkfbajksfbjkasbjkf')"
-      >
-        Show Toast
-      </button>
-      <button onclick="showToast('warning', 'yarra')">Show Toast</button>
-      <button onclick="showToast('error', 'yarra')">Show Toast</button>
-    </div> -->
+    </section>
     <div id="modal" class="modal">
       <div class="modal-content">
         <span class="close" onclick="closeModal()">&times;</span>
-        <h2 id="modal-title">Modal Title</h2>
-        <p id="modal-content">{% lorem 3 b random %}</p>
+        <h2 id="modal-title">
+          <!-- Modal Title -->
+        </h2>
+        <p id="modal-content">
+          <!-- modal content -->
+        </p>
       </div>
     </div>
     <div id="toast-container"></div>
   </body>
+  <script class="static-js" src="/js/cookie.js"></script>
   <script class="static-js" src="/js/modal.js"></script>
   <script class="static-js" src="/js/routes.js"></script>
   <script class="static-js" src="/js/toast.js"></script>
+  <script class="static-js" src="/js/auth.js"></script>
 </html>

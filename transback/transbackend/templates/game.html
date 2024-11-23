@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Pong Game</title>
+
+    <style>
+
+        body {
+
+            display: flex;
+
+            justify-content: center;
+
+            align-items: center;
+
+            height: 100vh;
+
+            margin: 0;
+
+            background: linear-gradient(to right, #6a11cb, #2575fc);
+
+            font-family: Arial, sans-serif;
+
+        }
+
+
+
+        h1 {
+
+            color: white;
+
+            position: absolute;
+
+            top: 20px;
+
+            font-size: 36px;
+
+        }
+
+
+
+        #status {
+
+            color: white;
+
+            font-size: 18px;
+
+            position: absolute;
+
+            top: 70px;
+
+            text-align: center;
+
+            left: 50%;
+
+            transform: translateX(-50%);
+
+        }
+
+
+
+        canvas {
+
+            width: 900px;
+
+            height: 400px;
+
+            border: 2px solid #1E1E1E;
+
+            display: block;
+
+            margin: 0 auto;
+
+            border-radius: 20px;
+
+            background-color: #1E1E1E;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <h1>Pong Game</h1>
+
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
+
+    <script>
+
+        const canvas = document.getElementById("gameCanvas");
+
+        const ctx = canvas.getContext("2d");
+
+        const statusDiv = document.getElementById("status");
+
+
+
+        const socket = new WebSocket("ws://127.0.0.1:8000/ws/game/game_room/");
+
+        let gameState = null;
+
+
+
+        socket.onmessage = (event) => {
+
+            const data = JSON.parse(event.data);
+
+
+
+            if (data.status === "waiting" || data.status === "start" || data.status === "spectator") {
+
+                statusDiv.textContent = data.message;
+
+            } else {
+
+                gameState = data;
+
+                if (gameState) {
+
+                    drawGame(gameState);
+
+                }
+
+            }
+
+        };
+
+
+
+        document.addEventListener("keydown", (e) => {
+
+            let paddleMovement = 0;
+
+            if (e.key === "ArrowUp") paddleMovement = -5;
+
+            else if (e.key === "ArrowDown") paddleMovement = 5;
+
+
+
+            socket.send(JSON.stringify({ paddle_movement: paddleMovement }));
+
+        });
+
+
+
+        function drawGame(state) {
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Canvas'ı her frame temizle
+
+
+
+            // Draw ball
+
+            ctx.beginPath();
+
+            ctx.arc(state.ball.x * 8, state.ball.y * 4, 10, 0, Math.PI * 2);
+
+            ctx.fillStyle = "white";
+
+            ctx.fill();
+
+
+
+            // Draw paddles as rectangles
+
+            ctx.fillStyle = "white";
+
+            ctx.fillRect(10, state.paddle1.y * 4 - 40, 13, 100); // Sol raket
+
+
+
+            ctx.fillStyle = "white";
+
+            ctx.fillRect(780, state.paddle2.y * 4 - 40, 13, 100); // Sağ raket
+
+
+
+            // Draw score
+
+            ctx.font = "20px Arial";
+
+            ctx.fillText(`Player 1: ${state.score.player1}`, 20, 20);
+
+            ctx.fillText(`Player 2: ${state.score.player2}`, 660, 20);
+
+        }
+
+
+
+        // Kullanıcı etkileşimi
+
+        function gameLoop() {
+
+            if (gameState) {
+
+                drawGame(gameState);
+
+            }
+
+            requestAnimationFrame(gameLoop);  // Her frame'de render
+
+        }
+
+
+
+        // Başlangıçta animasyon döngüsünü başlat
+
+        gameLoop();
+
+    </script>
+
+</body>
+
+</html>
+

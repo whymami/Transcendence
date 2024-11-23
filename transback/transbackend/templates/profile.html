@@ -1,0 +1,45 @@
+{% load static %} {% load i18n %}
+<head>
+    <title>{% trans "User Profile" %}</title>
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}" />
+</head>
+<body>
+    <div class="profile-card">
+        <h2>{% trans "Profile Settings" %}</h2>
+        <!-- Profil Resmi -->
+        <img
+            id="profilePic"
+            class="profile-picture"
+            src="{% if user.profile_picture %}{{ user.profile_picture }}{% else %}{% static 'images/default-profile.webp' %}{% endif %}"
+            alt="{% trans 'User Profile' %}"
+        />
+        <br />
+        <button class="upload-btn" id="choosePicBtn">{% trans "Upload Profile Picture" %}</button>
+        <input accept="image/png, image/jpeg, image/gif" type="file" id="uploadProfilePic" style="display: none" />
+        <span class="error-message" id="profilePicError"></span>
+
+        <!-- Kullanıcı Bilgileri Formu -->
+        <form id="userSettingsForm">
+            <div class="input-group">
+                <label for="username">{% trans "Username" %}</label>
+                <input type="text" id="username" value="{{ user.username }}" placeholder="{% trans 'Enter your username' %}" />
+                <span class="error-message" id="usernameError"></span>
+            </div>
+
+            <div class="input-group">
+                <label for="email">{% trans "Email" %}</label>
+                <input type="email" id="email" value="{{ user.email }}" placeholder="{% trans 'Enter your email' %}" />
+                <span class="error-message" id="emailError"></span>
+            </div>
+
+            <button type="submit" class="save-btn">{% trans "Save Changes" %}</button>
+        </form>
+
+        <!-- Şifre Değiştir Linki -->
+        <div class="password-reset-link">
+            <a href="/reset-password" class="change-password-link">{% trans "Change Password" %}</a>
+        </div>
+    </div>
+
+    <script data-static="true" src="{% static 'js/profile.js' %}"></script>
+</body>

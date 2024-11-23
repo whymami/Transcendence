@@ -1,98 +1,86 @@
-const signForm = document.getElementById("signInForm");
-const registerForm = document.getElementById("registerForm");
+{
+  fetchIcons();
 
-signForm?.addEventListener("submit", function (e) {
-  e.preventDefault(); // block the form submission
+  function fetchIcons(passType = "password") {
+    const toggleButton = document.getElementById("togglePassword");
+    const svgPath = passType === "password" ? "/static/images/eye.svg" : "/static/images/eye-slash.svg";
 
-  const loginButton = document.getElementById("login-button");
-  const email = "test@test.com";
-  // document.getElementById('login-email').value.trim();
-  const password = "test1234";
-  // document.getElementById('login-password').value;
+    fetch(svgPath)
+      .then(response => response.text())
+      .then(data => {
+        toggleButton.innerHTML = data;
+      })
+      .catch(error => console.error('Error:', error));
+  }
 
-  const url = "/api/login/";
-
-  loginButton.disabled = true;
-  loginButton.innerHTML = "Logging in...";
-
-  fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": getCSRFToken(),
-    },
-    body: JSON.stringify({
-      email: email,
-      password: password,
-    }),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Invalid credentials");
-      }
-      response.json();
-    })
-    .then((data) => {
-      //   alert("Login successful");
-      console.log(data);
-      showToast("success", "Login successful");
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 1400);
-    })
-    .catch((error) => {
-      showToast("error", "Login failed");
-      console.error("Error:", error);
-    })
-    .finally(() => {
-      loginButton.disabled = false;
-      loginButton.innerHTML = "Login";
-    });
-});
-
-function getCSRFToken() {
-  const cookieValue = document.cookie
-    .split("; ")
-    .find((row) => row.startsWith("csrftoken="))
-    ?.split("=")[1];
-  return cookieValue || "";
+  function togglePassword() {
+    const passwordField = document.getElementById("password");
+    passwordField.type = passwordField.type === "password" ? "text" : "password";
+    fetchIcons(passwordField.type);
+  }
 }
 
-registerForm?.addEventListener("submit", function (event) {
-  event.preventDefault();
+async function login() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value.trim();
+  const loginBtn = document.getElementsByClassName("login-btn");
 
-  const username = document.getElementById("register-username").value;
-  const email = document.getElementById("register-email").value;
-  const password = document.getElementById("register-password").value;
+  const usernameError = document.getElementById("usernameError");
+  const passwordError = document.getElementById("passwordError");
+  const generalError = document.getElementById("generalError");
 
-  const url = "/api/register/";
+  usernameError.textContent = "";
+  passwordError.textContent = "";
+  generalError.textContent = "";
 
-  fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "X-CSRFToken": getCSRFToken(),
-    },
-    body: JSON.stringify({
-      username: username,
-      email: email,
-      password: password,
-    }),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      alert("Registration successful");
-      console.log("Success:", data);
-    })
-    .catch((error) => {
-      alert("Registration failed");
-      console.error("Error:", error);
+  let isValid = true;
+
+  if(username.length < 4){
+    usernameError.textContent = "Username must be at least 4 characters long.";
+    isValid = false;
+  }
+
+  // const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  // if (!emailPattern.test(email)) {
+  //   emailError.textContent = "Please enter a valid email address.";
+  //   isValid = false;
+  // }
+
+  if (password.length < 6) {
+    passwordError.textContent = "Password must be at least 4 characters long.";
+    isValid = false;
+  }
+
+  if (!isValid) return;
+
+  try {
+    loginBtn.textContent = "Loading...";
+    loginBtn.disabled = true;
+    const response = await fetch('/api/login/', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, password })
     });
-});
 
-// togglePanel function is used to toggle the right panel in the login page
-function togglePanel(toggle) {
-  const container = document.getElementById("container");
-  if (toggle) container.classList.add("right-panel-active");
-  else container.classList.remove("right-panel-active");
+    const data = await response.json();
+    if (!response.ok) {
+      showToast('error', data?.message);
+      return;
+    }
+    
+    setCookie('access_token', data.access, 1);
+    setCookie('refresh_token', data.refresh, 1);
+
+    showToast('success', data.message);
+    history.pushState({}, "", "/2fa");
+    urlLocationHandler();
+    pullHeader(true);
+
+  } catch (error) {
+    console.error('Error:', error?.message);
+    showToast('error', 'An error occurred while logging in.');
+  } finally {
+    loginBtn.textContent = "Login";
+    loginBtn.disabled = false;
+  }
 }

@@ -1,97 +1,152 @@
-pullHeader();
-const called = [];
+document.addEventListener("click", (e) => {
+  const { target } = e;
+  if (!target.matches("nav a")) {
+    return;
+  }
+  e.preventDefault();
+  urlRoute();
+});
 
-const routes = {
-  '/': 'home/',
-  'login': '/login'
+async function getToken() {
+  const token = await getCookie('access_token');
+  if (!token) {
+    const refreshToken = await getCookie('refresh_token');
+    if (!refreshToken) {
+      showToast('error', 'Session expired, please log in again.');
+      history.pushState({}, "", "/login");
+      urlLocationHandler();
+      return;
+    }
+
+  }
+  return token;
+}
+
+
+function createScript(script) {
+  const newScript = document.createElement('script');
+  const url = new URL(script.src, window.location.origin);
+  newScript.src = url.pathname;
+  newScript.dataset.static = script.getAttribute('data-static');
+  return newScript;
+}
+
+const urlRoutes = {
+  404: {
+    endPoint: "/404",
+  },
+  "/": {
+    endPoint: "/api/home/",
+  },
+  "/profile": {
+    endPoint: "/api/profile/",
+  },
+  "/login": {
+    endPoint: "/api/login/",
+  },
+  "/register": {
+    endPoint: "/api/register/",
+  },
+  "/reset-password": {
+    endPoint: "/api/reset-password/",
+  },
+  "/verify": {
+    endPoint: "/api/verify-account/"
+  },
+  "/2fa": { 
+    endPoint: "/api/verify-login/"
+  },
 };
 
-const container = document.getElementById("container");
+const urlRoute = (event) => {
+  event = event || window.event;
+  event.preventDefault();
+  // window.history.pushState(state, unused, target link);
+  window.history.pushState({}, "", event.target.href);
+  urlLocationHandler();
+};
 
-function loadScript(url) {
-  if (called.includes(url)) return;
-  called.push(url);
-  return new Promise((resolve, reject) => {
-    const js = Array.from(document.getElementsByClassName("dynamic-js"));
-    js.forEach((e) => e.remove());
-
-    const script = document.createElement("script");
-    script.src = url;
-    script.className = "dynamic-js";
-    script.onload = () => resolve(script);
-    script.onerror = () => reject(new Error(`Script load error for ${url}`));
-    document.body.append(script);
-  });
-}
-
-function loadCss(url) {
-  return new Promise((resolve, reject) => {
-    const css = Array.from(document.getElementsByClassName("dynamic-css"));
-    css.forEach((e) => e.remove());
-
-    const link = document.createElement("link");
-    link.rel = "stylesheet";
-    link.href = url;
-    link.className = "dynamic-css";
-    link.onload = () => resolve(link);
-    link.onerror = () => reject(new Error(`CSS load error for ${url}`));
-    document.head.append(link);
-  });
-}
-
-function loadPage(page, updateHistory = true) {
-  if (page in routes) {
-    page = routes[page];
+const urlLocationHandler = async () => {
+  const location = window.location.pathname;
+  if (location.length == 0) {
+    location = "/";
   }
 
-  container.innerHTML = `<div class="base-container">Loading...</div>`;
+  const token = await getCookie('access_token');
 
-  fetch(`/api${page}`)
-    .then((response) => response.text())
-    .then((html) => {
-      if (updateHistory && page !== history.state?.page) {
-        page === "home"
-          ? history.pushState({}, "", "/")
-          : history.pushState({ page: page }, "", `${page}/`);
+  const route = urlRoutes[location] || urlRoutes["404"];
+  const container = document.getElementById("container")
+  try {
+    const response = await fetch(route.endPoint,
+      token && {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       }
-
-      container.innerHTML = html;
-      document.title = page;
-    })
-    .then(() => {
-      document.querySelectorAll("a").forEach((link) => {
-        link.addEventListener("click", (e) => {
-          e.preventDefault();
-          const page = link.getAttribute("href").split("/").filter(Boolean).pop();
-          loadPage(page);
-        });
+    )
+    if (!response.ok) {
+      throw new Error(response.statusText);
+    }
+    const html = await response.text();
+    container.innerHTML = html;
+    const parsedHtml = new DOMParser().parseFromString(html, "text/html");
+    document.title = parsedHtml.title;
+    document
+      .querySelector('meta[name="description"]')
+      .setAttribute("content", parsedHtml.description);
+    document.head.appendChild(parsedHtml.head.querySelector('link[rel="stylesheet"]'));
+    const oldScript = document.querySelectorAll('script[data-static="true"]');
+    if (oldScript) {
+      oldScript.forEach(script => {
+        script.remove();
       });
-    })
-    .catch((error) => {
-      console.error("Error loading page:", error);
-      container.innerHTML = `<div class="base-container">Error loading page. Please try again.</div>`;
+    }
+    parsedHtml.body.querySelectorAll('script').forEach(script => {
+      document.body.appendChild(createScript(script));
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    showToast("error", "Error: " + error,);
+    container.innerHTML = "Error: " + error;
+  }
+};
+
+
+async function pullHeader() {
+  const header = document.getElementById('header');
+  if (header) {
+    return;
+  }
+
+  const token = await getCookie('access_token');
+
+  fetch('/api/header/',
+    token && {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      }
+    }
+  )
+    .then(response => response.text())
+    .then(data => {
+      const parsedHtml = new DOMParser().parseFromString(data, 'text/html');
+      const header = parsedHtml.querySelector('header');
+      document.body.insertAdjacentHTML('afterbegin', header.outerHTML);
+      document.head.appendChild(parsedHtml.head.querySelector('link[rel="stylesheet"]'));
+      parsedHtml.head.querySelectorAll('script').forEach(script => {
+        const created = createScript(script)
+        if (created)
+          document.head.appendChild(created);
+      });
+
+    }).catch(error => {
+      console.error('Error:', error);
+      showToast('Error: ' + error, 'error');
     });
 }
 
-window.onpopstate = function (e) {
-  const page = e.state?.page || location.pathname.split("/").filter(Boolean).pop() || "home";
-  loadPage(page, false);
-};
 
-window.onload = function () {
-  const page = location.pathname.split("/").filter(Boolean).pop();
-  loadPage(page);
-};
-
-function pullHeader() {
-  const header = document.getElementById("header");
-  if (header !== null) return;
-  fetch("/api/header/")
-    .then((response) => response.text())
-    .then((html) => {
-      document.body.insertAdjacentHTML("afterbegin", html);
-    })
-    .catch((error) => {
-      console.error("Error loading header:", error);
-    });
-}
+window.onpopstate = urlLocationHandler;
+window.route = urlRoute;
+urlLocationHandler();
+pullHeader();
