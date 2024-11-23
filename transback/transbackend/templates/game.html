@@ -2,61 +2,71 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Pong Game (DRF API)</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pong Game</title>
     <style>
-        body { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #121212; margin: 0; }
-        .game-area { position: relative; width: 800px; height: 500px; background-color: #333; }
-        .paddle, .ball { position: absolute; background-color: #fff; }
-        .paddle { width: 10px; height: 100px; }
-        .ball { width: 10px; height: 10px; border-radius: 50%; }
+        canvas {
+            border: 2px solid black;
+            display: block;
+            margin: 0 auto;
+        }
     </style>
 </head>
 <body>
-    <div class="game-area" id="gameArea">
-        <div id="playerPaddle" class="paddle" style="left: 0;"></div>
-        <div id="computerPaddle" class="paddle" style="right: 0;"></div>
-        <div id="ball" class="ball"></div>
-    </div>
-
+    <h1>Pong Game</h1>
+    <div id="status"></div>
+    <canvas id="gameCanvas" width="800" height="400"></canvas>
     <script>
-        const playerPaddle = document.getElementById('playerPaddle');
-        const computerPaddle = document.getElementById('computerPaddle');
-        const ball = document.getElementById('ball');
-        
-        // Oyun durumunu API'den almak ve güncellemek
-        async function fetchGameState(action = null) {
-            let response;
-            if (action) {
-                response = await fetch('/api/pong/', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ action })
-                });
+        const canvas = document.getElementById("gameCanvas");
+        const ctx = canvas.getContext("2d");
+        const statusDiv = document.getElementById("status");
+
+        const socket = new WebSocket("ws://127.0.0.1:8001/ws/game/game_room/");
+
+        let gameState = null;
+
+        socket.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+
+            if (data.status === "waiting") {
+                statusDiv.textContent = data.message;
+            } else if (data.status === "start") {
+                statusDiv.textContent = data.message;
+            } else if (data.status === "spectator") {
+                statusDiv.textContent = data.message;
             } else {
-                response = await fetch('/api/pong/');
+                gameState = data;
+                drawGame(gameState);
             }
-            return await response.json();
-        }
+        };
 
-        async function updateGame() {
-            const gameState = await fetchGameState();
+        document.addEventListener("keydown", (e) => {
+            let paddleMovement = 0;
+            if (e.key === "ArrowUp") paddleMovement = -5;
+            else if (e.key === "ArrowDown") paddleMovement = 5;
 
-            // Paddle ve top pozisyonlarını güncelle
-            playerPaddle.style.top = gameState.player_paddle + 'px';
-            computerPaddle.style.top = gameState.computer_paddle + 'px';
-            ball.style.left = gameState.ball.x + 'px';
-            ball.style.top = gameState.ball.y + 'px';
-        }
-
-        // Klavye kontrolleri
-        window.addEventListener('keydown', async (e) => {
-            if (e.key === 'ArrowUp') await fetchGameState('up');
-            if (e.key === 'ArrowDown') await fetchGameState('down');
+            socket.send(JSON.stringify({ paddle_movement: paddleMovement }));
         });
 
-        // Oyun döngüsü
-        setInterval(updateGame, 100);
+        function drawGame(state) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            ctx.beginPath();
+            ctx.arc(state.ball.x * 8, state.ball.y * 4, 10, 0, Math.PI * 2);
+            ctx.fillStyle = "red";
+            ctx.fill();
+
+            ctx.fillStyle = "blue";
+            ctx.fillRect(10, state.paddle1.y * 4 - 40, 10, 80);
+
+            ctx.fillStyle = "green";
+            ctx.fillRect(780, state.paddle2.y * 4 - 40, 10, 80);
+
+            ctx.fillStyle = "black";
+            ctx.font = "20px Arial";
+            ctx.fillText(`Player 1: ${state.score.player1}`, 20, 20);
+            ctx.fillText(`Player 2: ${state.score.player2}`, 660, 20);
+        }
     </script>
 </body>
 </html>
