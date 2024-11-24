@@ -8,7 +8,9 @@ import random
 from channels.db import database_sync_to_async
 from django.conf import settings
 import jwt
+from .models import User, Game
 from urllib.parse import parse_qs
+from django.utils.timezone import now
 
 async def get_user_from_token(query_string: str):
     """
@@ -74,6 +76,25 @@ class PongConsumer(AsyncWebsocketConsumer):
     async def disconnect(self, close_code):
         if self.player_number in [1, 2]:
             PongConsumer.players -= 1
+
+            if PongConsumer.players == 0:  # İki oyuncudan biri ayrıldıysa
+                player1_score = PongConsumer.game_state["score"]["player1"]
+                player2_score = PongConsumer.game_state["score"]["player2"]
+
+                # Oyuncuları belirle
+                player1 = User.objects.filter(is_online=True).first()  # Örnek, bağlanan ilk kullanıcı
+                player2 = User.objects.filter(is_online=True).last()  # Örnek, bağlanan ikinci kullanıcı
+
+                if player1 and player2:
+                    # Oyunun sonucunu kaydet
+                    Game.objects.create(
+                        player1=player1,
+                        player2=player2,
+                        player1_score=player1_score,
+                        player2_score=player2_score,
+                        end_time=now()
+                    )
+
         await self.channel_layer.group_discard(
             "game_room",
             self.channel_name,
