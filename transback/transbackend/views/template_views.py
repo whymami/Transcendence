@@ -23,7 +23,7 @@ class HomeView(APIView):
         return TemplateResponse(request, 'home.html', {"user": user})
 
 class GameView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
 
     def get(self, request):

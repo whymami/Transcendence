@@ -7,10 +7,12 @@
         urlLocationHandler();
     }
 }
+
 async function verify2FA() {
     const codeInput = document.getElementById("twoFaCode");
     const code = codeInput.value;
     const username = localStorage.getItem("username");
+    const verifyButton = document.getElementsByClassName("verify-btn")[0];
     const verificationError = document.getElementById("twoFaError");
 
     if (code.length != 6) {
@@ -19,6 +21,9 @@ async function verify2FA() {
     }
 
     try {
+        codeInput.disabled = true;
+        verifyButton.disabled = true;
+        verifyButton.textContent = "Verifying...";
         const response = await fetch("/api/verify-login/", {
             method: "POST",
             headers: {
@@ -40,8 +45,6 @@ async function verify2FA() {
 
             showToast('success', data.message);
 
-
-
             setTimeout(() => {
                 document.body.removeChild(document.getElementsByTagName('header')[0]);
                 pullHeader();
@@ -54,5 +57,9 @@ async function verify2FA() {
     } catch (error) {
         console.error('Error:', error?.message);
         showToast('error', error?.error || "An error occurred. Please try again.");
+    } finally {
+        codeInput.disabled = false;
+        verifyButton.disabled = false;
+        verifyButton.textContent = "Verify";
     }
 }

@@ -47,11 +47,24 @@ class PongConsumer(AsyncWebsocketConsumer):
     }
 
     async def connect(self):
+        query_string = self.scope.get('query_string', b'').decode('utf-8')
+        self.user = await get_user_from_token(query_string)
+        print(self.user)
+    
+        if not self.user:
+            # Reject the connection if user is not authenticated
+            await self.close()
+            return
+
         if PongConsumer.players < 2:
             PongConsumer.players += 1
             self.player_number = PongConsumer.players
+            if self.player_number == 1:
+                PongConsumer.game_state["player1_name"] = self.user.username  # Set player1's name
+            elif self.player_number == 2:
+                PongConsumer.game_state["player2_name"] = self.user.username  # Set player2's name
         else:
-            self.player_number = 0  # İzleyici
+            self.player_number = 0  # Spectator
 
         await self.channel_layer.group_add(
             "game_room",
@@ -65,40 +78,43 @@ class PongConsumer(AsyncWebsocketConsumer):
         elif PongConsumer.players == 1:
             await self.send(text_data=json.dumps({"status": "waiting", "message": "Diğer oyuncu bekleniyor..."}))
         elif PongConsumer.players == 2:
-            # İki oyuncu bağlandığında oyunu başlat
+            # Start the game when two players are connected
             await self.channel_layer.group_send(
                 "game_room",
                 {"type": "game_start", "message": "Oyun başlıyor!"},
             )
             asyncio.create_task(self.start_game())
-
+    
     async def disconnect(self, close_code):
-        if self.player_number in [1, 2]:
+    # Ensure player_number is set before accessing it
+        if hasattr(self, 'player_number') and self.player_number in [1, 2]:
             PongConsumer.players -= 1
 
-            if PongConsumer.players == 0:  # İki oyuncudan biri ayrıldıysa
+            if PongConsumer.players == 0:  # When the last player leaves
+                player1_name = PongConsumer.game_state.get("player1_name", "Player 1")
+                player2_name = PongConsumer.game_state.get("player2_name", "Player 2")
                 player1_score = PongConsumer.game_state["score"]["player1"]
                 player2_score = PongConsumer.game_state["score"]["player2"]
 
-                User = get_user_model()
-                player1 = User.objects.filter(is_online=True).first()  # Örnek, bağlanan ilk kullanıcı
-                player2 = User.objects.filter(is_online=True).last()  # Örnek, bağlanan ikinci kullanıcı
+                # Fetch the user objects for player1 and player2
+                from .models import Game, User
+                player1_user = await sync_to_async(User.objects.get)(username=player1_name)
+                player2_user = await sync_to_async(User.objects.get)(username=player2_name)
 
-                if player1 and player2:
-                    from .models import Game
-                    Game.objects.create(
-                        player1=player1,
-                        player2=player2,
-                        player1_score=player1_score,
-                        player2_score=player2_score,
-                        end_time=now()
-                    )
+                # Save game result for both players asynchronously
+                await sync_to_async(Game.objects.create)(
+                    player1=player1_user,
+                    player2=player2_user,
+                    player1_score=player1_score,
+                    player2_score=player2_score,
+                    end_time=now()
+                )
 
         await self.channel_layer.group_discard(
             "game_room",
             self.channel_name,
         )
-
+    
     async def receive(self, text_data):
         if self.player_number == 0:
             return  # İzleyicilerden veri almayız
@@ -127,10 +143,16 @@ class PongConsumer(AsyncWebsocketConsumer):
             await asyncio.sleep(0.03)  # 30 FPS
 
     def update_game_state(self):
-        ball = PongConsumer.game_state["ball"]
+        ball = PongConsumer.game_state.get("ball", None)
+        if not ball:
+            print("Ball data is invalid!")
+            return
+        
+        # Ball verisi geçerliyse işlem yapılır
         ball["x"] += ball["dx"]
         ball["y"] += ball["dy"]
 
+        # Y ve X çarpışma kontrolleri
         if ball["y"] <= 0 or ball["y"] >= 100:
             ball["dy"] *= -1
 
@@ -146,6 +168,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             PongConsumer.game_state["score"]["player1"] += 1
             self.reset_ball()
 
+
     def reset_ball(self):
         PongConsumer.game_state["ball"] = {
             "x": 50,
@@ -155,8 +178,22 @@ class PongConsumer(AsyncWebsocketConsumer):
         }
 
     async def update_game(self, event):
-        game_state = event["game_state"]
-        await self.send(text_data=json.dumps(game_state))
+        game_state = event.get("game_state", {})
+
+        # Ensure the game state contains valid ball data
+        ball = game_state.get("ball", {"x": 50, "y": 50, "dx": 2, "dy": 2})
+        paddle1 = game_state.get("paddle1", {"y": 50})
+        paddle2 = game_state.get("paddle2", {"y": 50})
+
+        # Send a valid game state
+        await self.send(text_data=json.dumps({
+            "player1_name": game_state.get("player1_name", "Player 1"),
+            "player2_name": game_state.get("player2_name", "Player 2"),
+            "score": game_state.get("score", {"player1": 0, "player2": 0}),
+            "ball": ball,
+            "paddle1": paddle1,
+            "paddle2": paddle2
+        }))
 
     async def game_start(self, event):
         await self.send(text_data=json.dumps({"status": "start", "message": event["message"]}))
