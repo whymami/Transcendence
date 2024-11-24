@@ -20,6 +20,5 @@ urlpatterns = [
     path('api/reset-password/', ResetPasswordView.as_view(), name='reset_password'),
     path('api/verify-login/', VerifyLoginView.as_view(), name='verify_code'),
     path('api/jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
-
     path('api/resend-verify-code/', ReSendVerifyCodeView.as_view(), name='resend_verify_code'),
 ]
