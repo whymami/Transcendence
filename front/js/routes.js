@@ -56,6 +56,9 @@ const urlRoutes = {
   "/2fa": {
     endPoint: "/api/verify-login/"
   },
+  "/settings": {
+    endPoint: "/api/settings/"
+  },
 };
 
 const urlRoute = (event) => {

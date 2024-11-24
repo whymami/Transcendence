@@ -30,9 +30,8 @@
 
   const langSelect = document.getElementById('lang-select');
   langSelect.addEventListener('change', changeLanguage);
-  langSelect.value = getCookie('lang') || 'en';
-  window.navigator.language.startsWith('es') && (langSelect.value = 'es');
-
+  langSelect.value = getCookie('lang') || 'en-US';
+  
   function changeLanguage() {
     const lang = langSelect.value;
     setCookie('lang', lang, 365);
