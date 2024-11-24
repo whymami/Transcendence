@@ -56,8 +56,19 @@ class Game(models.Model):
     player2 = models.ForeignKey(User, related_name="games_as_player2", on_delete=models.CASCADE)
     player1_score = models.IntegerField()
     player2_score = models.IntegerField()
+    winner = models.ForeignKey(User, related_name="games_won", on_delete=models.SET_NULL, null=True, blank=True)
+    loser = models.ForeignKey(User, related_name="games_lost", on_delete=models.SET_NULL, null=True, blank=True)
     start_time = models.DateTimeField(default=now)
     end_time = models.DateTimeField(blank=True, null=True)
+
+    def save(self, *args, **kwargs):
+        if self.player1_score > self.player2_score:
+            self.winner = self.player1
+            self.loser = self.player2
+        elif self.player2_score > self.player1_score:
+            self.winner = self.player2
+            self.loser = self.player1
+        super().save(*args, **kwargs)
 
     def __str__(self):
         return f"{self.player1.username} vs {self.player2.username} ({self.player1_score}-{self.player2_score})"
