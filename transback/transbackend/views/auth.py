@@ -1,5 +1,7 @@
 import json
-from django.core.mail import send_mail, BadHeaderError
+from django.core.mail import send_mail
+from django.core.mail import BadHeaderError, EmailMultiAlternatives
+from django.template.loader import render_to_string
 from django.http import JsonResponse
 from django.template.response import TemplateResponse
 from rest_framework.views import APIView
@@ -38,16 +40,22 @@ class RegisterView(APIView):
                     existing_user.save()
 
                     try:
-                        send_mail(
-                            "Activate Your Account",
-                            f"Your verification code is: {user.verification_code}",
-                            "noreply@example.com",
-                            [email],
-                        )
+                        subject = "Activate Your Account"
+                        text_content = ""
+                        
+                        html_content = render_to_string("mail.html", {
+                            "verification_code": user.verification_code
+                        })
 
+                        email = EmailMultiAlternatives(
+                            subject, text_content, "noreply@example.com", [user.email]
+                        )
+                        email.attach_alternative(html_content, "text/html")
+                        email.send()
+        
                     except BadHeaderError:
                         return JsonResponse({"error": "Failed to send email."}, status=500)
-
+                        
                     except Exception as e:
                         return JsonResponse({"error": f"Failed to send email: {str(e)}"}, status=500)
 
@@ -62,16 +70,22 @@ class RegisterView(APIView):
                 user.save()
 
                 try:
-                    send_mail(
-                        "Activate Your Account",
-                        f"Your verification code is: {user.verification_code}",
-                        "noreply@example.com",
-                        [email],
-                    )
+                    subject = "Activate Your Account"
+                    text_content = ""
+                    
+                    html_content = render_to_string("mail.html", {
+                        "verification_code": user.verification_code
+                    })
 
+                    email = EmailMultiAlternatives(
+                        subject, text_content, "noreply@example.com", [user.email]
+                    )
+                    email.attach_alternative(html_content, "text/html")
+                    email.send()
+    
                 except BadHeaderError:
                     return JsonResponse({"error": "Failed to send email."}, status=500)
-                
+                    
                 except Exception as e:
                     return JsonResponse({"error": f"Failed to send email: {str(e)}"}, status=500)
 
@@ -104,16 +118,22 @@ class LoginView(APIView):
                     user.set_verification_code()
 
                     try:
-                        send_mail(
-                            "Reactivate Your Account",
-                            f"Your account is not verified. Use the code {user.verification_code} to activate it.",
-                            "noreply@example.com",
-                            [user.email],
+                        subject = "Activate Your Account"
+                        text_content = ""
+                        
+                        html_content = render_to_string("mail.html", {
+                            "verification_code": user.verification_code
+                        })
+
+                        email = EmailMultiAlternatives(
+                            subject, text_content, "noreply@example.com", [user.email]
                         )
-                    
+                        email.attach_alternative(html_content, "text/html")
+                        email.send()
+        
                     except BadHeaderError:
                         return JsonResponse({"error": "Failed to send email."}, status=500)
-                    
+                        
                     except Exception as e:
                         return JsonResponse({"error": f"Failed to send email: {str(e)}"}, status=500)
 
@@ -125,19 +145,25 @@ class LoginView(APIView):
                     user.set_verification_code()
 
                     try:
-                        send_mail(
-                            "Your Login Verification Code",
-                            f"Use the code {user.verification_code} to log in.",
-                            "",
-                            [user.email],
+                        subject = "Activate Your Account"
+                        text_content = ""
+                        
+                        html_content = render_to_string("mail.html", {
+                            "verification_code": user.verification_code
+                        })
+
+                        email = EmailMultiAlternatives(
+                            subject, text_content, "noreply@example.com", [user.email]
                         )
-                    
+                        email.attach_alternative(html_content, "text/html")
+                        email.send()
+        
                     except BadHeaderError:
                         return JsonResponse({"error": "Failed to send email."}, status=500)
-                    
+                        
                     except Exception as e:
                         return JsonResponse({"error": f"Failed to send email: {str(e)}"}, status=500)
-
+                
                     return JsonResponse({
                         "message": "Verification code sent to your email."
                     }, status=200)
@@ -167,19 +193,28 @@ class ResetPasswordView(APIView):
                 user.set_verification_code()
 
                 try:
-                    send_mail(
-                        'Password Reset Code',
-                        f'Your password reset code is {user.verification_code}. It expires in 3 minutes.',
-                        [email],
-                        fail_silently=False,
+                    subject = "Activate Your Account"
+                    text_content = ""
+                    
+                    html_content = render_to_string("mail.html", {
+                        "verification_code": user.verification_code
+                    })
+
+                    email = EmailMultiAlternatives(
+                        subject, text_content, "noreply@example.com", [user.email]
                     )
-                    return JsonResponse({"message": "Verification code sent to email."}, status=200)
+                    email.attach_alternative(html_content, "text/html")
+                    email.send()
     
                 except BadHeaderError:
-                    return JsonResponse({"error": "Failed to send email invalid email."}, status=500)
-                
+                    return JsonResponse({"error": "Failed to send email."}, status=500)
+                        
                 except Exception as e:
                     return JsonResponse({"error": f"Failed to send email: {str(e)}"}, status=500)
+                
+                return JsonResponse({
+                    "message": "A verification code has been sent to your email."
+                }, status=200)
 
             else:
                 return JsonResponse({"error": "User with this email does not exist."}, status=400)

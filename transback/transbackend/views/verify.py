@@ -7,7 +7,8 @@ from django.utils.timezone import now
 import json
 from rest_framework_simplejwt.tokens import RefreshToken
 from transbackend.models import User
-from django.core.mail import send_mail, BadHeaderError
+from django.core.mail import BadHeaderError, EmailMultiAlternatives
+from django.template.loader import render_to_string
 
 class VerifyLoginView(APIView):
     permission_classes = [IsAnonymousUser]
@@ -112,15 +113,22 @@ class ReSendVerifyCodeView(APIView):
                 user.save()
 
                 try:
-                    send_mail(
-                        "Activate Your Account",
-                        f"Your verification code is: {user.verification_code}",
-                        [user.email],
+                    subject = "Activate Your Account"
+                    text_content = ""
+                    
+                    html_content = render_to_string("mail.html", {
+                        "verification_code": user.verification_code
+                    })
+
+                    email = EmailMultiAlternatives(
+                        subject, text_content, "noreply@example.com", [user.email]
                     )
-                
+                    email.attach_alternative(html_content, "text/html")
+                    email.send()
+    
                 except BadHeaderError:
                     return JsonResponse({"error": "Failed to send email."}, status=500)
-                
+                    
                 except Exception as e:
                     return JsonResponse({"error": f"Failed to send email: {str(e)}"}, status=500)
                 
