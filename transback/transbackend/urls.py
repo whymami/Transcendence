@@ -3,7 +3,7 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView,TokenObtainPairView
 from django.views.i18n import JavaScriptCatalog
 from .views.auth import RegisterView, LoginView, ResetPasswordView
-from .views.template_views import HomeView, HeaderView, GameView, ProfileView, PongAPIView
+from .views.template_views import HomeView, HeaderView, GameView, UserSettingsView, PongAPIView, ProfileView
 from .views.verify import VerifyLoginView, VerifyAccountView, ReSendVerifyCodeView
 
 urlpatterns = [
@@ -14,11 +14,12 @@ urlpatterns = [
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('api/register/', RegisterView.as_view(), name='register'),
     path('api/verify-account/', VerifyAccountView.as_view(), name='profile'),
-    path('api/profile/', ProfileView.as_view(), name='profile'),
+    path('api/settings/', UserSettingsView.as_view(), name='profile'),
     path('api/pong/', PongAPIView.as_view(), name='pong_game'),
     path('api/game/', GameView.as_view(), name='game'),
     path('api/reset-password/', ResetPasswordView.as_view(), name='reset_password'),
     path('api/verify-login/', VerifyLoginView.as_view(), name='verify_code'),
     path('api/jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
     path('api/resend-verify-code/', ReSendVerifyCodeView.as_view(), name='resend_verify_code'),
+    path('api/profile/', ProfileView.as_view(), name='profile'),
 ]
