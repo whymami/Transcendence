@@ -1,7 +1,4 @@
-<!DOCTYPE html>
-
-<html lang="en">
-
+{% load static %} {% load i18n %}
 <head>
 
     <meta charset="UTF-8">
@@ -91,10 +88,10 @@
 <body>
 
     <h1>Pong Game</h1>
-
+    <!-- <script src="../../../front/js/cookie.js"></script> -->
     <canvas id="gameCanvas" width="800" height="400"></canvas>
-
-    <script>
+    <script src="{% static 'js/game.js' %}" defer></script>
+    <!-- <script>
 
         const canvas = document.getElementById("gameCanvas");
 
@@ -102,9 +99,8 @@
 
         const statusDiv = document.getElementById("status");
 
-
-
-        const socket = new WebSocket("ws://127.0.0.1:8000/ws/game/game_room/");
+        const token = getCookie("access_token");
+        const socket = new WebSocket("ws://127.0.0.1:8000/ws/game/game_room/?token={{ token }}");
 
         let gameState = null;
 
@@ -216,7 +212,7 @@
 
         gameLoop();
 
-    </script>
+    </script> -->
 
 </body>
 

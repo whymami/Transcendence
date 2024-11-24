@@ -47,11 +47,24 @@ class PongConsumer(AsyncWebsocketConsumer):
     }
 
     async def connect(self):
+        query_string = self.scope.get('query_string', b'').decode('utf-8')
+        self.user = await get_user_from_token(query_string)
+        print(self.user)
+    
+        if not self.user:
+            # Reject the connection if user is not authenticated
+            await self.close()
+            return
+
         if PongConsumer.players < 2:
             PongConsumer.players += 1
             self.player_number = PongConsumer.players
+            if self.player_number == 1:
+                PongConsumer.game_state["player1_name"] = self.user.username  # Set player1's name
+            elif self.player_number == 2:
+                PongConsumer.game_state["player2_name"] = self.user.username  # Set player2's name
         else:
-            self.player_number = 0  # İzleyici
+            self.player_number = 0  # Spectator
 
         await self.channel_layer.group_add(
             "game_room",
@@ -65,40 +78,37 @@ class PongConsumer(AsyncWebsocketConsumer):
         elif PongConsumer.players == 1:
             await self.send(text_data=json.dumps({"status": "waiting", "message": "Diğer oyuncu bekleniyor..."}))
         elif PongConsumer.players == 2:
-            # İki oyuncu bağlandığında oyunu başlat
+            # Start the game when two players are connected
             await self.channel_layer.group_send(
                 "game_room",
                 {"type": "game_start", "message": "Oyun başlıyor!"},
             )
             asyncio.create_task(self.start_game())
-
+    
     async def disconnect(self, close_code):
-        if self.player_number in [1, 2]:
+        # Ensure player_number is set before accessing it
+        if hasattr(self, 'player_number') and self.player_number in [1, 2]:
             PongConsumer.players -= 1
 
-            if PongConsumer.players == 0:  # İki oyuncudan biri ayrıldıysa
+            if PongConsumer.players == 0:  # When one of the players leaves
                 player1_score = PongConsumer.game_state["score"]["player1"]
                 player2_score = PongConsumer.game_state["score"]["player2"]
 
-                User = get_user_model()
-                player1 = User.objects.filter(is_online=True).first()  # Örnek, bağlanan ilk kullanıcı
-                player2 = User.objects.filter(is_online=True).last()  # Örnek, bağlanan ikinci kullanıcı
-
-                if player1 and player2:
-                    from .models import Game
-                    Game.objects.create(
-                        player1=player1,
-                        player2=player2,
-                        player1_score=player1_score,
-                        player2_score=player2_score,
-                        end_time=now()
-                    )
+                # Save game result for both players based on their `user.id`
+                from .models import Game
+                Game.objects.create(
+                    player1=self.user,  # Assuming `self.user` corresponds to player1
+                    player2=self.user,  # Same for player2, you would assign actual second player
+                    player1_score=player1_score,
+                    player2_score=player2_score,
+                    end_time=now()
+                )
 
         await self.channel_layer.group_discard(
             "game_room",
             self.channel_name,
         )
-
+    
     async def receive(self, text_data):
         if self.player_number == 0:
             return  # İzleyicilerden veri almayız
@@ -156,7 +166,11 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def update_game(self, event):
         game_state = event["game_state"]
-        await self.send(text_data=json.dumps(game_state))
+        await self.send(text_data=json.dumps({
+        "player1_name": game_state["player1_name"],
+        "player2_name": game_state["player2_name"],
+        "score": game_state["score"]
+        }))
 
     async def game_start(self, event):
         await self.send(text_data=json.dumps({"status": "start", "message": event["message"]}))
