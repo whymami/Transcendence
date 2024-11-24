@@ -1,5 +1,4 @@
-{% load static %}
-{% load i18n %}
+{% load static %} {% load i18n %}
 
 <head>
   <link
@@ -8,27 +7,24 @@
     type="text/css"
     href="{% static '/css/login.css' %}"
   />
-  <title>Login</title>
+  <title>{% trans "Login" %}</title>
 </head>
 <body>
   <div class="login-card">
-    <h2>Welcome Back</h2>
-    <p>Please login to your account</p>
+    <h2>{% trans "Welcome Back" %}</h2>
+    <p>{% trans "Please login to your account" %}</p>
     <form id="loginForm" onsubmit="event.preventDefault(); login();">
       <!-- Username Input -->
       <div class="input-group">
-        <label for="username">Username</label>
-        <input type="text" id="username" placeholder="Enter your username" />
+        <label for="username"> {% trans "Username" %} </label>
+        <input type="text" id="username" placeholder={% trans "Enter your username" %} />
         <span class="error-message" id="usernameError"></span>
       </div>
       <!-- Password Input -->
       <div class="input-group">
-        <label for="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          placeholder="Enter your password"
-        />
+        <label for="password">{% trans "Password" %}</label>
+        <input type="password" id="password" placeholder={% trans "Enter your
+        password" %} />
         <span
           id="togglePassword"
           class="toggle-password"
@@ -40,18 +36,20 @@
 
       <!-- Forgot Password Link -->
       <div class="forgot-password">
-        <a href="/forgot-password">Forgot your password?</a>
+        <a href="/forgot-password"> {% trans "Forgot your password?" %}</a>
       </div>
       <!-- General Error Message -->
       <p class="general-error-message" id="generalError"></p>
 
       <!-- Login Button -->
-      <button type="submit" class="login-btn">Log In</button>
+      <button type="submit" class="login-btn">{% trans "Log In" %}</button>
     </form>
     <div class="register-link">
-      Don't have an account? <a href="/register">Register here</a>
+      {% trans "Don't have an account?" %}
+      <a href="/register">{% trans "Register here" %}</a>
     </div>
   </div>
 
+  <script data-static="false" src="{% url 'javascript-catalog' %}"></script>
   <script data-static="true" src="{% static '/js/login.js' %}"></script>
 </body>

@@ -1,9 +1,10 @@
 from django.urls import path
 from django.urls import path
-# from .views import HomeView, LoginView, HeaderView, RegisterView, GameView, ProfileView, ResetPasswordView, VerifyLoginView, PongAPIView, VerifyAccountView
 from rest_framework_simplejwt.views import TokenRefreshView,TokenObtainPairView
-from .views.auth import RegisterView, LoginView
-from .views.template_views import HomeView, HeaderView, GameView, ProfileView, ResetPasswordView, VerifyAccountView, VerifyLoginView, PongAPIView
+from django.views.i18n import JavaScriptCatalog
+from .views.auth import RegisterView, LoginView, ResetPasswordView
+from .views.template_views import HomeView, HeaderView, GameView, ProfileView, PongAPIView
+from .views.verify import VerifyLoginView, VerifyAccountView, ReSendVerifyCodeView
 
 urlpatterns = [
     path('api/header/', HeaderView.as_view(), name='header'),
@@ -18,4 +19,6 @@ urlpatterns = [
     path('api/game/', GameView.as_view(), name='game'),
     path('api/reset-password/', ResetPasswordView.as_view(), name='reset_password'),
     path('api/verify-login/', VerifyLoginView.as_view(), name='verify_code'),
+    path('api/jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
+    path('api/resend-verify-code/', ReSendVerifyCodeView.as_view(), name='resend_verify_code'),
 ]

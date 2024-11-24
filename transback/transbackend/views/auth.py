@@ -6,6 +6,7 @@ from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from transbackend.models import User
 from .permissions import IsAnonymousUser
+from rest_framework.permissions import AllowAny
 
 class RegisterView(APIView):
     permission_classes = [IsAnonymousUser]
@@ -147,5 +148,61 @@ class LoginView(APIView):
             except User.DoesNotExist:
                 return JsonResponse({"error": "Invalid email or password."}, status=401)
 
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON data."}, status=400)
+        
+class ResetPasswordView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        return TemplateResponse(request, 'reset-password.html', {"user": request.user})
+
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+            email = data.get('email')
+            user = User.objects.filter(email=email).first()
+
+            if user:
+                user.set_verification_code()
+
+                try:
+                    send_mail(
+                        'Password Reset Code',
+                        f'Your password reset code is {user.verification_code}. It expires in 3 minutes.',
+                        [email],
+                        fail_silently=False,
+                    )
+                    return JsonResponse({"message": "Verification code sent to email."}, status=200)
+    
+                except BadHeaderError:
+                    return JsonResponse({"error": "Failed to send email invalid email."}, status=500)
+                
+                except Exception as e:
+                    return JsonResponse({"error": f"Failed to send email: {str(e)}"}, status=500)
+
+            else:
+                return JsonResponse({"error": "User with this email does not exist."}, status=400)
+
+        except json.JSONDecodeError:
+            return JsonResponse({"error": "Invalid JSON data."}, status=400)
+
+
+class ChangePasswordView(APIView):
+    permission_classes = [AllowAny]
+
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+            email = data.get('email')
+            new_password = data.get('new_password')
+
+            user = User.objects.filter(email=email).first()
+            if user:
+                user.set_password(new_password)
+                user.save()
+            else:
+                return JsonResponse({"error": "User with this email does not exist."}, status=400)
+            return JsonResponse({"message": "Password changed successfully!"}, status=200)
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON data."}, status=400)

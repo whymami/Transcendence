@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-11-24 15:43+0300\n"
+"POT-Creation-Date: 2024-11-24 15:39+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,9 +17,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
 #: transbackend/templates/2fa.html:3 transbackend/templates/2fa.html:8
 msgid "2FA Verification"
-msgstr ""
+msgstr "2FA Doğrulama"
 
 #: transbackend/templates/2fa.html:9
 msgid "Enter the code sent to your phone"
@@ -27,7 +28,7 @@ msgstr ""
 
 #: transbackend/templates/2fa.html:13
 msgid "2FA Code"
-msgstr ""
+msgstr "2FA Kod"
 
 #: transbackend/templates/2fa.html:17 transbackend/templates/verify.html:17
 msgid "Enter 6-digit code"
@@ -35,7 +36,7 @@ msgstr ""
 
 #: transbackend/templates/2fa.html:23 transbackend/templates/verify.html:23
 msgid "Verify"
-msgstr ""
+msgstr "Doğrula"
 
 #: transbackend/templates/2fa.html:26 transbackend/templates/verify.html:26
 msgid "Didn't receive a code?"
@@ -48,20 +49,20 @@ msgstr ""
 #: transbackend/templates/header.html:22 transbackend/templates/header.html:54
 #: transbackend/templates/home.html:11
 msgid "Home"
-msgstr ""
+msgstr "Ana sayfa"
 
 #: transbackend/templates/header.html:24 transbackend/templates/header.html:56
 msgid "Profile"
-msgstr ""
+msgstr "Profil"
 
 #: transbackend/templates/header.html:25
 msgid "Logout"
-msgstr ""
+msgstr "Çıkış"
 
 #: transbackend/templates/header.html:27 transbackend/templates/header.html:59
 #: transbackend/templates/login.html:10
 msgid "Login"
-msgstr ""
+msgstr "Giriş"
 
 #: transbackend/templates/home.html:17
 msgid "Welcome to Ping Pong!"
@@ -73,15 +74,15 @@ msgstr ""
 
 #: transbackend/templates/home.html:20
 msgid "Play"
-msgstr ""
+msgstr "Oyna"
 
 #: transbackend/templates/home.html:22
 msgid "Go to Login"
-msgstr ""
+msgstr "Giriş'e git"
 
 #: transbackend/templates/login.html:14
 msgid "Welcome Back"
-msgstr ""
+msgstr "Tekrar Hoşgeldiniz"
 
 #: transbackend/templates/login.html:15
 msgid "Please login to your account"
@@ -90,11 +91,11 @@ msgstr ""
 #: transbackend/templates/login.html:19 transbackend/templates/profile.html:24
 #: transbackend/templates/register.html:17
 msgid "Username"
-msgstr ""
+msgstr "Kullanıcı adı"
 
 #: transbackend/templates/login.html:26 transbackend/templates/register.html:38
 msgid "Password"
-msgstr ""
+msgstr "Password"
 
 #: transbackend/templates/login.html:40
 msgid "Forgot your password?"
@@ -102,7 +103,7 @@ msgstr ""
 
 #: transbackend/templates/login.html:46
 msgid "Log In"
-msgstr ""
+msgstr "Giriş"
 
 #: transbackend/templates/login.html:49
 msgid "Don't have an account?"
@@ -132,7 +133,7 @@ msgstr ""
 #: transbackend/templates/profile.html:30
 #: transbackend/templates/register.html:28
 msgid "Email"
-msgstr ""
+msgstr "Eposta"
 
 #: transbackend/templates/profile.html:31
 #: transbackend/templates/register.html:32
@@ -150,7 +151,7 @@ msgstr ""
 #: transbackend/templates/register.html:6
 #: transbackend/templates/register.html:59
 msgid "Register"
-msgstr ""
+msgstr "Kayıt ol"
 
 #: transbackend/templates/register.html:12
 msgid "Create Account"

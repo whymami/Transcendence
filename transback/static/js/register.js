@@ -92,7 +92,7 @@ async function register() {
 
         const data = await response.json();
         showToast('success', 'Registration successful. Redirecting...');
-        localStorage.setItem("email", email);
+        localStorage.setItem("username", username);
 
         setTimeout(() => {
             history.pushState({}, "", "/verify");
