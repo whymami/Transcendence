@@ -5,6 +5,7 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.http import JsonResponse
 from rest_framework.permissions import IsAuthenticated
 import json
+from transbackend.models import User
 
 class HeaderView(APIView):
     permission_classes = [AllowAny]
@@ -34,8 +35,24 @@ class ProfileView(APIView):
     authentication_classes = [JWTAuthentication]
 
     def get(self, request):
-        user = request.user
+        data = json.loads(request.body)
+        if data.get('username'):
+            username = data.get('username')
+        
+        user = User.objects.get(username=username)
+
+        if not user:
+            return TemplateResponse(request, '404.html', status=404)
+
         return TemplateResponse(request, 'profile.html', {"user": user})
+
+class UserSettingsView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        user = request.user
+        return TemplateResponse(request, 'settings.html', {"user": user})
 
     def post(self, request):
         try:
