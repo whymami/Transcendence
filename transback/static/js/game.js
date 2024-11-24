@@ -2,7 +2,7 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 const token = getCookie("access_token");
-const socket = new WebSocket("ws://45.9.30.21/ws/game/game_room/?token=" + token);
+const socket = new WebSocket("ws://45.9.30.21:8000/ws/game/game_room/?token=" + token);
 
 let gameState = null;
 
