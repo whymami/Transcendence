@@ -3,6 +3,7 @@ from django.urls import path
 from .views import HomeView, LoginView, HeaderView, RegisterView, GameView, ProfileView, ResetPasswordView, VerifyLoginView, PongAPIView, VerifyAccountView
 from django.views.generic import TemplateView
 from rest_framework_simplejwt.views import TokenRefreshView,TokenObtainPairView
+from django.views.i18n import JavaScriptCatalog
 
 urlpatterns = [
     path('api/header/', HeaderView.as_view(), name='header'),
@@ -17,4 +18,6 @@ urlpatterns = [
     path('api/game/', GameView.as_view(), name='game'),
     path('api/reset-password/', ResetPasswordView.as_view(), name='reset_password'),
     path('api/verify-login/', VerifyLoginView.as_view(), name='verify_code'),
+    path('api/jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
+
 ]

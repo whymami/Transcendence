@@ -36,7 +36,7 @@ async function login() {
   let isValid = true;
 
   if(username.length < 4){
-    usernameError.textContent = "Username must be at least 4 characters long.";
+    usernameError.textContent = gettext("Username must be at least 4 characters long.");
     isValid = false;
   }
 
@@ -47,14 +47,14 @@ async function login() {
   // }
 
   if (password.length < 6) {
-    passwordError.textContent = "Password must be at least 4 characters long.";
+    passwordError.textContent = "Password must be at least 6 characters long.";
     isValid = false;
   }
 
   if (!isValid) return;
 
   try {
-    loginBtn.textContent = "Loading...";
+    loginBtn.textContent = gettext("Loading...");
     loginBtn.disabled = true;
     const response = await fetch('/api/login/', {
       method: 'POST',
@@ -64,17 +64,15 @@ async function login() {
 
     const data = await response.json();
     if (!response.ok) {
-      showToast('error', data?.message);
+      showToast('error', data?.error || 'An error occurred while logging in.');
       return;
     }
-    
-    setCookie('access_token', data.access, 1);
-    setCookie('refresh_token', data.refresh, 1);
+
+    localStorage.setItem('username', username);
 
     showToast('success', data.message);
     history.pushState({}, "", "/2fa");
     urlLocationHandler();
-    pullHeader(true);
 
   } catch (error) {
     console.error('Error:', error?.message);

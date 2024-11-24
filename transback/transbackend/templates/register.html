@@ -1,62 +1,65 @@
-{% load static %}
-{% load i18n %}
+{% load static %} {% load i18n %}
 
 <head>
     <link data-static="true" rel="stylesheet" type="text/css" href="{% static "/css/register.css" %}" data-static="true">
-    <title>Register</title>
+    <title>
+        {% trans "Register" %}
+    </title>
 </head>
 
 <body>
     <div class="register-card">
-        <h2>Create Account</h2>
-        <p>Fill in the details to create a new account</p>
+        <h2>{% trans "Create Account" %}</h2>
+        <p>{% trans "Fill in the details to create a new account" %%}</p>
         <form id="registerForm">
             <div class="input-group">
-                <label for="username">Username</label>
+                <label for="username">
+                    {% trans "Username" %}
+                </label>
                 <input
                     type="text"
                     id="username"
-                    placeholder="Enter your username"
+                    placeholder={% trans "Enter your username" %}
                     required
                 />
                 <span class="error-message" id="usernameError"></span>
             </div>
             <div class="input-group">
-                <label for="email">Email</label>
+                <label for="email">{% trans "Email" %}</label>
                 <input
                     type="email"
                     id="email"
-                    placeholder="Enter your email"
+                    placeholder={% trans "Enter your email" %}
                     required
                 />
                 <span class="error-message" id="emailError"></span>
             </div>
             <div class="input-group">
-                <label for="password">Password</label>
+                <label for="password">{% trans "Password" %}</label>
                 <input
                     type="password"
                     id="password"
-                    placeholder="Enter your password"
+                    placeholder={% trans "Enter your password" %}
                     required
                 />
                 <span id="togglePassword" class="toggle-password" onclick="togglePassword()"></span>
                 <span class="error-message" id="passwordError"></span>
             </div>
             <div class="input-group">
-                <label for="confirm-password">Confirm Password</label>
+                <label for="confirm-password">{% trans "Confirm Password" %}</label>
                 <input
                     type="password"
                     id="confirm-password"
-                    placeholder="Confirm your password"
+                    placeholder={% trans "Confirm your password" %}
                     required
                 />
                 <span class="error-message" id="confirmPasswordError"></span>
             </div>
             <p class="general-error-message" id="generalError"></p>
-            <button type="button" class="register-btn" onclick="register()">Register</button>
+            <button type="button" class="register-btn" onclick="register()">{% trans "Register" %}</button>
         </form>
         <div class="login-link">
-            Already have an account? <a href="/login">Log in here</a>
+            {% trans "Already have an account?" %} <a href="/login">{% trans "Log in here" %}</a>
         </div>
     </div>
     <Script src="{% static "/js/register.js" %}" data-static="true"></Script>      

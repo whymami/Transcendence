@@ -27,4 +27,15 @@
   navLinks.forEach((link) => {
     link.addEventListener('click', burgerClick);
   });
+
+  const langSelect = document.getElementById('lang-select');
+  langSelect.addEventListener('change', changeLanguage);
+  langSelect.value = getCookie('lang') || 'en';
+  window.navigator.language.startsWith('es') && (langSelect.value = 'es');
+
+  function changeLanguage() {
+    const lang = langSelect.value;
+    setCookie('lang', lang, 365);
+    location.reload();
+  }
 }

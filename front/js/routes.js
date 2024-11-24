@@ -23,7 +23,7 @@ async function getToken() {
 }
 
 
-function createScript(script) {
+function  createScript(script) {
   const newScript = document.createElement('script');
   const url = new URL(script.src, window.location.origin);
   newScript.src = url.pathname;
@@ -53,7 +53,7 @@ const urlRoutes = {
   "/verify": {
     endPoint: "/api/verify-account/"
   },
-  "/2fa": { 
+  "/2fa": {
     endPoint: "/api/verify-login/"
   },
 };
@@ -73,15 +73,19 @@ const urlLocationHandler = async () => {
   }
 
   const token = await getCookie('access_token');
+  const language = document.documentElement.lang;
 
   const route = urlRoutes[location] || urlRoutes["404"];
-  const container = document.getElementById("container")
+  const container = document.getElementById("container");
+  const lang = await getCookie('lang') || 'en';
+
   try {
     const response = await fetch(route.endPoint,
-      token && {
+      {
         headers: {
-          Authorization: `Bearer ${token}`,
-        },
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          "Accept-Language": lang,
+        }
       }
     )
     if (!response.ok) {
@@ -102,7 +106,10 @@ const urlLocationHandler = async () => {
       });
     }
     parsedHtml.body.querySelectorAll('script').forEach(script => {
-      document.body.appendChild(createScript(script));
+      const created = createScript(script);
+      console.log(created);
+
+      document.body.appendChild(created);
     });
   } catch (error) {
     console.error("Error:", error);
@@ -119,11 +126,13 @@ async function pullHeader() {
   }
 
   const token = await getCookie('access_token');
-
+  const lang = await getCookie('lang') || 'en';
+  console.log(window.navigator.languages);
   fetch('/api/header/',
-    token && {
+    {
       headers: {
-        Authorization: `Bearer ${token}`,
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        "Accept-Language": lang,
       }
     }
   )
