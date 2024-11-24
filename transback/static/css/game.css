@@ -1,0 +1,27 @@
+.game-title {
+    color: white;
+    position: absolute;
+    top: 20px;
+    font-size: 36px;
+}
+
+#status {
+    color: white;
+    font-size: 18px;
+    position: absolute;
+    top: 70px;
+    text-align: center;
+    left: 50%;
+    transform: translateX(-50%);
+
+}
+
+canvas {
+    width: 900px;
+    height: 400px;
+    border: 2px solid #1E1E1E;
+    display: block;
+    margin: 0 auto;
+    border-radius: 20px;
+    background-color: #1E1E1E;
+}
