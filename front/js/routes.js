@@ -33,7 +33,7 @@ function  createScript(script) {
 
 const urlRoutes = {
   404: {
-    endPoint: "/404",
+    endPoint: "api/404/",
   },
   "/": {
     endPoint: "/api/home/",
@@ -122,15 +122,19 @@ const urlLocationHandler = async () => {
 };
 
 
-async function pullHeader() {
+async function pullHeader(repull = false) {
   const header = document.getElementById('header');
-  if (header) {
+  if (header && !repull) {
     return;
+  }
+  
+  if(header) {
+    document.body.removeChild(header);
   }
 
   const token = await getCookie('access_token');
   const lang = await getCookie('lang') || 'en';
-  console.log(window.navigator.languages);
+  // console.log(window.navigator.languages);
   fetch('/api/header/',
     {
       headers: {
@@ -161,4 +165,4 @@ async function pullHeader() {
 window.onpopstate = urlLocationHandler;
 window.route = urlRoute;
 urlLocationHandler();
-pullHeader();
+pullHeader(false);

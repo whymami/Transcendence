@@ -72,7 +72,7 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
             }
 
             // Fetch ile POST isteği gönder
-            const response = await fetch('/api/profile/', {
+            const response = await fetch('/api/settings/', {
                 method: 'POST',
                 body: formData,
                 headers: {
@@ -85,7 +85,7 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
 
             if (response.ok) {
                 console.log("Profil başarıyla güncellendi:", result);
-                showToast("error", "Ayarlar başarıyla kaydedildi!");
+                showToast("success", "Ayarlar başarıyla kaydedildi!");
             } else {
                 console.error("Hata:", result);
                 showToast("error", "Bir hata oluştu: " + (result?.message || result?.detail || 'Bilinmeyen hata'));

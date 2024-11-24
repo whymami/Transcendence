@@ -31,10 +31,24 @@
   const langSelect = document.getElementById('lang-select');
   langSelect.addEventListener('change', changeLanguage);
   langSelect.value = getCookie('lang') || 'en-US';
-  
+
   function changeLanguage() {
     const lang = langSelect.value;
     setCookie('lang', lang, 365);
     location.reload();
+  }
+
+  const logouts = document.querySelectorAll('.logout');
+  logouts.forEach((logout) => {
+    logout.addEventListener('click', logoutFN);
+  });
+
+  function logoutFN(e) {
+    e.preventDefault();
+    eraseCookie('refresh_token');
+    eraseCookie('access_token');
+    pullHeader(true);
+    history.pushState({}, "", "/");
+    urlLocationHandler();
   }
 }

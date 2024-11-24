@@ -21,9 +21,11 @@
 }
 
 async function login() {
-  const username = document.getElementById("username").value.trim();
-  const password = document.getElementById("password").value.trim();
-  const loginBtn = document.getElementsByClassName("login-btn");
+  const usernameInput = document.getElementById("username");
+  const passwordInput = document.getElementById("password");
+  const username = usernameInput.value.trim();
+  const password = passwordInput.value.trim();
+  const loginBtn = document.getElementsByClassName("login-btn")[0];
 
   const usernameError = document.getElementById("usernameError");
   const passwordError = document.getElementById("passwordError");
@@ -56,6 +58,8 @@ async function login() {
   try {
     loginBtn.textContent = gettext("Loading...");
     loginBtn.disabled = true;
+    passwordInput.disabled = true;
+    usernameInput.disabled = true;
     const response = await fetch('/api/login/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -80,5 +84,7 @@ async function login() {
   } finally {
     loginBtn.textContent = "Login";
     loginBtn.disabled = false;
+    passwordInput.disabled = false;
+    usernameInput.disabled = false;
   }
 }

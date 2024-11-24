@@ -5,6 +5,7 @@ from django.views.i18n import JavaScriptCatalog
 from .views.auth import RegisterView, LoginView, ResetPasswordView
 from .views.template_views import HomeView, HeaderView, GameView, UserSettingsView, PongAPIView, ProfileView
 from .views.verify import VerifyLoginView, VerifyAccountView, ReSendVerifyCodeView
+from .views.utils import NotFoundView
 
 urlpatterns = [
     path('api/header/', HeaderView.as_view(), name='header'),
@@ -22,4 +23,5 @@ urlpatterns = [
     path('api/jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
     path('api/resend-verify-code/', ReSendVerifyCodeView.as_view(), name='resend_verify_code'),
     path('api/profile/', ProfileView.as_view(), name='profile'),
+    path('api/404/', NotFoundView.as_view(), name='not_found'),
 ]
