@@ -3,7 +3,7 @@ services:
     image: postgres
     environment:
       POSTGRES_DB: DragonBall
-      POSTGRES_USER: goku
+      POSTGRES_USER: admin
       POSTGRES_PASSWORD: 1234
     volumes:
       - ../db:/var/lib/postgresql/data
@@ -29,8 +29,8 @@ services:
       DATABASE: postgres
       SQL_HOST: db
       SQL_PORT: 5432
-      SQL_USER: your_db_user
-      SQL_PASSWORD: your_db_password
+      SQL_USER: admin
+      SQL_PASSWORD: 1234
     networks:
       - app-network
     
