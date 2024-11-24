@@ -1,6 +1,6 @@
-const email = localStorage.getItem("email");
+const username = localStorage.getItem("username");
 
-if (!email) {
+if (!username) {
     showToast("error", "You need to log in to access this page.");
     history.pushState({}, "", "/login");
     urlLocationHandler();
@@ -23,7 +23,7 @@ async function verifyEmail() {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                email: email,
+                username: username,
                 verification_code: code,
             }),
         });
@@ -31,7 +31,7 @@ async function verifyEmail() {
         const data = await response.json();
 
         if (response.ok) {
-            localStorage.removeItem("email")
+            localStorage.removeItem("username")
             showToast('success', data.message);
             setTimeout(() => {
                 history.pushState({}, "", "/login");
