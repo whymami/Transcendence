@@ -1,20 +1,26 @@
-{% load static %}
-{% load i18n %}
+{% load static %} {% load i18n %}
 
 <head>
-  <link data-static="true" rel="stylesheet" type="text/css" href="{% static 'css/home.css' %}">
-  <title>Home</title>
+  <link
+    data-static="true"
+    rel="stylesheet"
+    type="text/css"
+    href="{% static 'css/home.css' %}"
+  />
+  <title>
+    {% trans "Home" %}
+  </title>
 </head>
 
 <body>
   <div class="home-container">
-    <h1>Ping Pong'a Hoş Geldiniz!</h1>
-    <p>Reflekslerini test etmeye hazır mısın?</p>
+    <h1>{% trans "Welcome to Ping Pong!" %}</h1>
+    <p>{% trans "Are you ready to test your reflexes?" %}</p>
     {% if user.is_authenticated %}
-      <a href="/game" class="play-button">Oyna</a>
+    <a href="/game" class="play-button">{% trans "Play" %}</a>
     {% else %}
-      <a href="/login" class="play-button">Go To Login</a>
+    <a href="/login" class="play-button">{% trans "Go to Login" %}</a>
     {% endif %}
   </div>
   <script data-static="true" src="{% static 'js/home.js' %}"></script>
-</body>  
+</body>

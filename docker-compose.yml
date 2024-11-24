@@ -19,6 +19,8 @@ services:
       - ./transback:/app
       - ./transback/static:/app/static  # Django statik dosyaları
       - ./transback/profile_pictures:/app/profile_pictures  # Django profil resimleri
+      - ./transback/transbackend/templates:/app/templates  # Django template dosyaları
+      - ./transback/locale:/app/locale  # Django çeviri dosyaları
     ports:
       - "8000:8000"
     depends_on:
