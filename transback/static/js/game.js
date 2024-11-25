@@ -2,7 +2,7 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 const token = getCookie("access_token");
-const socket = new WebSocket("ws://127.0.0.1:8000/ws/game/game_room/?token=" + token);
+const socket = new WebSocket("ws://45.9.30.21:8000/ws/game/game_room/?token=" + token);
 
 let gameState = null;
 let paddleMovement = 0; // Hareket yönünü kontrol eden değişken
@@ -35,8 +35,8 @@ socket.onmessage = function (event) {
 
 // Kullanıcı etkileşimi
 document.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowUp") paddleMovement = -5;
-    else if (e.key === "ArrowDown") paddleMovement = 5;
+    if (e.key === "ArrowUp") paddleMovement = -4;
+    else if (e.key === "ArrowDown") paddleMovement = 4;
 });
 
 document.addEventListener("keyup", () => {
