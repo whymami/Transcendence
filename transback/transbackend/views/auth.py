@@ -1,14 +1,13 @@
-import json
-from django.core.mail import send_mail
-from django.core.mail import BadHeaderError, EmailMultiAlternatives
-from django.template.loader import render_to_string
-from django.http import JsonResponse
 from django.template.response import TemplateResponse
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from transbackend.models import User
 from .permissions import IsAnonymousUser
 from rest_framework.permissions import AllowAny
+from transbackend.services.user_service import UserService
+from transbackend.utils.response_utils import json_response
+from transbackend.serializers import UserRegistrationSerializer, UserSerializer, LoginSerializer, ResetPasswordSerializer, ConfirmPasswordResetSerializer
+import json
 
 class RegisterView(APIView):
     permission_classes = [IsAnonymousUser]
@@ -19,86 +18,21 @@ class RegisterView(APIView):
 
     def post(self, request):
         try:
-            data = json.loads(request.body)
-            username = data.get('username')
-            email = data.get('email')
-            password = data.get('password')
+            serializer = UserRegistrationSerializer(data=request.data)
+            if not serializer.is_valid():
+                return json_response(error=serializer.errors, status=400)
 
-            if username and email and password:
+            user = UserService.create_or_update_unverified_user(
+                username=serializer.validated_data['username'],
+                email=serializer.validated_data['email'],
+                password=serializer.validated_data['password']
+            )
+            UserService.handle_verification_email(user)
+            return json_response(message="Registration successful! A verification code has been sent to your email.")
+            
+        except Exception as e:
+            return json_response(error=str(e), status=500)
 
-                if User.objects.filter(email=email, is_verified=True).exists():
-                    return JsonResponse({"error": "Email already in use."}, status=400)
-                if User.objects.filter(username=username).exists():
-                    return JsonResponse({"error": "Username already in use."}, status=400)
-
-                existing_user = User.objects.filter(email=email, username=username, is_verified=False).first()
-                if existing_user:
-                    existing_user.username = username
-                    existing_user.email = email
-                    existing_user.set_password(password)
-                    user.set_verification_code()
-                    existing_user.save()
-
-                    try:
-                        subject = "Activate Your Account"
-                        text_content = ""
-                        
-                        html_content = render_to_string("mail.html", {
-                            "verification_code": user.verification_code
-                        })
-
-                        email = EmailMultiAlternatives(
-                            subject, text_content, "noreply@example.com", [user.email]
-                        )
-                        email.attach_alternative(html_content, "text/html")
-                        email.send()
-        
-                    except BadHeaderError:
-                        return JsonResponse({"error": "Failed to send email."}, status=500)
-                        
-                    except Exception as e:
-                        return JsonResponse({"error": f"Failed to send email: {str(e)}"}, status=500)
-
-                    return JsonResponse({
-                        "message": "A verification code has been sent to your email."
-                    }, status=200)
-
-                user = User(username=username, email=email)
-                user.set_password(password)
-                user.is_verified = False
-                user.set_verification_code()
-                user.save()
-
-                try:
-                    subject = "Activate Your Account"
-                    text_content = ""
-                    
-                    html_content = render_to_string("mail.html", {
-                        "verification_code": user.verification_code
-                    })
-
-                    email = EmailMultiAlternatives(
-                        subject, text_content, "noreply@example.com", [user.email]
-                    )
-                    email.attach_alternative(html_content, "text/html")
-                    email.send()
-    
-                except BadHeaderError:
-                    return JsonResponse({"error": "Failed to send email."}, status=500)
-                    
-                except Exception as e:
-                    return JsonResponse({"error": f"Failed to send email: {str(e)}"}, status=500)
-
-                return JsonResponse({
-                    "message": "Registration successful! A verification code has been sent to your email."
-                }, status=200)
-
-            else:
-                return JsonResponse({"error": "All fields are required."}, status=400)
-
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON data."}, status=400)
-        
 class LoginView(APIView):
     permission_classes = [IsAnonymousUser]
     authentication_classes = [JWTAuthentication]
@@ -108,136 +42,66 @@ class LoginView(APIView):
 
     def post(self, request):
         try:
-            data = json.loads(request.body)
-            username = data.get('username')
-            password = data.get('password')
+            serializer = LoginSerializer(data=request.data)
+            if not serializer.is_valid():
+                return json_response(error=serializer.errors, status=401)
 
-            try:
-                user = User.objects.get(username=username)
-                if not user.is_verified:
-                    user.set_verification_code()
+            user = serializer.validated_data['user']
+            
+            if not user.is_verified:
+                user.set_verification_code()
+                UserService.handle_verification_email(user)
+                return json_response(
+                    message="Your account is not verified. A verification code has been sent to your email."
+                )
 
-                    try:
-                        subject = "Activate Your Account"
-                        text_content = ""
-                        
-                        html_content = render_to_string("mail.html", {
-                            "verification_code": user.verification_code
-                        })
+            # User is verified, send verification code for 2FA
+            user.set_verification_code()
+            UserService.handle_verification_email(user)
+            return json_response(message="Verification code sent to your email.")
 
-                        email = EmailMultiAlternatives(
-                            subject, text_content, "noreply@example.com", [user.email]
-                        )
-                        email.attach_alternative(html_content, "text/html")
-                        email.send()
-        
-                    except BadHeaderError:
-                        return JsonResponse({"error": "Failed to send email."}, status=500)
-                        
-                    except Exception as e:
-                        return JsonResponse({"error": f"Failed to send email: {str(e)}"}, status=500)
+        except Exception as e:
+            return json_response(error=str(e), status=500)
 
-                    return JsonResponse({
-                        "message": "Your account is not verified. A verification code has been sent to your email."
-                    }, status=200)
-
-                if user.check_password(password):
-                    user.set_verification_code()
-
-                    try:
-                        subject = "Activate Your Account"
-                        text_content = ""
-                        
-                        html_content = render_to_string("mail.html", {
-                            "verification_code": user.verification_code
-                        })
-
-                        email = EmailMultiAlternatives(
-                            subject, text_content, "noreply@example.com", [user.email]
-                        )
-                        email.attach_alternative(html_content, "text/html")
-                        email.send()
-        
-                    except BadHeaderError:
-                        return JsonResponse({"error": "Failed to send email."}, status=500)
-                        
-                    except Exception as e:
-                        return JsonResponse({"error": f"Failed to send email: {str(e)}"}, status=500)
-                
-                    return JsonResponse({
-                        "message": "Verification code sent to your email."
-                    }, status=200)
-
-                else:
-                    return JsonResponse({"error": "Invalid email or password."}, status=401)
-
-            except User.DoesNotExist:
-                return JsonResponse({"error": "Invalid email or password."}, status=401)
-
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON data."}, status=400)
-        
 class ResetPasswordView(APIView):
-    permission_classes = [AllowAny]
+    permission_classes = [IsAnonymousUser]
+    authentication_classes = [JWTAuthentication]
 
     def get(self, request):
-        return TemplateResponse(request, 'reset-password.html', {"user": request.user})
+        return TemplateResponse(request, 'reset_password.html')
 
     def post(self, request):
         try:
-            data = json.loads(request.body)
-            email = data.get('email')
-            user = User.objects.filter(email=email).first()
+            serializer = ResetPasswordSerializer(data=request.data)
+            if not serializer.is_valid():
+                return json_response(error=serializer.errors, status=400)
 
-            if user:
-                user.set_verification_code()
+            user = serializer.context['user']
+            user.set_verification_code()
+            UserService.handle_verification_email(user)
+            
+            return json_response(message="Password reset code sent to your email.")
 
-                try:
-                    subject = "Activate Your Account"
-                    text_content = ""
-                    
-                    html_content = render_to_string("mail.html", {
-                        "verification_code": user.verification_code
-                    })
+        except Exception as e:
+            return json_response(error=str(e), status=500)
 
-                    email = EmailMultiAlternatives(
-                        subject, text_content, "noreply@example.com", [user.email]
-                    )
-                    email.attach_alternative(html_content, "text/html")
-                    email.send()
-    
-                except BadHeaderError:
-                    return JsonResponse({"error": "Failed to send email."}, status=500)
-                        
-                except Exception as e:
-                    return JsonResponse({"error": f"Failed to send email: {str(e)}"}, status=500)
-                
-                return JsonResponse({
-                    "message": "A verification code has been sent to your email."
-                }, status=200)
-
-            else:
-                return JsonResponse({"error": "User with this email does not exist."}, status=400)
-
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON data."}, status=400)
-
-
-class ChangePasswordView(APIView):
-    permission_classes = [AllowAny]
+class ConfirmPasswordResetView(APIView):
+    permission_classes = [IsAnonymousUser]
+    authentication_classes = [JWTAuthentication]
 
     def post(self, request):
         try:
-            data = json.loads(request.body)
-            email = data.get('email')
-            new_password = data.get('new_password')
+            serializer = ConfirmPasswordResetSerializer(data=request.data)
+            if not serializer.is_valid():
+                return json_response(error=serializer.errors, status=400)
 
-            user = User.objects.filter(email=email).first()
-            if user:
-                user.set_password(new_password)
-                user.save()
-            else:
-                return JsonResponse({"error": "User with this email does not exist."}, status=400)
-            return JsonResponse({"message": "Password changed successfully!"}, status=200)
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON data."}, status=400)
+            user = serializer.context['user']
+            user.set_password(serializer.validated_data['new_password'])
+            user.verification_code = None
+            user.code_expiration = None
+            user.save()
+
+            return json_response(message="Password has been reset successfully.")
+
+        except Exception as e:
+            return json_response(error=str(e), status=500)
