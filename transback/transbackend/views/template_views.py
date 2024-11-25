@@ -5,7 +5,8 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from django.http import JsonResponse
 from rest_framework.permissions import IsAuthenticated
 import json
-from transbackend.models import User
+from transbackend.models import User, Game
+from django.db.models import Q
 
 class HeaderView(APIView):
     permission_classes = [AllowAny]
@@ -36,15 +37,37 @@ class ProfileView(APIView):
 
     def get(self, request):
         data = json.loads(request.body)
-        if data.get('username'):
-            username = data.get('username')
-        
-        user = User.objects.get(username=username)
-
-        if not user:
+        username = data.get('username')
+        if not username:
             return TemplateResponse(request, '404.html', status=404)
 
-        return TemplateResponse(request, 'profile.html', {"user": user})
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return TemplateResponse(request, '404.html', status=404)
+
+        games = Game.objects.filter(Q(player1=user) | Q(player2=user)).order_by('-start_time')[:5]
+
+        last_games = []
+        for game in games:
+            if game.player1 == user:
+                opponent = game.player2.username
+                user_score = game.player1_score
+                opponent_score = game.player2_score
+            else:
+                opponent = game.player1.username
+                user_score = game.player2_score
+                opponent_score = game.player1_score
+
+            result = "(Won)" if game.winner == user else "(Lost)"
+
+            last_games.append(f"{user.username} vs {opponent} - Score: {user_score}-{opponent_score} {result}")
+
+        return TemplateResponse(
+            request,
+            'profile.html', 
+            {"user": user, "last_games": last_games}
+        )
 
 class UserSettingsView(APIView):
     permission_classes = [IsAuthenticated]

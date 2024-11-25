@@ -36,6 +36,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     code_expiration = models.DateTimeField(blank=True, null=True)
     is_verified = models.BooleanField(default=False)
     is_online = models.BooleanField(default=False)
+    games_played = models.PositiveIntegerField(default=0)  # Kaç maç oynadı
+    games_won = models.PositiveIntegerField(default=0)
 
     objects = UserManager()
 
@@ -56,18 +58,35 @@ class Game(models.Model):
     player2 = models.ForeignKey(User, related_name="games_as_player2", on_delete=models.CASCADE)
     player1_score = models.IntegerField()
     player2_score = models.IntegerField()
-    winner = models.ForeignKey(User, related_name="games_won", on_delete=models.SET_NULL, null=True, blank=True)
-    loser = models.ForeignKey(User, related_name="games_lost", on_delete=models.SET_NULL, null=True, blank=True)
+    winner = models.ForeignKey(User, related_name="game_as_winner", on_delete=models.SET_NULL, null=True, blank=True)
+    loser = models.ForeignKey(User, related_name="game_as_loser", on_delete=models.SET_NULL, null=True, blank=True)
     start_time = models.DateTimeField(default=now)
     end_time = models.DateTimeField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
+        # İstatistikler güncellenecek
         if self.player1_score > self.player2_score:
             self.winner = self.player1
             self.loser = self.player2
         elif self.player2_score > self.player1_score:
             self.winner = self.player2
             self.loser = self.player1
+
+        # Her iki oyuncu için maç sayısını artır
+        self.player1.games_played += 1
+        self.player2.games_played += 1
+
+        # Kazananın galibiyet sayısını artır
+        if self.winner:
+            self.winner.games_won += 1
+
+        # Oyuncuları kaydet
+        self.player1.save()
+        self.player2.save()
+
+        if self.winner:
+            self.winner.save()
+
         super().save(*args, **kwargs)
 
     def __str__(self):
