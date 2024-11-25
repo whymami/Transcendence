@@ -60,6 +60,7 @@ async function login() {
     loginBtn.disabled = true;
     passwordInput.disabled = true;
     usernameInput.disabled = true;
+    
     const response = await fetch('/api/login/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
