@@ -23,7 +23,7 @@ async function getToken() {
 }
 
 
-function  createScript(script) {
+function createScript(script) {
   const newScript = document.createElement('script');
   const url = new URL(script.src, window.location.origin);
   newScript.src = url.pathname;
@@ -85,10 +85,10 @@ const urlLocationHandler = async () => {
   const container = document.getElementById("container");
   const lang = await getCookie('lang') || 'en';
 
-  if (route == "/api/profile/")
-  {
+  if (route.endPoint == "/api/profile/") {
     const search = new URLSearchParams(window.location.search);
     console.log(search.get('username'));
+    route.endPoint += `?username=${search.get('username')}`;
   }
 
   try {
@@ -98,7 +98,6 @@ const urlLocationHandler = async () => {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
           "Accept-Language": lang,
         },
-      
       }
     )
     if (!response.ok) {
@@ -137,8 +136,8 @@ async function pullHeader(repull = false) {
   if (header && !repull) {
     return;
   }
-  
-  if(header) {
+
+  if (header) {
     document.body.removeChild(header);
   }
 
