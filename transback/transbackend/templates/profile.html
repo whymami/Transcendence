@@ -1,0 +1,50 @@
+{% load static %}
+{% load i18n %}
+
+<head>
+  <link
+    data-static="true"
+    rel="stylesheet"
+    type="text/css"
+    href="{% static '/css/profile.css' %}"
+  />
+  <title>{{ user.username }}</title>
+</head>
+
+<body>
+  <div class="profile-card">
+    <img
+      class="profile-picture"
+      src="{{ user.profile_picture }}"
+      alt="{% trans 'Profile Picture' %}"
+    />
+    <h1>{{ user.username }}</h1>
+    <p class="status">
+      {% if user.is_online %}
+      <span class="online">{% trans "Online" %}</span>
+      {% else %}
+      <span class="offline">{% trans "Offline" %}</span>
+      {% endif %}
+    </p>
+
+    <div class="stats">
+      <p>{% trans "Games Played:" %} <span>{{ user.games_played }}</span></p>
+      <p>{% trans "Games Won:" %} <span>{{ user.games_won }}</span></p>
+    </div>
+
+    <h2>{% trans "Last 5 Games:" %}</h2>
+    <ul class="last-games">
+      {% for game in last_games %}
+      <li>
+        {{ game.match }}
+        - <span class="result {% if game.result == 'Won' %}won{% else %}lost{% endif %}">
+          {{ game.result }}
+        </span>
+      </li>
+      {% empty %}
+      <li>{% trans "No games played yet." %}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  <script data-static="true" src="{% url 'javascript-catalog' %}"></script>
+</body>

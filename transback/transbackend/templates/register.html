@@ -62,5 +62,7 @@
             {% trans "Already have an account?" %} <a href="/login">{% trans "Log in here" %}</a>
         </div>
     </div>
-    <Script src="{% static "/js/register.js" %}" data-static="true"></Script>      
+    
+    <script src="{% url 'javascript-catalog' %}"></script>
+    <script src="{% static "/js/register.js" %}" data-static="true"></script>      
 </body>

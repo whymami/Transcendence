@@ -1,4 +1,3 @@
-/* Navbar Genel Stili */
 .navbar {
     background-color: var(--background-color);
     backdrop-filter: blur(10px);
@@ -51,7 +50,6 @@
     color: var(--primary-color);
 }
 
-/* Hamburger Menu */
 .hamburger {
     display: none;
     flex-direction: column;
@@ -82,7 +80,6 @@
     transform: rotate(-45deg) translate(5px, -6.2px);
 }
 
-/* Burger Drawer */
 .burger-menu {
     display: none;
     transform: translateX(0);
