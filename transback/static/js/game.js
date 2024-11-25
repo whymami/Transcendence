@@ -35,8 +35,8 @@ socket.onmessage = function (event) {
 
 // Kullanıcı etkileşimi
 document.addEventListener("keydown", (e) => {
-    if (e.key === "ArrowUp") paddleMovement = -5;
-    else if (e.key === "ArrowDown") paddleMovement = 5;
+    if (e.key === "ArrowUp") paddleMovement = -4;
+    else if (e.key === "ArrowDown") paddleMovement = 4;
 });
 
 document.addEventListener("keyup", () => {

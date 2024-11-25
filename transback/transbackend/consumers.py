@@ -132,6 +132,14 @@ class PongConsumer(AsyncWebsocketConsumer):
                         "message": f"{PongConsumer.game_state['winner']} kazandı!"
                     }
                 )
+                # Oyun durumunu sıfırla
+                PongConsumer.game_state = {
+                    "ball": {"x": 50, "y": 50, "dx": random.choice([-1, 1]) * 2, "dy": random.choice([-1, 1]) * 2},
+                    "paddle1": {"y": 50},
+                    "paddle2": {"y": 50},
+                    "score": {"player1": 0, "player2": 0},
+                    "winner": None
+                }
                 break
 
             self.update_game_state()
@@ -143,6 +151,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                 },
             )
             await asyncio.sleep(0.03)  # 30 FPS
+
 
     def update_game_state(self):
         ball = PongConsumer.game_state["ball"]
@@ -220,8 +229,24 @@ class OnlineStatusConsumer(AsyncWebsocketConsumer):
             await self.close()
 
     async def disconnect(self, close_code):
-        await self.set_user_active_status(self.user, False)
-        await self.channel_layer.group_discard("online_users", self.channel_name)
+        if hasattr(self, 'player_number') and self.player_number in [1, 2]:
+            PongConsumer.players -= 1
+
+            if PongConsumer.players == 0:
+                # Oyun durumunu sıfırla
+                PongConsumer.game_state = {
+                    "ball": {"x": 50, "y": 50, "dx": random.choice([-1, 1]) * 2, "dy": random.choice([-1, 1]) * 2},
+                    "paddle1": {"y": 50},
+                    "paddle2": {"y": 50},
+                    "score": {"player1": 0, "player2": 0},
+                    "winner": None
+                }
+
+        await self.channel_layer.group_discard(
+            "game_room",
+            self.channel_name,
+        )
+
 
     async def receive(self, text_data):
         pass  # This consumer doesn't handle incoming data.
