@@ -2,7 +2,7 @@ const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
 const token = getCookie("access_token");
-const socket = new WebSocket("ws://45.9.30.21:8000/ws/game/game_room/?token=" + token);
+const socket = new WebSocket("ws://127.0.0.1:8000/ws/game/game_room/?token=" + token);
 
 let gameState = null;
 let paddleMovement = 0; // Hareket yönünü kontrol eden değişken
@@ -26,10 +26,12 @@ socket.onclose = () => {
 
 socket.onmessage = function (event) {
     const data = JSON.parse(event.data);
+
     if (!data || !data.ball || !data.paddle1 || !data.paddle2) {
-        console.error("Invalid game state received:", data);
+        // console.error("Invalid game state received:", data);
         return;
     }
+
     gameState = data;
 };
 
@@ -81,8 +83,8 @@ function drawGame(state) {
 
     // Skoru çiz
     ctx.font = "20px Arial";
-    ctx.fillText(`Player 1: ${state.score.player1}`, 20, 20);
-    ctx.fillText(`Player 2: ${state.score.player2}`, 660, 20);
+    ctx.fillText(`${state.player1_name || "Waiting..."}: ${state.score.player1}`, 20, 20);
+    ctx.fillText(`${state.player2_name || "Waiting..."}: ${state.score.player2}`, 660, 20);
 }
 
 // Oyun döngüsü
