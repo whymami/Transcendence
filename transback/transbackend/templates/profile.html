@@ -15,7 +15,7 @@
   <div class="profile-card">
     <img
       class="profile-picture"
-      src="{{ user.profile_picture }}"
+      src="{% if user.profile_picture %}{{ user.profile_picture }}{% else %}{% static 'images/default-profile.webp' %}{% endif %}"
       alt="{% trans 'Profile Picture' %}"
     />
     <h1>{{ user.username }}</h1>
@@ -36,10 +36,7 @@
     <ul class="last-games">
       {% for game in last_games %}
       <li>
-        {{ game.match }}
-        - <span class="result {% if game.result == 'Won' %}won{% else %}lost{% endif %}">
-          {{ game.result }}
-        </span>
+       - {{ game }}
       </li>
       {% empty %}
       <li>{% trans "No games played yet." %}</li>

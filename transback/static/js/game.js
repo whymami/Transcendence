@@ -13,21 +13,21 @@ let lastTime = 0;
 
 // WebSocket bağlantı hatası kontrolü
 socket.onopen = () => {
-    console.log("WebSocket connection established.");
+    console.log(gettext("WebSocket connection established."));
 };
 
 socket.onerror = (error) => {
-    console.error("WebSocket error:", error);
+    console.error(gettext("WebSocket error:"), error);
 };
 
 socket.onclose = () => {
-    console.log("WebSocket connection closed.");
+    console.log(gettext("WebSocket connection closed."));
 };
 
 socket.onmessage = function (event) {
     const data = JSON.parse(event.data);
     if (!data || !data.ball || !data.paddle1 || !data.paddle2) {
-        console.error("Invalid game state received:", data);
+        console.error(gettext("Invalid game state received:"), data);
         return;
     }
     gameState = data;
@@ -81,8 +81,8 @@ function drawGame(state) {
 
     // Skoru çiz
     ctx.font = "20px Arial";
-    ctx.fillText(`Player 1: ${state.score.player1}`, 20, 20);
-    ctx.fillText(`Player 2: ${state.score.player2}`, 660, 20);
+    ctx.fillText(gettext(`Player 1: ${state.score.player1}`), 20, 20);
+    ctx.fillText(gettext(`Player 2: ${state.score.player2}`), 660, 20);
 }
 
 // Oyun döngüsü
@@ -97,7 +97,7 @@ function gameLoop(currentTime) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "white";
             ctx.font = "20px Arial";
-            ctx.fillText("Waiting for game state...", canvas.width / 3, canvas.height / 2);
+            ctx.fillText(gettext("Waiting for game state..."), canvas.width / 3, canvas.height / 2);
         }
         lastTime = currentTime;
     }

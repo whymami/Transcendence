@@ -49,7 +49,7 @@ async function login() {
   // }
 
   if (password.length < 6) {
-    passwordError.textContent = "Password must be at least 6 characters long.";
+    passwordError.textContent = gettext("Password must be at least 6 characters long.");
     isValid = false;
   }
 
@@ -69,7 +69,7 @@ async function login() {
 
     const data = await response.json();
     if (!response.ok) {
-      showToast('error', data?.error || 'An error occurred while logging in.');
+      showToast('error', data?.error || gettext('An error occurred while logging in.'));
       return;
     }
 
@@ -81,9 +81,9 @@ async function login() {
 
   } catch (error) {
     console.error('Error:', error?.message);
-    showToast('error', 'An error occurred while logging in.');
+    showToast('error', gettext('An error occurred while logging in.'));
   } finally {
-    loginBtn.textContent = "Login";
+    loginBtn.textContent = gettext("Login");
     loginBtn.disabled = false;
     passwordInput.disabled = false;
     usernameInput.disabled = false;

@@ -13,17 +13,17 @@ document.getElementById('resetPasswordForm').addEventListener('submit', function
     document.getElementById('successMessage').style.display = 'none';
 
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        document.getElementById('emailError').textContent = 'Geçerli bir email adresi giriniz.';
+        document.getElementById('emailError').textContent = gettext('Please enter a valid email address.');
         isValid = false;
     }
 
     if (newPassword.length < 6) {
-        document.getElementById('newPasswordError').textContent = 'Şifre en az 6 karakter olmalıdır.';
+        document.getElementById('newPasswordError').textContent = gettext('Password must be at least 6 characters long.');
         isValid = false;
     }
 
     if (newPassword !== confirmNewPassword) {
-        document.getElementById('confirmNewPasswordError').textContent = 'Şifreler eşleşmiyor.';
+        document.getElementById('confirmNewPasswordError').textContent = gettext('Passwords do not match.');
         isValid = false;
     }
 
@@ -41,13 +41,13 @@ document.getElementById('resetPasswordForm').addEventListener('submit', function
         .then(response => response.json())
         .then(data => {
             if (data.success) {
-                alert('Şifre başarıyla sıfırlandı.');
+                alert(gettext('Password reset successful.'));
             } else {
-                alert('Şifre sıfırlama başarısız: ' + data.message);
+                alert(gettext('Password reset failed: ') + data.message);
             }
         })
         .catch(error => {
-            console.error('Şifre sıfırlama hatası:', error);
+            console.error(gettext('Password reset error:'), error);
         }).finally(() => {
 
         });

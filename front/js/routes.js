@@ -130,17 +130,19 @@ const urlLocationHandler = async () => {
   }
 };
 
-
 async function pullHeader(repull = false) {
-  const header = document.getElementById('header');
-  if (header && !repull) {
+  let header = document.getElementsByTagName('header').item(0);
+  if (header && repull) {
+    document.body.removeChild(header);
+    console.log('repulled');
+  }
+  console.log('pulling');
+  console.log(header);
+  header = document.getElementsByTagName('header').item(0);
+  if (header) {
     return;
   }
-
-  if (header) {
-    document.body.removeChild(header);
-  }
-
+  console.log("ahh")
   const token = await getCookie('access_token');
   const lang = await getCookie('lang') || 'en';
   // console.log(window.navigator.languages);
