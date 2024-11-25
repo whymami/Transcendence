@@ -8,6 +8,7 @@ if (!username) {
 
 async function verifyEmail() {
     const codeInput = document.getElementById("verificationCode");
+    const btn = document.getElementsByClassName("verify-btn")[0];
     const code = codeInput.value;
     const verificationError = document.getElementById("verificationError");
 
@@ -17,6 +18,9 @@ async function verifyEmail() {
     }
 
     try {
+        btn.textContent = "Verifying...";
+        btn.disabled = true;
+        codeInput.disabled = true;
         const response = await fetch("/api/verify-account/", {
             method: "POST",
             headers: {
@@ -42,5 +46,9 @@ async function verifyEmail() {
         }
     } catch (error) {
         showToast('error', error?.error || "An error occurred. Please try again.");
+    } finally {
+        btn.textContent = "Verify";
+        btn.disabled = false;
+        codeInput.disabled = false;
     }
 }
