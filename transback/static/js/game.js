@@ -13,15 +13,15 @@ let lastTime = 0;
 
 // WebSocket bağlantı hatası kontrolü
 socket.onopen = () => {
-    console.log("WebSocket connection established.");
+    console.log(gettext("WebSocket connection established."));
 };
 
 socket.onerror = (error) => {
-    console.error("WebSocket error:", error);
+    console.error(gettext("WebSocket error:"), error);
 };
 
 socket.onclose = () => {
-    console.log("WebSocket connection closed.");
+    console.log(gettext("WebSocket connection closed."));
 };
 
 socket.onmessage = function (event) {
@@ -99,7 +99,7 @@ function gameLoop(currentTime) {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             ctx.fillStyle = "white";
             ctx.font = "20px Arial";
-            ctx.fillText("Waiting for game state...", canvas.width / 3, canvas.height / 2);
+            ctx.fillText(gettext("Waiting for game state..."), canvas.width / 3, canvas.height / 2);
         }
         lastTime = currentTime;
     }

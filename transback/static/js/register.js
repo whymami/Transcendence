@@ -10,7 +10,7 @@
             .then(data => {
                 toggleButton.innerHTML = data;
             })
-            .catch(error => console.error('SVG yüklenirken hata oluştu:', error));
+            .catch(error => console.error(gettext('Error loading SVG:'), error));
     }
 
     function togglePassword() {
@@ -50,23 +50,23 @@ async function register() {
     let isValid = true;
 
     if (username.length < 4) {
-        usernameError.textContent = "Username must be at least 4 characters long.";
+        usernameError.textContent = gettext("Username must be at least 4 characters long.");
         isValid = false;
     }
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
-        emailError.textContent = "Please enter a valid email address.";
+        emailError.textContent = gettext("Please enter a valid email address.");
         isValid = false;
     }
 
     if (password.length < 6) {
-        passwordError.textContent = "Password must be at least 6 characters long.";
+        passwordError.textContent = gettext("Password must be at least 6 characters long.");
         isValid = false;
     }
 
     if (password !== confirmPassword) {
-        confirmPasswordError.textContent = "Passwords do not match.";
+        confirmPasswordError.textContent = gettext("Passwords do not match.");
         isValid = false;
     }
 
@@ -74,7 +74,7 @@ async function register() {
 
     try {
         // **Loading Durumuna Geçiş**
-        registerBtn.textContent = "Loading...";
+        registerBtn.textContent = gettext("Loading...");
         registerBtn.disabled = true;
         inputs.forEach(input => input.disabled = true);
 
@@ -86,12 +86,12 @@ async function register() {
 
         if (!response.ok) {
             const errorData = await response.json();
-            showToast('error', errorData.error || 'Registration failed.');
+            showToast('error', errorData.error || gettext('Registration failed.'));
             return;
         }
 
         const data = await response.json();
-        showToast('success', 'Registration successful. Redirecting...');
+        showToast('success', gettext('Registration successful. Redirecting...'));
         localStorage.setItem("username", username);
 
         setTimeout(() => {
@@ -101,9 +101,9 @@ async function register() {
 
     } catch (error) {
         console.error('Error:', error);
-        generalError.textContent = 'An error occurred. Please try again later.';
+        generalError.textContent = gettext('An error occurred. Please try again later.');
     } finally {
-        registerBtn.textContent = "Register";
+        registerBtn.textContent = gettext("Register");
         registerBtn.disabled = false;
         inputs.forEach(input => input.disabled = false);
     }

@@ -23,7 +23,7 @@ async function getToken() {
 }
 
 
-function  createScript(script) {
+function createScript(script) {
   const newScript = document.createElement('script');
   const url = new URL(script.src, window.location.origin);
   newScript.src = url.pathname;
@@ -85,13 +85,19 @@ const urlLocationHandler = async () => {
   const container = document.getElementById("container");
   const lang = await getCookie('lang') || 'en';
 
+  if (route.endPoint == "/api/profile/") {
+    const search = new URLSearchParams(window.location.search);
+    console.log(search.get('username'));
+    route.endPoint += `?username=${search.get('username')}`;
+  }
+
   try {
     const response = await fetch(route.endPoint,
       {
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
           "Accept-Language": lang,
-        }
+        },
       }
     )
     if (!response.ok) {
@@ -124,17 +130,19 @@ const urlLocationHandler = async () => {
   }
 };
 
-
 async function pullHeader(repull = false) {
-  const header = document.getElementById('header');
-  if (header && !repull) {
+  let header = document.getElementsByTagName('header').item(0);
+  if (header && repull) {
+    document.body.removeChild(header);
+    console.log('repulled');
+  }
+  console.log('pulling');
+  console.log(header);
+  header = document.getElementsByTagName('header').item(0);
+  if (header) {
     return;
   }
-  
-  if(header) {
-    document.body.removeChild(header);
-  }
-
+  console.log("ahh")
   const token = await getCookie('access_token');
   const lang = await getCookie('lang') || 'en';
   // console.log(window.navigator.languages);
