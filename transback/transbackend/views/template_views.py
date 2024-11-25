@@ -7,7 +7,6 @@ from rest_framework.permissions import IsAuthenticated
 import json
 from transbackend.models import User, Game
 from django.db.models import Q
-
 class HeaderView(APIView):
     permission_classes = [AllowAny]
 
@@ -36,8 +35,7 @@ class ProfileView(APIView):
     authentication_classes = [JWTAuthentication]
 
     def get(self, request):
-        data = json.loads(request.body)
-        username = data.get('username')
+        username = request.query_params.get('username')
         if not username or username == "":
             user = request.user
 
