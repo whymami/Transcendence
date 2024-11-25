@@ -38,9 +38,31 @@ class ProfileView(APIView):
     def get(self, request):
         data = json.loads(request.body)
         username = data.get('username')
-        if not username:
-            return TemplateResponse(request, '404.html', status=404)
+        if not username or username == "":
+            user = request.user
 
+            last_games = []
+            games = Game.objects.filter(Q(player1=user) | Q(player2=user)).order_by('-start_time')[:5]
+
+            for game in games:
+                if game.player1 == user:
+                    opponent = game.player2.username
+                    user_score = game.player1_score
+                    opponent_score = game.player2_score
+                else:
+                    opponent = game.player1.username
+                    user_score = game.player2_score
+                    opponent_score = game.player1_score
+
+                result = "(Won)" if game.winner == user else "(Lost)"
+
+                last_games.append(f"{user.username} vs {opponent} - Score: {user_score}-{opponent_score} {result}")
+
+            return TemplateResponse(
+                request,
+                'profile.html', 
+                {"user": user, "last_games": last_games}
+            )
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
