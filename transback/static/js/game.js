@@ -28,22 +28,10 @@
     const scoreSound = new Audio('/static/assets/retro-video-game-coin-pickup-38299.mp3');
     scoreSound.volume = 0.05;
 
-    const backgroundMusic = new Audio('/static/assets/8-bit-music-on-245249.mp3'); // Replace with your file path
-    backgroundMusic.loop = true; // Loop the background music
-    backgroundMusic.volume = 0.1; // Optional: Set the volume of the background music
 
     const victorySound = new Audio('/static/assets/success-fanfare-trumpets-6185.mp3'); // Replace with your file path
     victorySound.volume = 0.2; // Optional: Set the volume of the victory sound
 
-    // Function to start background music
-    function startBackgroundMusic() {
-        backgroundMusic.play();
-    }
-
-    function stopBackgroundMusic() {
-        backgroundMusic.pause();
-        backgroundMusic.currentTime = 0; // Reset the music to start from the beginning
-    }
 
     // Flashing effect variables
     let flashState = { player1: false, player2: false }; // Track if score should be flashing
@@ -235,7 +223,6 @@
         gameOver = true;  // Set game over flag to true
 
         // Stop background music before playing victory sound
-        stopBackgroundMusic();
 
         // Play victory sound immediately
         victorySound.play();
@@ -281,7 +268,6 @@
 
         if (deltaTime >= interval) {
             if (gameState) {
-                startBackgroundMusic();
                 drawGame(gameState);
             } else {
                 // Waiting for game state
