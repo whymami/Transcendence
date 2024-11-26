@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from transbackend.models import User, Game
+from transbackend.models import User, Game, Friendship
 from transbackend.services.user_service import UserService
 
 class UserSerializer(serializers.ModelSerializer):
@@ -88,3 +88,11 @@ class ConfirmPasswordResetSerializer(serializers.Serializer):
             raise serializers.ValidationError("No account found with this email.")
         except ValueError as e:
             raise serializers.ValidationError(str(e))
+
+class FriendshipSerializer(serializers.ModelSerializer):
+    sender = UserSerializer(read_only=True)
+    receiver = UserSerializer(read_only=True)
+
+    class Meta:
+        model = Friendship
+        fields = ['id', 'sender', 'receiver', 'status', 'created_at', 'updated_at']

@@ -38,6 +38,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_online = models.BooleanField(default=False)
     games_played = models.PositiveIntegerField(default=0)  # Kaç maç oynadı
     games_won = models.PositiveIntegerField(default=0)
+    friends = models.ManyToManyField('self', through='Friendship', symmetrical=False)
 
     objects = UserManager()
 
@@ -91,3 +92,26 @@ class Game(models.Model):
 
     def __str__(self):
         return f"{self.player1.username} vs {self.player2.username} ({self.player1_score}-{self.player2_score})"
+
+class Friendship(models.Model):
+    PENDING = 'pending'
+    ACCEPTED = 'accepted'
+    REJECTED = 'rejected'
+    
+    STATUS_CHOICES = [
+        (PENDING, 'Pending'),
+        (ACCEPTED, 'Accepted'),
+        (REJECTED, 'Rejected'),
+    ]
+
+    sender = models.ForeignKey(User, related_name='friendship_requests_sent', on_delete=models.CASCADE)
+    receiver = models.ForeignKey(User, related_name='friendship_requests_received', on_delete=models.CASCADE)
+    status = models.CharField(max_length=8, choices=STATUS_CHOICES, default=PENDING)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ('sender', 'receiver')
+    
+    def __str__(self):
+        return f"{self.sender.username} - {self.receiver.username} ({self.status}) id: {self.id}"

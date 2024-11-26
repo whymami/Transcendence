@@ -1,0 +1,28 @@
+.friend-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 1px solid #eee;
+}
+.friend-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.online-status {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+}
+.online {
+    background-color: #28a745;
+}
+.offline {
+    background-color: #dc3545;
+}
+.friend-actions {
+    display: flex;
+    gap: 10px;
+}
