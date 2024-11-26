@@ -1,7 +1,7 @@
 {% load static %} {% load i18n %}
 
 <head>
-  <title>404</title>
+  <title>{% trans "Page Not Found" %}</title>
   <link rel="stylesheet" href="{% static 'css/404.css' %}" />
 </head>
 <body>
@@ -27,12 +27,12 @@
           />
         </svg>
       </div>
-      <h1 class="title">404</h1>
-      <h2 class="subtitle">Sayfa Bulunamadı</h2>
+      <h1 class="title">{% trans "404" %}</h1>
+      <h2 class="subtitle">{% trans "Page Not Found" %}</h2>
       <p class="message">
-        Aradığınız sayfa mevcut değil veya taşınmış olabilir.
+        {% trans "The page you are looking for does not exist or has been moved." %}
       </p>
-      <a href="/" class="back-button">Anasayfa'ya Dön</a>
+      <a href="/" class="back-button">{% trans "Return to Homepage" %}</a>
     </div>
   </div>
 

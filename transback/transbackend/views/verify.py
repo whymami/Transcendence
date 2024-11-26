@@ -9,6 +9,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from transbackend.models import User
 from django.core.mail import BadHeaderError, EmailMultiAlternatives
 from django.template.loader import render_to_string
+from transbackend.services.user_service import UserService
 
 class VerifyLoginView(APIView):
     permission_classes = [IsAnonymousUser]
@@ -25,27 +26,8 @@ class VerifyLoginView(APIView):
 
             try:
                 user = User.objects.get(username=username)
-                print(now())
-                if verification_code is None:
-                    return JsonResponse({"error": "Verification code is required."}, status=400)
-                try:
-                    verification_code = int(verification_code)
-                except ValueError:
-                    return JsonResponse({"error": "Invalid verification code format."}, status=400)
-
-                if user.verification_code != verification_code:
-                    return JsonResponse({"error": "Invalid verification code."}, status=400)
-
-                if user.code_expiration <= now():
-                    return JsonResponse({"error": "Verification code has expired."}, status=400)
-
-                if not user.is_verified:
-                    user.is_verified = True
-
-                user.verification_code = None
-                user.code_expiration = None
-                user.save()
-
+                user = UserService.verify_login(user, verification_code)
+                
                 refresh = RefreshToken.for_user(user)
                 return JsonResponse({
                     "message": "Login successful!",
@@ -55,6 +37,8 @@ class VerifyLoginView(APIView):
 
             except User.DoesNotExist:
                 return JsonResponse({"error": "User not found."}, status=404)
+            except ValueError as e:
+                return JsonResponse({"error": str(e)}, status=400)
 
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON data."}, status=400)
@@ -74,30 +58,17 @@ class VerifyAccountView(APIView):
 
             try:
                 user = User.objects.get(username=username)
-
-                if user.verification_code is None or verification_code is None:
-                    return JsonResponse({"error": "Verification code is missing."}, status=400)
-
-                try:
-                    verification_code = int(verification_code)
-                except ValueError:
-                    return JsonResponse({"error": "Invalid verification code format."}, status=400)
-
-                if user.verification_code == verification_code and user.code_expiration > now():
-                    user.is_verified = True
-                    user.verification_code = None
-                    user.code_expiration = None
-                    user.save()
-                    return JsonResponse({"message": "Account verified successfully!"}, status=200)
-                else:
-                    return JsonResponse({"error": "Invalid or expired verification code."}, status=400)
+                UserService.verify_account(user, verification_code)
+                return JsonResponse({"message": "Account verified successfully!"}, status=200)
 
             except User.DoesNotExist:
                 return JsonResponse({"error": "User not found."}, status=404)
+            except ValueError as e:
+                return JsonResponse({"error": str(e)}, status=400)
 
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON data."}, status=400)
-        
+
 class ReSendVerifyCodeView(APIView):
     permission_classes = [IsAnonymousUser]
     authentication_classes = [JWTAuthentication]
@@ -109,33 +80,13 @@ class ReSendVerifyCodeView(APIView):
 
             try:
                 user = User.objects.get(username=username)
-                user.set_verification_code()
-                user.save()
-
-                try:
-                    subject = "Activate Your Account"
-                    text_content = ""
-                    
-                    html_content = render_to_string("mail.html", {
-                        "verification_code": user.verification_code
-                    })
-
-                    email = EmailMultiAlternatives(
-                        subject, text_content, "noreply@example.com", [user.email]
-                    )
-                    email.attach_alternative(html_content, "text/html")
-                    email.send()
-    
-                except BadHeaderError:
-                    return JsonResponse({"error": "Failed to send email."}, status=500)
-                    
-                except Exception as e:
-                    return JsonResponse({"error": f"Failed to send email: {str(e)}"}, status=500)
-                
+                UserService.resend_verification_code(user)
                 return JsonResponse({"message": "A verification code has been sent to your email."}, status=200)
 
             except User.DoesNotExist:
                 return JsonResponse({"error": "User not found."}, status=404)
+            except Exception as e:
+                return JsonResponse({"error": str(e)}, status=500)
 
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON data."}, status=400)

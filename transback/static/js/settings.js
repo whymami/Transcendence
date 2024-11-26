@@ -3,7 +3,7 @@ document.getElementById('uploadProfilePic').addEventListener('change', async fun
     if (file) {
         const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
         if (!validImageTypes.includes(file.type)) {
-            showError('profilePicError', "Lütfen geçerli bir resim dosyası seçin (JPEG, PNG, GIF).");
+            showError('profilePicError', gettext("Please select a valid image file (JPEG, PNG, GIF)."));
             return;
         }
 
@@ -33,7 +33,7 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
     const usernameInput = document.getElementById('username');
     const emailInput = document.getElementById('email');
     const profilePicInput = document.getElementById('uploadProfilePic');
-    const saveBtn = document.getElementById('save-btn')[0];
+    const saveBtn = document.getElementsByClassName('save-btn')[0];
     const username = usernameInput.value.trim();
     const email = emailInput.value.trim();
     const profilePic = profilePicInput.files[0];
@@ -45,13 +45,13 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
     clearError('profilePicError');
 
     if (username.length < 4) {
-        showError('usernameError', "Kullanıcı adı en az 4 karakter olmalıdır.");
+        showError('usernameError', gettext("Username must be at least 4 characters long."));
         isValid = false;
     }
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
-        showError('emailError', "Geçerli bir e-posta adresi girin.");
+        showError('emailError', gettext("Please enter a valid email address."));
         isValid = false;
     }
 
@@ -63,7 +63,7 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
             emailInput.disabled = true;
             profilePicInput.disabled = true;
             saveBtn.disabled = true;
-            saveBtn.textContent = gettext("saving...");
+            saveBtn.textContent = gettext("Saving...");
 
             const formData = new FormData();
             formData.append('username', username);
@@ -85,19 +85,21 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
             const result = await response.json();
 
             if (response.ok) {
-                console.log("Profil başarıyla güncellendi:", result);
-                showToast("success", "Ayarlar başarıyla kaydedildi!");
+                console.log(gettext("Profile updated successfully:"), result);
+                showToast("success", gettext("Settings saved successfully!"));
             } else {
-                console.error("Hata:", result);
-                showToast("error", "Bir hata oluştu: " + (result?.message || result?.detail || 'Bilinmeyen hata'));
+                console.error(gettext("Error:"), result);
+                showToast("error", gettext("An error occurred: ") + (result?.message || result?.detail || gettext('Unknown error')));
             }
         } catch (error) {
             console.error("Fetch Hatası:", error);
-            showToast("error", "Bir hata oluştu: " + error.message);
+            showToast("error", error.message);
         } finally {
             usernameInput.disabled = false;
             emailInput.disabled = false;
             profilePicInput.disabled = false;
+            saveBtn.disabled = false;
+            saveBtn.textContent = gettext("Save");
         }
     }
 });

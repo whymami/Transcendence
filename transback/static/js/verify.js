@@ -1,7 +1,7 @@
 const username = localStorage.getItem("username");
 
 if (!username) {
-    showToast("error", "You need to log in to access this page.");
+    showToast("error", gettext("You need to log in to access this page."));
     history.pushState({}, "", "/login");
     urlLocationHandler();
 }
@@ -13,12 +13,12 @@ async function verifyEmail() {
     const verificationError = document.getElementById("verificationError");
 
     if (code.length != 6) {
-        showToast("error", "Invalid verify code");
+        showToast("error", gettext("Invalid verify code"));
         codeInput.focus();
     }
 
     try {
-        btn.textContent = "Verifying...";
+        btn.textContent = gettext("Verifying...");
         btn.disabled = true;
         codeInput.disabled = true;
         const response = await fetch("/api/verify-account/", {
@@ -42,12 +42,12 @@ async function verifyEmail() {
                 urlLocationHandler();
             }, 2000)
         } else {
-            showToast('error', data?.error || "An error occurred. Please try again.");
+            showToast('error', data?.error || gettext("An error occurred. Please try again."));
         }
     } catch (error) {
-        showToast('error', error?.error || "An error occurred. Please try again.");
+        showToast('error', error?.error || gettext("An error occurred. Please try again."));
     } finally {
-        btn.textContent = "Verify";
+        btn.textContent = gettext("Verify");
         btn.disabled = false;
         codeInput.disabled = false;
     }
