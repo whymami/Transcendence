@@ -1,23 +1,10 @@
 {% load static %} {% load i18n %}
 <head>
-    <title>Friends</title>
+    <title>Pending Friend Requests</title>
     <link rel="stylesheet" href="{% static 'css/friends.css' %}">
 </head>
 <body>
     <div class="container mt-4">
-        <!-- Friend Search Section -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5>{% trans "Add Friend" %}</h5>
-            </div>
-            <div class="card-body">
-                <div class="input-group">
-                    <input type="text" id="friendUsername" class="form-control" placeholder="{% trans 'Enter username' %}">
-                    <button class="btn btn-primary" id="sendFriendRequest">{% trans "Send Request" %}</button>
-                </div>
-            </div>
-        </div>
-
         <!-- Pending Requests Section -->
         <div class="card mb-4">
             <div class="card-header">
@@ -26,18 +13,6 @@
             <div class="card-body">
                 <div id="pendingRequests" class="list-group">
                     <!-- Pending requests will be populated here -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Friends List Section -->
-        <div class="card">
-            <div class="card-header">
-                <h5>{% trans "My Friends" %}</h5>
-            </div>
-            <div class="card-body">
-                <div id="friendsList" class="list-group">
-                    <!-- Friends will be populated here -->
                 </div>
             </div>
         </div>

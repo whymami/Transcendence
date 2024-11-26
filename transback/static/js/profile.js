@@ -20,4 +20,36 @@ document.addEventListener("DOMContentLoaded", function () {
             statusElement.textContent = "{% trans 'Offline' %}";
         }
     }
+
+    const addFriendButton = document.getElementById('addFriendButton');
+    if (addFriendButton) {
+        addFriendButton.addEventListener('click', function() {
+            const username = addFriendButton.getAttribute('data-username');
+            sendFriendRequest(username);
+        });
+    }
 });
+
+function sendFriendRequest(username) {
+    token = getCookie('access_token');
+    fetch('/api/friends/request/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({ username: username })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (response.ok) {
+            showToast('success', data.message);
+        } else {
+            showToast('error', data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        showToast('error', '{% trans "An error occurred" %}');
+    });
+}

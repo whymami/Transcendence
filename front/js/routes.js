@@ -102,6 +102,9 @@ const urlRoutes = {
   },
   "/users": {
     endPoint: "/api/users/"
+  },
+  "/friends": {
+    endPoint: "/api/friends/"
   }
 };
 

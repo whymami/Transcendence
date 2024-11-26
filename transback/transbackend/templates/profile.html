@@ -42,6 +42,12 @@
       <li>{% trans "No games played yet." %}</li>
       {% endfor %}
     </ul>
+
+    <!-- Add Friend Button -->
+    <button class="btn btn-primary" id="addFriendButton" data-username="{{ user.username }}">
+      {% trans "Add Friend" %}
+    </button>
   </div>
   <script data-static="true" src="{% url 'javascript-catalog' %}"></script>
+  <script src="{% static 'js/profile.js' %}"></script>
 </body>
