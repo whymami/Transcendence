@@ -1,3 +1,27 @@
+const isConnected = false;
+
+const socket = async () => {
+  if (isConnected)
+    return;
+
+  const token = await getCookie('access_token');
+
+  const statusSocket = new WebSocket(`ws://${window.location.host}:8000/ws/online-status/?token=${token}`);
+
+  statusSocket.onmessage = function (event) {
+    console.log(event.data);
+  };
+
+  statusSocket.onopen = function (event) {
+    console.log("open");
+  };
+
+  statusSocket.onclose = function (event) {
+    console.log("close");
+  };
+}
+
+
 document.addEventListener("click", (e) => {
   const { target } = e;
   if (!target.matches("nav a")) {
@@ -78,6 +102,8 @@ const urlLocationHandler = async () => {
     location = "/";
   }
 
+  socket();
+
   const token = await getCookie('access_token');
   const language = document.documentElement.lang;
 
@@ -87,8 +113,8 @@ const urlLocationHandler = async () => {
 
   if (route.endPoint == "/api/profile/") {
     const search = new URLSearchParams(window.location.search);
-    console.log(search.get('username'));
-    route.endPoint += `?username=${search.get('username')}`;
+    const username = search.get('username');
+    route.endPoint += `?username=${username ? username : ''}`;
   }
 
   try {
@@ -134,15 +160,13 @@ async function pullHeader(repull = false) {
   let header = document.getElementsByTagName('header').item(0);
   if (header && repull) {
     document.body.removeChild(header);
-    console.log('repulled');
   }
-  console.log('pulling');
-  console.log(header);
+  // console.log(header);
   header = document.getElementsByTagName('header').item(0);
   if (header) {
     return;
   }
-  console.log("ahh")
+
   const token = await getCookie('access_token');
   const lang = await getCookie('lang') || 'en';
   // console.log(window.navigator.languages);
