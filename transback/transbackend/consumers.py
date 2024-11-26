@@ -255,7 +255,7 @@ class PongConsumer(AsyncWebsocketConsumer):
     def reset_ball(self):
         PongConsumer.game_state["ball"] = {
             "x": 50,
-            "y": 50,
+            "y": random.uniform(30, 70),
             "dx": random.choice([-1, 1]) * 2,
             "dy": random.uniform(-1, 1)  # Rasgele bir dikey hız
         }

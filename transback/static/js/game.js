@@ -23,6 +23,7 @@ let interval = 1000 / fps; // Each frame's duration (ms)
 let lastTime = 0;
 
 const scoreSound = new Audio('/static/assets/retro-video-game-coin-pickup-38299.mp3');
+scoreSound.volume = 0.05;
 
 const backgroundMusic = new Audio('/static/assets/8-bit-music-on-245249.mp3'); // Replace with your file path
 backgroundMusic.loop = true; // Loop the background music
@@ -200,12 +201,6 @@ function drawGame(state) {
     // Draw center line
     drawCenterLine();
 
-    // Ball wrap-around effect
-    if (state.ball.x < 0) state.ball.x = 100; // Ball wraps from left to right
-    if (state.ball.x > 100) state.ball.x = 0; // Ball wraps from right to left
-    if (state.ball.y < 0) state.ball.y = 100; // Ball wraps from top to bottom
-    if (state.ball.y > 100) state.ball.y = 0; // Ball wraps from bottom to top
-
     // Draw ball with smooth motion
     updateBallTrail(state.ball);
     drawBallTrail();
@@ -249,11 +244,6 @@ function showWinner(winner) {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     ctx.globalAlpha = 1;
 
-    ctx.fillStyle = "white";
-    ctx.font = `${canvas.height * 0.06}px Arial`;
-    ctx.textAlign = "center";
-    ctx.fillText(`${winner} wins!`, canvas.width / 2, canvas.height / 2);
-
     // Countdown before disconnecting
     let countdown = 5;
     const countdownInterval = setInterval(() => {
@@ -266,7 +256,7 @@ function showWinner(winner) {
         ctx.fillStyle = "white";
         ctx.font = `${canvas.height * 0.06}px Arial`;
         ctx.textAlign = "center";
-        ctx.fillText(`Returning to the home screen in ${countdown}s`, canvas.width / 2, canvas.height / 2);
+        ctx.fillText(`${winner} wins! Returning to the home screen in ${countdown}s`, canvas.width / 2, canvas.height / 2);
 
         countdown--;
 
