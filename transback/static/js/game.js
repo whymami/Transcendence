@@ -12,7 +12,7 @@
     }
 
     // WebSocket connection to the game server
-    const socket = new WebSocket(`ws://${window.location.hostname}/ws/game/game_room/?token=${token}`);
+    const socket = new WebSocket(`ws://${window.location.hostname}:8000/ws/game/game_room/?token=${token}`);
 
     let gameState = null;
     let paddleMovement = 0; // Movement control variable
