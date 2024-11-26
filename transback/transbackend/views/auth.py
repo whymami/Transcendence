@@ -1,6 +1,7 @@
 from django.template.response import TemplateResponse
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from transbackend.serializers import serializers
 from transbackend.models import User
 from .permissions import IsAnonymousUser
 from rest_framework.permissions import AllowAny
@@ -60,8 +61,11 @@ class LoginView(APIView):
             UserService.handle_verification_email(user)
             return json_response(message="Verification code sent to your email.")
 
+        except serializers.ValidationError as ve:
+            error_message = str(ve.detail[0]) if isinstance(ve.detail, list) else str(ve.detail)
+            return json_response(error=error_message, status=401)
         except Exception as e:
-            return json_response(error=str(e), status=500)
+            return json_response(error="An unexpected error occurred.", status=500)
 
 class ResetPasswordView(APIView):
     permission_classes = [IsAnonymousUser]

@@ -14,16 +14,20 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['username', 'email', 'password']
+        extra_kwargs = {
+            'username': {'validators': []},  # Disable default unique validator
+            'email': {'validators': []}      # Disable default unique validator
+        }
         
     def validate(self, data):
-        if User.objects.filter(email=data['email'], is_verified=True).exists():
-            return {
-                "error": "Email already in use."
-            }
+        # Check username first
         if User.objects.filter(username=data['username']).exists():
-            return {
-                "error": "Username already in use."
-            }
+            raise serializers.ValidationError("Username already in use")
+            
+        # Then check email
+        if User.objects.filter(email=data['email'], is_verified=True).exists():
+            raise serializers.ValidationError("Email already in use")
+            
         return data
 
 class GameSerializer(serializers.ModelSerializer):
@@ -47,15 +51,11 @@ class LoginSerializer(serializers.Serializer):
         try:
             user = User.objects.get(username=username)
             if not user.check_password(password):
-                return {
-                    "error": "Invalid username or password."
-                }
+                raise serializers.ValidationError("Invalid username or password")
             data['user'] = user
             return data
         except User.DoesNotExist:
-            return {
-                "error": "Invalid username or password."
-            }
+            raise serializers.ValidationError("Invalid username or password")
 
 class ResetPasswordSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
@@ -66,9 +66,7 @@ class ResetPasswordSerializer(serializers.Serializer):
             self.context['user'] = user
             return value
         except User.DoesNotExist:
-            return {
-                "error": "No account found with this email."
-            }
+            raise serializers.ValidationError("No account found with this email.")
 
 class ConfirmPasswordResetSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
@@ -87,10 +85,6 @@ class ConfirmPasswordResetSerializer(serializers.Serializer):
             return data
             
         except User.DoesNotExist:
-            return {
-                "error": "No account found with this email."
-            }
+            raise serializers.ValidationError("No account found with this email.")
         except ValueError as e:
-            return {
-                "error": str(e)
-            }
+            raise serializers.ValidationError(str(e))
