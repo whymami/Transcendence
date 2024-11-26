@@ -45,10 +45,12 @@
 
   function logoutFN(e) {
     e.preventDefault();
+    disconnectSocketStatus();
     eraseCookie('refresh_token');
     eraseCookie('access_token');
     pullHeader(true);
     history.pushState({}, "", "/");
     urlLocationHandler();
+
   }
 }

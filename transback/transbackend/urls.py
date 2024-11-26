@@ -3,10 +3,9 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView,TokenObtainPairView
 from django.views.i18n import JavaScriptCatalog
 from .views.auth import RegisterView, LoginView, ResetPasswordView
-from .views.template_views import HomeView, HeaderView, GameView, UserSettingsView, PongAPIView, ProfileView
+from .views.template_views import HomeView, HeaderView, GameView, UserSettingsView, ProfileView, UserListView
 from .views.verify import VerifyLoginView, VerifyAccountView, ReSendVerifyCodeView
 from .views.utils import NotFoundView
-
 urlpatterns = [
     path('api/header/', HeaderView.as_view(), name='header'),
     path('api/home/', HomeView.as_view(), name='home'),
@@ -16,7 +15,6 @@ urlpatterns = [
     path('api/register/', RegisterView.as_view(), name='register'),
     path('api/verify-account/', VerifyAccountView.as_view(), name='profile'),
     path('api/settings/', UserSettingsView.as_view(), name='profile'),
-    path('api/pong/', PongAPIView.as_view(), name='pong_game'),
     path('api/game/', GameView.as_view(), name='game'),
     path('api/reset-password/', ResetPasswordView.as_view(), name='reset_password'),
     path('api/verify-login/', VerifyLoginView.as_view(), name='verify_code'),
@@ -24,4 +22,5 @@ urlpatterns = [
     path('api/resend-verify-code/', ReSendVerifyCodeView.as_view(), name='resend_verify_code'),
     path('api/profile/', ProfileView.as_view(), name='profile'),
     path('api/404/', NotFoundView.as_view(), name='not_found'),
+    path('api/users/', UserListView.as_view(), name='users'),
 ]

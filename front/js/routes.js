@@ -1,3 +1,41 @@
+let isConnected = false;
+let statusSocket;
+
+const socket = async () => {
+  if (isConnected)
+    return;
+
+  const token = await getCookie('access_token');
+
+  if (!token)
+    return;
+
+  statusSocket = new WebSocket(`ws://${window.location.host}:8000/ws/online-status/?token=${token}`);
+
+  statusSocket.onmessage = function (event) {
+    console.log(event.data);
+  };
+
+  statusSocket.onopen = function (event) {
+    console.log("open");
+    isConnected = true;
+  };
+
+  statusSocket.onclose = function (event) {
+    console.log("close");
+    isConnected = false;
+  };
+
+}
+
+const disconnectSocketStatus = () => {
+  if (statusSocket && isConnected) {
+    statusSocket.close();
+    statusSocket = null;
+    isConnected = false;
+  }
+}
+
 document.addEventListener("click", (e) => {
   const { target } = e;
   if (!target.matches("nav a")) {
@@ -62,6 +100,9 @@ const urlRoutes = {
   "/game": {
     endPoint: "/api/game/",
   },
+  "/users": {
+    endPoint: "/api/users/"
+  }
 };
 
 const urlRoute = (event) => {
@@ -78,21 +119,24 @@ const urlLocationHandler = async () => {
     location = "/";
   }
 
+  socket();
+
   const token = await getCookie('access_token');
   const language = document.documentElement.lang;
 
-  const route = urlRoutes[location] || urlRoutes["404"];
+  let route = urlRoutes[location] || urlRoutes["404"];
   const container = document.getElementById("container");
   const lang = await getCookie('lang') || 'en';
 
+  let username = null;
+
   if (route.endPoint == "/api/profile/") {
     const search = new URLSearchParams(window.location.search);
-    console.log(search.get('username'));
-    route.endPoint += `?username=${search.get('username')}`;
+    username = search.get('username');
   }
 
   try {
-    const response = await fetch(route.endPoint,
+    const response = await fetch(route.endPoint + `${username ? "?username=" + username : ""}`,
       {
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -101,7 +145,9 @@ const urlLocationHandler = async () => {
       }
     )
     if (!response.ok) {
-      throw new Error(response.statusText);
+      const html = await response.text();
+      container.innerHTML = html;
+      return;
     }
     const html = await response.text();
     container.innerHTML = html;
@@ -127,6 +173,8 @@ const urlLocationHandler = async () => {
     console.error("Error:", error);
     showToast("error", "Error: " + error,);
     container.innerHTML = "Error: " + error;
+  } finally {
+    route = null;
   }
 };
 
@@ -134,15 +182,13 @@ async function pullHeader(repull = false) {
   let header = document.getElementsByTagName('header').item(0);
   if (header && repull) {
     document.body.removeChild(header);
-    console.log('repulled');
   }
-  console.log('pulling');
-  console.log(header);
+  // console.log(header);
   header = document.getElementsByTagName('header').item(0);
   if (header) {
     return;
   }
-  console.log("ahh")
+
   const token = await getCookie('access_token');
   const lang = await getCookie('lang') || 'en';
   // console.log(window.navigator.languages);
