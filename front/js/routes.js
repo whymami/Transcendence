@@ -1,4 +1,5 @@
-const isConnected = false;
+let isConnected = false;
+let statusSocket;
 
 const socket = async () => {
   if (isConnected)
@@ -6,7 +7,10 @@ const socket = async () => {
 
   const token = await getCookie('access_token');
 
-  const statusSocket = new WebSocket(`ws://${window.location.host}:8000/ws/online-status/?token=${token}`);
+  if (!token)
+    return;
+
+  statusSocket = new WebSocket(`ws://${window.location.host}:8000/ws/online-status/?token=${token}`);
 
   statusSocket.onmessage = function (event) {
     console.log(event.data);
@@ -14,13 +18,23 @@ const socket = async () => {
 
   statusSocket.onopen = function (event) {
     console.log("open");
+    isConnected = true;
   };
 
   statusSocket.onclose = function (event) {
     console.log("close");
+    isConnected = false;
   };
+
 }
 
+const disconnectSocketStatus = () => {
+  if (statusSocket && isConnected) {
+    statusSocket.close();
+    statusSocket = null;
+    isConnected = false;
+  }
+}
 
 document.addEventListener("click", (e) => {
   const { target } = e;
@@ -127,7 +141,9 @@ const urlLocationHandler = async () => {
       }
     )
     if (!response.ok) {
-      throw new Error(response.statusText);
+      const html = await response.text();
+      container.innerHTML = html;
+      return;
     }
     const html = await response.text();
     container.innerHTML = html;

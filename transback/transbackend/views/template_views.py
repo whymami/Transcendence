@@ -38,6 +38,7 @@ class ProfileView(APIView):
         username = request.query_params.get('username')
         if not username or username == "":
             user = request.user
+            user.is_online = True
 
             last_games = []
             games = Game.objects.filter(Q(player1=user) | Q(player2=user)).order_by('-start_time')[:5]
