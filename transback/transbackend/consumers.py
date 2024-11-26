@@ -275,10 +275,13 @@ class PongConsumer(AsyncWebsocketConsumer):
 class OnlineStatusConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         query_string = self.scope.get('query_string', b'').decode('utf-8')
-        self.user = await get_user_from_token(query_string)
-
-        if self.user:
+        
+        user = await get_user_from_token(query_string)
+        
+        if user:
+            self.user = user
             await self.channel_layer.group_add("online_users", self.channel_name)
+
             self.user.is_online = True
             await database_sync_to_async(self.user.save)()
             await self.accept()
@@ -286,32 +289,17 @@ class OnlineStatusConsumer(AsyncWebsocketConsumer):
             await self.close()
 
     async def disconnect(self, close_code):
-        if hasattr(self, 'player_number') and self.player_number in [1, 2]:
-            PongConsumer.players -= 1
+        await self.set_user_active_status(self.user, False)
 
-            if PongConsumer.players == 0:
-                # Oyun durumunu sıfırla
-                PongConsumer.game_state = {
-                    "ball": {"x": 50, "y": 50, "dx": random.choice([-1, 1]) * 2, "dy": random.choice([-1, 1]) * 2},
-                    "paddle1": {"y": 50},
-                    "paddle2": {"y": 50},
-                    "score": {"player1": 0, "player2": 0},
-                    "winner": None
-                }
-
-        await self.channel_layer.group_discard(
-            "game_room",
-            self.channel_name,
-        )
-
+        await self.channel_layer.group_discard("online_users", self.channel_name)
 
     async def receive(self, text_data):
-        pass  # This consumer doesn't handle incoming data.
+        data = json.loads(text_data)
 
-    @database_sync_to_async
-    def set_user_active_status(self, user, is_active):
-        user.is_online = is_active
+    async def online_users(self, event):
+        await self.send(text_data=json.dumps(event["content"]))
+
+    @sync_to_async
+    def set_user_active_status(self, user, status):
+        user.is_online = status
         user.save()
-
-    async def send_online_status(self):
-        await self.send(text_data=json.dumps({"status": "online", "user": self.user.username}))
