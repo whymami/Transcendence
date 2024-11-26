@@ -1,23 +1,37 @@
-{% extends 'base.html' %}
-{% load static %}
+{% load static %} {% load i18n %}
 
-{% block content %}
-<div class="users-container">
-    <h1>Kullanıcılar</h1>
+<head>
+  <link rel="stylesheet" href="{% static 'css/users.css' %}" />
+</head>
+
+<body>
+  <div class="users-container">
+    <h1>{% trans "Users" %}</h1>
     <div class="users-list">
-        {% for user in users %}
-            <div class="user-card">
-                <div class="user-image">
-                    <img src="{{ user.profile_picture.url|default:'/static/images/default-profile.png' }}" 
-                         alt="{{ user.username }}" class="profile-picture">
-                    <span class="status-indicator {% if user.is_online %}online{% else %}offline{% endif %}"></span>
-                </div>
-                <div class="user-info">
-                    <h3 class="username">{{ user.username }}</h3>
-                    <span class="status">{{ user.is_online|yesno:"Çevrimiçi,Çevrimdışı" }}</span>
-                </div>
-            </div>
-        {% endfor %}
+      {% for user in users %}
+      <div class="user-card">
+        <div class="user-image">
+          <img
+            src="{% if user.profile_picture %}{{ user.profile_picture }}{% else %}{% static 'images/default-profile.webp' %}{% endif %}"
+            alt="{{ user.username }}"
+            class="profile-picture"
+          />
+          <span
+            class="status-indicator {% if user.is_online %}online{% else %}offline{% endif %}"
+          ></span>
+        </div>
+        <div class="user-info">
+          <h3 class="username">{{ user.username }}</h3>
+          <button
+            onclick="goToProfile('{{ user.username }}')"
+            class="go-to-profile-button"
+          >
+            {% trans "Go to Profile" %}
+          </button>
+        </div>
+      </div>
+      {% endfor %}
     </div>
-</div>
-{% endblock %}
+  </div>
+  <script src="{% static 'js/users.js' %}"></script>
+</body>

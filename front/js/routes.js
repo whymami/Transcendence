@@ -100,6 +100,9 @@ const urlRoutes = {
   "/game": {
     endPoint: "/api/game/",
   },
+  "/users": {
+    endPoint: "/api/users/"
+  }
 };
 
 const urlRoute = (event) => {
@@ -121,18 +124,19 @@ const urlLocationHandler = async () => {
   const token = await getCookie('access_token');
   const language = document.documentElement.lang;
 
-  const route = urlRoutes[location] || urlRoutes["404"];
+  let route = urlRoutes[location] || urlRoutes["404"];
   const container = document.getElementById("container");
   const lang = await getCookie('lang') || 'en';
 
+  let username = null;
+
   if (route.endPoint == "/api/profile/") {
     const search = new URLSearchParams(window.location.search);
-    const username = search.get('username');
-    route.endPoint += `?username=${username ? username : ''}`;
+    username = search.get('username');
   }
 
   try {
-    const response = await fetch(route.endPoint,
+    const response = await fetch(route.endPoint + `${username ? "?username=" + username : ""}`,
       {
         headers: {
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
@@ -169,6 +173,8 @@ const urlLocationHandler = async () => {
     console.error("Error:", error);
     showToast("error", "Error: " + error,);
     container.innerHTML = "Error: " + error;
+  } finally {
+    route = null;
   }
 };
 

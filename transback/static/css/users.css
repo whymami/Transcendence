@@ -14,10 +14,13 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 20px;
+    background-color: var(--background-color);
+    border-radius: 8px;
+    padding: 20px;
 }
 
 .user-card {
-    background-color: var(--background-color);
+    background-color: var(--component-bg-color);
     border-radius: 8px;
     padding: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
@@ -28,6 +31,7 @@
 
 .user-card:hover {
     transform: translateY(-5px);
+    cursor: pointer;
 }
 
 .user-image {
@@ -62,6 +66,11 @@
 
 .user-info {
     flex-grow: 1;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+
 }
 
 .user-info .username {
@@ -85,4 +94,9 @@
     .users-list {
         grid-template-columns: 1fr;
     }
+}
+
+.go-to-profile-button {
+    background-color: var(--primary-color);
+    color: var(--text-color);
 }
