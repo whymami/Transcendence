@@ -31,9 +31,9 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
     event.preventDefault();
 
     const usernameInput = document.getElementById('username');
-    const emailInput = document.getElementById('email');
     const profilePicInput = document.getElementById('uploadProfilePic');
     const saveBtn = document.getElementsByClassName('save-btn')[0];
+    const emailInput = document.getElementById('email');
     const username = usernameInput.value.trim();
     const email = emailInput.value.trim();
     const profilePic = profilePicInput.files[0];
@@ -59,11 +59,21 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
 
     if (isValid) {
         try {
+            const oldEmail = emailInput.getAttribute('data-original-email');
+            const oldUsername = usernameInput.getAttribute('data-original-username');
             usernameInput.disabled = true;
             emailInput.disabled = true;
             profilePicInput.disabled = true;
             saveBtn.disabled = true;
             saveBtn.textContent = gettext("Saving...");
+
+            if (email === oldEmail) {
+                email = "";
+            }
+
+            if (username === oldUsername) {
+                username = "";
+            }
 
             const formData = new FormData();
             formData.append('username', username);
@@ -71,6 +81,8 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
 
             if (profilePic) {
                 formData.append('profile_picture', profilePic);
+            } else {
+                formData.append('profile_picture', "");
             }
 
             const response = await fetch('/api/settings/', {
