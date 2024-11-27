@@ -21,3 +21,8 @@ async function sendFriendRequest(username) {
         showToast('error', error?.error || gettext('1An error occurred'));
     }
 }
+
+document.getElementsByClassName('settings-link')[0].addEventListener('click', () => {
+    history.pushState({}, '', '/settings');
+    urlLocationHandler();
+});

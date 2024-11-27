@@ -1,5 +1,15 @@
 document.getElementById('uploadProfilePic').addEventListener('change', async function (event) {
+    const maxSize = 1 * 1024 * 1024; // 3MB
+
+    if (event.target.files[0].size > maxSize) {
+        showError('profilePicError', gettext("File size must be less than 1MB."));
+        event.target.value = '';
+        console.error(gettext("File size must be less than 1MB."));
+        return;
+    }
+
     const file = event.target.files[0];
+
     if (file) {
         const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
         if (!validImageTypes.includes(file.type)) {
@@ -34,8 +44,8 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
     const profilePicInput = document.getElementById('uploadProfilePic');
     const saveBtn = document.getElementsByClassName('save-btn')[0];
     const emailInput = document.getElementById('email');
-    const username = usernameInput.value.trim();
-    const email = emailInput.value.trim();
+    let username = usernameInput.value.trim();
+    let email = emailInput.value.trim();
     const profilePic = profilePicInput.files[0];
 
     let isValid = true;
@@ -99,6 +109,7 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
             if (response.ok) {
                 console.log(gettext("Profile updated successfully:"), result);
                 showToast("success", gettext("Settings saved successfully!"));
+                urlLocationHandler();
             } else {
                 console.error(gettext("Error:"), result);
                 showToast("error", gettext("An error occurred: ") + (result?.message || result?.detail || gettext('Unknown error')));

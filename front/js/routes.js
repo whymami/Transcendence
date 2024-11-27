@@ -156,13 +156,16 @@ const urlLocationHandler = async () => {
       return;
     }
     const html = await response.text();
-    container.innerHTML = html;
     const parsedHtml = new DOMParser().parseFromString(html, "text/html");
     document.title = parsedHtml.title;
+    parsedHtml.head.querySelector('title').remove();
     document
       .querySelector('meta[name="description"]')
       .setAttribute("content", parsedHtml.description);
     document.head.appendChild(parsedHtml.head.querySelector('link[rel="stylesheet"]'));
+    parsedHtml.head.querySelectorAll('link[rel="stylesheet"]').forEach(link => {
+      link.remove();
+    });
     const oldScript = document.querySelectorAll('script[data-static="true"]');
     if (oldScript) {
       oldScript.forEach(script => {
@@ -171,10 +174,13 @@ const urlLocationHandler = async () => {
     }
     parsedHtml.body.querySelectorAll('script').forEach(script => {
       const created = createScript(script);
-      console.log(created);
-
-      document.body.appendChild(created);
+      if (created)
+        document.body.appendChild(created);
+      script.remove();
     });
+
+    container.innerHTML = parsedHtml.body.innerHTML;
+
   } catch (error) {
     console.error("Error:", error);
     showToast("error", "Error: " + error,);
