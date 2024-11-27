@@ -1,5 +1,8 @@
+const friendshipButton = document.getElementById('friendshipButton');
 async function sendFriendRequest(username) {
-    token = getCookie('access_token');
+    token = await getCookie('access_token');
+    console.log(token);
+    console.log(username);
     try {
         let response = await fetch('/api/friends/request/', {
             method: 'POST',
@@ -12,6 +15,8 @@ async function sendFriendRequest(username) {
         if (response.ok) {
             response = await response.json();
             showToast('success', response.message || gettext('Friend request sent'));
+            friendshipButton.disabled = true;
+            friendshipButton.textContent = gettext('Pending');
         } else {
             response = await response.json();
             showToast('error', response?.error || gettext('An error occurred'));
@@ -22,7 +27,8 @@ async function sendFriendRequest(username) {
     }
 }
 
-document.getElementsByClassName('settings-link')[0].addEventListener('click', () => {
+const settingsLink = document.getElementById('settings-link');
+settingsLink?.addEventListener('click', () => {
     history.pushState({}, '', '/settings');
     urlLocationHandler();
 });

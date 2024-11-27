@@ -18,7 +18,7 @@
       alt="{% trans 'Profile Picture' %}"
     />
     {% if is_self %}
-    <a href="/settings" class="settings-link">
+    <a href="/settings" id="settings-link" class="settings-link">
       <svg
         xmlns="http://www.w3.org/2000/svg"
         x="0px"
@@ -59,10 +59,17 @@
     {% if not is_self %}
     <button
       class="btn btn-primary"
+      id="friendshipButton"
       onclick="sendFriendRequest('{{ user.username }}')"
-      id="addFriendButton"
+      {% if friendship_status == 'pending' %}disabled{% endif %}
     >
-      {% trans "Add Friend" %}
+      {% if friendship_status == "pending" %}
+        {% trans "Pending" %}
+      {% elif friendship_status == "accepted" %}
+        {% trans "Remove Friend" %}
+      {% else %}
+        {% trans "Add Friend" %}
+      {% endif %}
     </button>
     {% endif %}
   </div>

@@ -108,3 +108,24 @@
     height: 30px;
     fill: #ddd;
 }
+
+.settings-link:hover {
+    background-color: var(--primary-color);
+    scale: 1.1;
+    transition: all 0.3s ease;
+}
+
+#friendshipButton {
+    background-color: var(--primary-color);
+}
+
+#friendshipButton:hover {
+    background-color: var(--primary-color);
+    scale: 1.1;
+    transition: all 0.3s ease;
+}
+
+#friendshipButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
