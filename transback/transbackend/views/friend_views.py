@@ -39,13 +39,21 @@ class FriendRequestView(APIView):
         try:
             receiver = User.objects.get(username=receiver_username)
             
-            # Check if friendship already exists
-            if Friendship.objects.filter(
+            # Check existing friendship status
+            existing_friendship = Friendship.objects.filter(
                 (Q(sender=request.user, receiver=receiver) | 
                  Q(sender=receiver, receiver=request.user))
-            ).exists():
-                return JsonResponse({"error": "Friendship request already exists"}, status=400)
-            
+            ).first()
+
+            if existing_friendship:
+                if existing_friendship.status == Friendship.ACCEPTED:
+                    return JsonResponse({"error": "You are already friends with this user"}, status=400)
+                elif existing_friendship.status == Friendship.PENDING:
+                    return JsonResponse({"error": "A friend request is already pending"}, status=400)
+                elif existing_friendship.status == Friendship.REJECTED:
+                    # If rejected, allow new request by deleting old one
+                    existing_friendship.delete()
+                
             Friendship.objects.create(
                 sender=request.user,
                 receiver=receiver
