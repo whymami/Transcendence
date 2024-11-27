@@ -6,6 +6,7 @@ from django.http import JsonResponse
 from transbackend.models import User, Friendship
 from transbackend.serializers import FriendshipSerializer
 from django.db.models import Q
+from transbackend.utils.response_utils import json_response
 
 class FriendListView(APIView):
     permission_classes = [IsAuthenticated]
@@ -18,12 +19,14 @@ class FriendListView(APIView):
         )
         pending_requests = Friendship.objects.filter(receiver=user, status=Friendship.PENDING)
         
+        friendsList = [friend.sender if friend.receiver == user else friend.receiver for friend in friends]
+        pendingRequestsList = [friend.sender for friend in pending_requests]
         return TemplateResponse(
             request, 
             'friends.html',
             {
-                "friends": friends,
-                "pending_requests": pending_requests
+                "friends": friendsList,
+                "pending_requests": pendingRequestsList
             }
         )
 
@@ -78,4 +81,26 @@ class FriendRequestResponseView(APIView):
             return JsonResponse({"message": f"Friend request {action}ed"}, status=200)
             
         except Friendship.DoesNotExist:
-            return JsonResponse({"error": "Friend request not found"}, status=404) 
+            return JsonResponse({"error": "Friend request not found"}, status=404)
+    
+class FriendRemoveView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def post(self, request):
+        data = request.data
+        username = data.get('username')
+        try:
+            user = User.objects.get(username=username)
+        except User.DoesNotExist:
+            return json_response(error="User not found", status=404)
+        
+        friendship = Friendship.objects.filter(
+            (Q(sender=request.user, receiver=user) | Q(sender=user, receiver=request.user)) & Q(status=Friendship.ACCEPTED)
+        ).first()
+        
+        if friendship:
+            friendship.delete()
+            return json_response(message="Friend removed successfully")
+        else:
+            return json_response(error="Friendship not found", status=404)

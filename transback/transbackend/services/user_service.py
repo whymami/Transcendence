@@ -23,8 +23,8 @@ class UserService:
         return user
 
     @staticmethod
-    def handle_verification_email(user):
-        success, error = send_verification_email(user)
+    def handle_verification_email(user, new_email=None):
+        success, error = send_verification_email(user, new_email)
         if not success:
             raise Exception(f"Failed to send email: {error}") 
 

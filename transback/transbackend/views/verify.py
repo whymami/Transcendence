@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.template.response import TemplateResponse
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import AllowAny
 from .permissions import IsAnonymousUser
 from django.utils.timezone import now
 import json
@@ -44,7 +45,7 @@ class VerifyLoginView(APIView):
             return JsonResponse({"error": "Invalid JSON data."}, status=400)
 
 class VerifyAccountView(APIView):
-    permission_classes = [IsAnonymousUser]
+    permission_classes = [AllowAny]
     authentication_classes = [JWTAuthentication]
 
     def get(self, request):
