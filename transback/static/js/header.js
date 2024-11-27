@@ -35,7 +35,9 @@
   function changeLanguage() {
     const lang = langSelect.value;
     setCookie('lang', lang, 365);
-    location.reload();
+    pullHeader(true);
+    history.pushState({}, "", "/");
+    urlLocationHandler();
   }
 
   const logouts = document.querySelectorAll('.logout');
@@ -51,6 +53,5 @@
     pullHeader(true);
     history.pushState({}, "", "/");
     urlLocationHandler();
-
   }
 }
