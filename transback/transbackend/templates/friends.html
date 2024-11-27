@@ -1,21 +1,45 @@
 {% load static %} {% load i18n %}
 <head>
-    <title>Pending Friend Requests</title>
-    <link rel="stylesheet" href="{% static 'css/friends.css' %}">
+  <title>{% trans "Friends" %}</title>
+  <link rel="stylesheet" href="{% static 'css/friends.css' %}" />
 </head>
 <body>
-    <div class="container mt-4">
-        <!-- Pending Requests Section -->
-        <div class="card mb-4">
-            <div class="card-header">
-                <h5>{% trans "Pending Friend Requests" %}</h5>
-            </div>
-            <div class="card-body">
-                <div id="pendingRequests" class="list-group">
-                    <!-- Pending requests will be populated here -->
-                </div>
-            </div>
+  <div class="container mt-4">
+    <!-- Pending Requests Section -->
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5>{% trans "Pending Friend Requests" %}</h5>
+      </div>
+      <div class="card-body">
+        <div id="pendingRequests" class="list-group">
+          <!-- Pending requests will be populated here -->
         </div>
+      </div>
     </div>
-    <script src="{% static 'js/friends.js' %}"></script>
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5>{% trans "Friends" %}</h5>
+      </div>
+      <div class="card-body">
+        <div id="friendsList" class="list-group">
+          {% for friend in friends %}
+          <div class="friend-item">
+            <div class="friend-info">
+              <span>{{ friend.username }}</span>
+            </div>
+            <div class="friend-actions">
+              <button
+                class="btn btn-sm btn-danger"
+                onclick="removeFriend('{{ friend.username }}')"
+              >
+                {% trans "Remove" %}
+              </button>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <script data-static="true" src="{% static 'js/friends.js' %}"></script>
 </body>

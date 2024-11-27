@@ -1,0 +1,21 @@
+{% load static %} {% load i18n %}
+<head>
+  <title>{% trans "Game Lobby" %}</title>
+  <link
+    data-static="true"
+    rel="stylesheet"
+    type="text/css"
+    href="{% static '/css/lobby.css' %}"
+  />
+</head>
+<body>
+  <div id="lobbyContainer">
+    <!-- Menu (Local and Online Buttons) -->
+    <div id="menu">
+      <button onclick="startLocal()">{% trans "Local" %}</button>
+      <button onclick="startOnline()">{% trans "Online" %}</button>
+    </div>
+  </div>
+  <script data-static="true" src="{% url 'javascript-catalog' %}"></script>
+  <script data-static="true" src="{% static 'js/lobby.js' %}"></script>
+</body>

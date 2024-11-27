@@ -20,7 +20,7 @@
     />
     <h1>{{ user.username }}</h1>
     <p class="status">
-      {% if user.is_online %}
+      {% if is_self or user.is_online %}
       <span class="online">{% trans "Online" %}</span>
       {% else %}
       <span class="offline">{% trans "Offline" %}</span>
@@ -43,11 +43,12 @@
       {% endfor %}
     </ul>
 
-    <!-- Add Friend Button -->
-    <button class="btn btn-primary" id="addFriendButton" data-username="{{ user.username }}">
+    {% if not is_self %}
+    <button class="btn btn-primary" onclick="sendFriendRequest('{{ user.username }}')" id="addFriendButton">
       {% trans "Add Friend" %}
     </button>
+    {% endif %}
   </div>
   <script data-static="true" src="{% url 'javascript-catalog' %}"></script>
-  <script src="{% static 'js/profile.js' %}"></script>
+  <script data-static="true" src="{% static 'js/profile.js' %}"></script>
 </body>

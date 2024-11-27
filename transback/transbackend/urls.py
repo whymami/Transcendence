@@ -3,7 +3,7 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView,TokenObtainPairView
 from django.views.i18n import JavaScriptCatalog
 from .views.auth import RegisterView, LoginView, ResetPasswordView
-from .views.template_views import HomeView, HeaderView, GameView, UserSettingsView, ProfileView, UserListView
+from .views.template_views import HomeView, HeaderView, GameView, UserSettingsView, ProfileView, UserListView, LobbyView
 from .views.verify import VerifyLoginView, VerifyAccountView, ReSendVerifyCodeView
 from .views.utils import NotFoundView
 from .views.friend_views import FriendListView, FriendRequestView, FriendRequestResponseView
@@ -28,4 +28,5 @@ urlpatterns = [
     path('api/friends/', FriendListView.as_view(), name='friends'),
     path('api/friends/request/', FriendRequestView.as_view(), name='friend_request'),
     path('api/friends/response/', FriendRequestResponseView.as_view(), name='friend_request_response'),
+    path('api/lobby/', LobbyView.as_view(), name='lobby'),
 ]

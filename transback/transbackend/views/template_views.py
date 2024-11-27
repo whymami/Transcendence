@@ -40,7 +40,7 @@ class ProfileView(APIView):
         username = request.query_params.get('username')
         if not username or username == "":
             user = request.user
-            user.is_online = True
+            is_self = True
 
             last_games = []
             games = Game.objects.filter(Q(player1=user) | Q(player2=user)).order_by('-start_time')[:5]
@@ -62,7 +62,7 @@ class ProfileView(APIView):
             return TemplateResponse(
                 request,
                 'profile.html', 
-                {"user": user, "last_games": last_games}
+                {"user": user, "last_games": last_games, "is_self": is_self}
             )
         try:
             user = User.objects.get(username=username)
@@ -86,10 +86,12 @@ class ProfileView(APIView):
 
             last_games.append(f"{user.username} vs {opponent} - Score: {user_score}-{opponent_score} {result}")
 
+        is_self = False
+
         return TemplateResponse(
             request,
             'profile.html', 
-            {"user": user, "last_games": last_games}
+            {"user": user, "last_games": last_games, "is_self": is_self}
         )
 
 class UserSettingsView(APIView):
@@ -131,3 +133,11 @@ class UserListView(APIView):
             return TemplateResponse(request, 'users.html', {"users": users})
         except Exception as e:
             return json_response(error="Failed to fetch users", status=500)
+
+class LobbyView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        return TemplateResponse(request, 'lobby.html', {"user": request.user})
+

@@ -105,6 +105,9 @@ const urlRoutes = {
   },
   "/friends": {
     endPoint: "/api/friends/"
+  },
+  "/lobby": {
+    endPoint: "/api/lobby/"
   }
 };
 
