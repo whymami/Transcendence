@@ -74,11 +74,9 @@ class FriendRequestResponseView(APIView):
         try:
             target_user = User.objects.get(username=username)
             self_user = request.user
-
             friendship = Friendship.objects.filter(
                 (Q(sender=target_user, receiver=self_user) |
-                 Q(sender=self_user, receiver=target_user)),
-                status=Friendship.PENDING
+                 Q(sender=self_user, receiver=target_user))
             ).first()
 
             if not friendship:
