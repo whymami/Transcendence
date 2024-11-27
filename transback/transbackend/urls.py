@@ -6,7 +6,7 @@ from .views.auth import RegisterView, LoginView, ResetPasswordView
 from .views.template_views import HomeView, HeaderView, GameView, UserSettingsView, ProfileView, UserListView, LobbyView
 from .views.verify import VerifyLoginView, VerifyAccountView, ReSendVerifyCodeView
 from .views.utils import NotFoundView
-from .views.friend_views import FriendListView, FriendRequestView, FriendRequestResponseView, FriendRemoveView
+from .views.friend_views import FriendListView, FriendRequestView, FriendRequestResponseView
 
 urlpatterns = [
     path('api/header/', HeaderView.as_view(), name='header'),
@@ -28,6 +28,5 @@ urlpatterns = [
     path('api/friends/', FriendListView.as_view(), name='friends'),
     path('api/friends/request/', FriendRequestView.as_view(), name='friend_request'),
     path('api/friends/response/', FriendRequestResponseView.as_view(), name='friend_request_response'),
-    path('api/friends/remove/', FriendRemoveView.as_view(), name='friend_remove'),
     path('api/lobby/', LobbyView.as_view(), name='lobby'),
 ]

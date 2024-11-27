@@ -39,13 +39,21 @@ class FriendRequestView(APIView):
         try:
             receiver = User.objects.get(username=receiver_username)
             
-            # Check if friendship already exists
-            if Friendship.objects.filter(
+            # Check existing friendship status
+            existing_friendship = Friendship.objects.filter(
                 (Q(sender=request.user, receiver=receiver) | 
                  Q(sender=receiver, receiver=request.user))
-            ).exists():
-                return JsonResponse({"error": "Friendship request already exists"}, status=400)
-            
+            ).first()
+
+            if existing_friendship:
+                if existing_friendship.status == Friendship.ACCEPTED:
+                    return JsonResponse({"error": "You are already friends with this user"}, status=400)
+                elif existing_friendship.status == Friendship.PENDING:
+                    return JsonResponse({"error": "A friend request is already pending"}, status=400)
+                elif existing_friendship.status == Friendship.REJECTED:
+                    # If rejected, allow new request by deleting old one
+                    existing_friendship.delete()
+                
             Friendship.objects.create(
                 sender=request.user,
                 receiver=receiver
@@ -60,47 +68,34 @@ class FriendRequestResponseView(APIView):
     authentication_classes = [JWTAuthentication]
 
     def post(self, request):
-        request_id = request.data.get('request_id')
-        action = request.data.get('action')  # 'accept' or 'reject'
+        username = request.data.get('username')
+        action = request.data.get('action')  # 'accept' or 'reject' or 'remove'
         
         try:
-            friendship = Friendship.objects.get(
-                id=request_id,
-                receiver=request.user,
+            target_user = User.objects.get(username=username)
+            self_user = request.user
+
+            friendship = Friendship.objects.filter(
+                (Q(sender=target_user, receiver=self_user) |
+                 Q(sender=self_user, receiver=target_user)),
                 status=Friendship.PENDING
-            )
-            
+            ).first()
+
+            if not friendship:
+                return json_response(error="Friend request not found", status=404)
+
             if action == 'accept':
                 friendship.status = Friendship.ACCEPTED
+                friendship.save()
+                return json_response(message="Friend request accepted")
             elif action == 'reject':
-                friendship.status = Friendship.REJECTED
+                friendship.delete()
+                return json_response(message="Friend request rejected")
+            elif action == 'remove':
+                friendship.delete()
+                return json_response(message="Friend removed")
             else:
-                return JsonResponse({"error": "Invalid action"}, status=400)
-                
-            friendship.save()
-            return JsonResponse({"message": f"Friend request {action}ed"}, status=200)
-            
-        except Friendship.DoesNotExist:
-            return JsonResponse({"error": "Friend request not found"}, status=404)
-    
-class FriendRemoveView(APIView):
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [JWTAuthentication]
+                return json_response(error="Invalid action", status=400)
 
-    def post(self, request):
-        data = request.data
-        username = data.get('username')
-        try:
-            user = User.objects.get(username=username)
         except User.DoesNotExist:
             return json_response(error="User not found", status=404)
-        
-        friendship = Friendship.objects.filter(
-            (Q(sender=request.user, receiver=user) | Q(sender=user, receiver=request.user)) & Q(status=Friendship.ACCEPTED)
-        ).first()
-        
-        if friendship:
-            friendship.delete()
-            return json_response(message="Friend removed successfully")
-        else:
-            return json_response(error="Friendship not found", status=404)

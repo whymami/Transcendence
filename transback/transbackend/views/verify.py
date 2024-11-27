@@ -56,10 +56,22 @@ class VerifyAccountView(APIView):
             data = json.loads(request.body)
             username = data.get('username')
             verification_code = data.get('verification_code')
+            new_email = data.get('new_email')
+            original_email = data.get('original_email')
 
             try:
                 user = User.objects.get(username=username)
                 UserService.verify_account(user, verification_code)
+
+                # If this verification is from user settings (email change)
+                if new_email and original_email:
+                    user.email = new_email
+                    user.save()
+                    return JsonResponse({
+                        "message": "Email updated and verified successfully!",
+                        "email_updated": True
+                    }, status=200)
+
                 return JsonResponse({"message": "Account verified successfully!"}, status=200)
 
             except User.DoesNotExist:
