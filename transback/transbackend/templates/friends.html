@@ -27,13 +27,13 @@
               <div class="friend-actions">
                 <button
                   class="btn btn-sm btn-success"
-                  onclick="acceptFriend('{{ request.username }}')"
+                  onclick="actionFriend('{{ request.username }}', 'accept')"
                 >
                   {% trans "Accept" %}
                 </button>
                 <button
                   class="btn btn-sm btn-danger"
-                  onclick="rejectFriend('{{ request.username }}')"
+                  onclick="actionFriend('{{ request.username }}', 'reject')"
                 >
                   {% trans "Reject" %}
                 </button>
@@ -68,7 +68,7 @@
             <div class="friend-actions">
               <button
                 class="btn btn-sm btn-danger"
-                onclick="removeFriend('{{ friend.username }}')"
+                onclick="actionFriend('{{ friend.username }}', 'remove')"
               >
                 {% trans "Remove" %}
               </button>
