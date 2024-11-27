@@ -12,7 +12,37 @@
       </div>
       <div class="card-body">
         <div id="pendingRequests" class="list-group">
-          <!-- Pending requests will be populated here -->
+          {% if pending_requests %} {% for request in pending_requests %}
+          <div class="friend-item">
+            <div class="friend-info">
+              {% if request.profile_picture %}
+              <img
+                src="{{ request.profile_picture.url }}"
+                alt="{{ request.username }}"
+                class="friend-avatar"
+              />
+              {% endif %}
+              <span>{{ request.username }}</span>
+              <span class="friend-status">{{ request.status }}</span>
+              <div class="friend-actions">
+                <button
+                  class="btn btn-sm btn-success"
+                  onclick="acceptFriend('{{ request.username }}')"
+                >
+                  {% trans "Accept" %}
+                </button>
+                <button
+                  class="btn btn-sm btn-danger"
+                  onclick="rejectFriend('{{ request.username }}')"
+                >
+                  {% trans "Reject" %}
+                </button>
+              </div>
+            </div>
+          </div>
+          {% endfor %} {% else %}
+          <p>{% trans "No pending friend requests" %}</p>
+          {% endif %}
         </div>
       </div>
     </div>
@@ -22,10 +52,18 @@
       </div>
       <div class="card-body">
         <div id="friendsList" class="list-group">
-          {% for friend in friends %}
+          {% if friends %} {% for friend in friends %}
           <div class="friend-item">
             <div class="friend-info">
+              {% if friend.profile_picture %}
+              <img
+                src="{{ friend.profile_picture.url }}"
+                alt="{{ friend.username }}"
+                class="friend-avatar"
+              />
+              {% endif %}
               <span>{{ friend.username }}</span>
+              <span class="friend-status">{{ friend.status }}</span>
             </div>
             <div class="friend-actions">
               <button
@@ -36,7 +74,9 @@
               </button>
             </div>
           </div>
-          {% endfor %}
+          {% endfor %} {% else %}
+          <p>{% trans "No friends" %}</p>
+          {% endif %}
         </div>
       </div>
     </div>

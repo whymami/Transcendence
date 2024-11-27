@@ -1,8 +1,6 @@
 const friendshipButton = document.getElementById('friendshipButton');
 async function sendFriendRequest(username) {
     token = await getCookie('access_token');
-    console.log(token);
-    console.log(username);
     try {
         let response = await fetch('/api/friends/request/', {
             method: 'POST',
