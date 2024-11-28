@@ -1,41 +1,3 @@
-let isConnected = false;
-let statusSocket;
-
-const socket = async () => {
-  if (isConnected)
-    return;
-
-  const token = await getCookie('access_token');
-
-  if (!token)
-    return;
-
-  statusSocket = new WebSocket(`ws://${window.location.host}:8000/ws/online-status/?token=${token}`);
-
-  statusSocket.onmessage = function (event) {
-    console.log(event.data);
-  };
-
-  statusSocket.onopen = function (event) {
-    console.log("open");
-    isConnected = true;
-  };
-
-  statusSocket.onclose = function (event) {
-    console.log("close");
-    isConnected = false;
-  };
-
-}
-
-const disconnectSocketStatus = () => {
-  if (statusSocket && isConnected) {
-    statusSocket.close();
-    statusSocket = null;
-    isConnected = false;
-  }
-}
-
 document.addEventListener("click", (e) => {
   const { target } = e;
   if (!target.matches("nav a")) {
@@ -230,8 +192,60 @@ async function pullHeader(repull = false) {
     });
 }
 
-
 window.onpopstate = urlLocationHandler;
 window.route = urlRoute;
 urlLocationHandler();
 pullHeader(false);
+
+function connectWebSocket() {
+  const token = getCookie('access_token'); // Assume a function to get the token
+
+  if (!token) return;
+
+  statusSocket = new WebSocket(`ws://${window.location.host}/ws/online-status/?token=${token}`);
+
+  statusSocket.onopen = function () {
+    console.log("WebSocket connection opened.");
+  };
+
+  statusSocket.onmessage = function (event) {
+    const data = JSON.parse(event.data);
+    if (data.type === "online_status") {
+      updateUserOnlineStatus(data.username, data.is_online);
+    }
+  };
+
+  statusSocket.onclose = function () {
+    console.log("WebSocket connection closed.");
+  };
+}
+
+function checkUserOnlineStatus(username) {
+  if (statusSocket && statusSocket.readyState === WebSocket.OPEN) {
+    statusSocket.send(JSON.stringify({
+      type: "check_online",
+      username: username
+    }));
+  }
+}
+
+function updateUserOnlineStatus(username, isOnline) {
+  console.log(`${username} is ${isOnline ? "online" : "offline"}`);
+  const statusElement = document.getElementById('userStatus');
+  if (statusElement) {
+    statusElement.textContent = `${username} is ${isOnline ? "online" : "offline"}`;
+  }
+}
+
+// Call this function to establish the WebSocket connection
+connectWebSocket();
+
+// Example usage when navigating to a profile page
+document.addEventListener('DOMContentLoaded', function () {
+  const urlParams = new URLSearchParams(window.location.search);
+  const username = urlParams.get('username');
+  if (username) {
+    checkUserOnlineStatus(username);
+  }
+});
+

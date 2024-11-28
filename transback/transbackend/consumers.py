@@ -273,33 +273,28 @@ class PongConsumer(AsyncWebsocketConsumer):
         
 
 class OnlineStatusConsumer(AsyncWebsocketConsumer):
+    connected_users = set()
+
     async def connect(self):
         query_string = self.scope.get('query_string', b'').decode('utf-8')
-        
-        user = await get_user_from_token(query_string)
-        
-        if user:
-            self.user = user
+        self.user = await get_user_from_token(query_string)
+        if self.user.is_authenticated:
+            OnlineStatusConsumer.connected_users.add(self.user.username)
             await self.channel_layer.group_add("online_users", self.channel_name)
-
-            self.user.is_online = True
-            await database_sync_to_async(self.user.save)()
             await self.accept()
-        else:
-            await self.close()
 
     async def disconnect(self, close_code):
-        await self.set_user_active_status(self.user, False)
-
-        await self.channel_layer.group_discard("online_users", self.channel_name)
+        if self.user.is_authenticated:
+            OnlineStatusConsumer.connected_users.discard(self.user.username)
+            await self.channel_layer.group_discard("online_users", self.channel_name)
 
     async def receive(self, text_data):
         data = json.loads(text_data)
-
-    async def online_users(self, event):
-        await self.send(text_data=json.dumps(event["content"]))
-
-    @sync_to_async
-    def set_user_active_status(self, user, status):
-        user.is_online = status
-        user.save()
+        if data.get("type") == "check_online":
+            username = data.get("username")
+            is_online = username in OnlineStatusConsumer.connected_users
+            await self.send(text_data=json.dumps({
+                "type": "online_status",
+                "username": username,
+                "is_online": is_online
+            }))
