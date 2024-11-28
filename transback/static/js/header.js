@@ -36,7 +36,6 @@
     const lang = langSelect.value;
     setCookie('lang', lang, 365);
     pullHeader(true);
-    history.pushState({}, "", "/");
     urlLocationHandler();
   }
 
