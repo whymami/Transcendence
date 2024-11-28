@@ -118,6 +118,7 @@ const urlRoute = (event) => {
   window.history.pushState({}, "", event.target.href);
   urlLocationHandler();
 };
+ socket();
 
 const urlLocationHandler = async () => {
   const location = window.location.pathname;
@@ -125,7 +126,6 @@ const urlLocationHandler = async () => {
     location = "/";
   }
 
-  socket();
 
   const token = await getCookie('access_token');
   const language = document.documentElement.lang;
@@ -226,7 +226,7 @@ async function pullHeader(repull = false) {
 
     }).catch(error => {
       console.error('Error:', error);
-      showToast('Error: ' + error, 'error');
+      showToast("error", 'Error: ' + error, 'error');
     });
 }
 
