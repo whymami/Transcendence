@@ -35,19 +35,20 @@ services:
       - app-network
     
   nginx:
-    image: nginx:latest
+    build:
+      context: ./nginx  # Dockerfile'ı kullanarak image'ı oluşturacak
     volumes:
-      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
       - ./front:/usr/share/nginx/html  # Frontend dosyalarının Nginx ile paylaşımı
       - ./transback/static:/static  # Django statik dosyaları
       - ./transback/profile_pictures:/profile_pictures  # Django profil resimleri
+    environment:
+      - BACKEND=http://web:8000
     ports:
       - "80:80"
     depends_on:
       - web
     networks:
       - app-network
-
 
 networks:
   app-network:
