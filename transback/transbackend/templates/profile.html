@@ -16,6 +16,7 @@
       class="profile-picture"
       src="{% if user.profile_picture %}{{ user.profile_picture }}{% else %}{% static 'images/default-profile.webp' %}{% endif %}"
       alt="{% trans 'Profile Picture' %}"
+      onerror="this.src='{% static 'images/default-profile.webp' %}'"
     />
     {% if is_self %}
     <a href="/settings" id="settings-link" class="settings-link">

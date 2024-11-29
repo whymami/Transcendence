@@ -1,0 +1,52 @@
+{% load static %} {% load i18n %}
+
+<head>
+  <title>{% trans "Local Game" %}</title>
+  <link rel="stylesheet" href="{% static 'css/home.css' %}" />
+</head>
+
+<body>
+  <div class="container">
+    <div class="cards-container">
+      <div class="card">
+        <div class="card-content">
+          <h2>
+            {% trans "Play Against AI" %}
+            <img
+              src="{% static 'images/ai.svg' %}"
+              alt="Local"
+              width="30"
+              height="30"
+            />
+          </h2>
+          <p>{% trans "Play against computer" %}</p>
+          <a href="/local/game/ai" class="card-button">{% trans "Start" %}</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <h2>
+            {% trans "Local Multiplayer" %}
+            <img
+              src="{% static 'images/multiplayer.svg' %}"
+              alt="Local"
+              width="30"
+              height="30"
+            />
+          </h2>
+          <p>{% trans "Play with friends locally" %}</p>
+          <div class="button-group">
+            <a href="/local/game/two-player" class="card-button"
+              >{% trans "2 Players" %}</a
+            >
+            <a href="/local/game/four-player" class="card-button"
+              >{% trans "4 Players" %}</a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script data-static="true" src="{% static 'js/home.js' %}"></script>
+</body>

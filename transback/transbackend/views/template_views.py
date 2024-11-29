@@ -175,10 +175,9 @@ class UserListView(APIView):
         except Exception as e:
             return json_response(error="Failed to fetch users", status=500)
 
-class LobbyView(APIView):
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [JWTAuthentication]
-
+class LocalView(APIView):
     def get(self, request):
-        return TemplateResponse(request, 'lobby.html', {"user": request.user})
-
+        try:
+            return TemplateResponse(request, 'local.html')
+        except Exception as e:
+            return json_response(error="Yerel oyun sayfası yüklenemedi", status=500)

@@ -57,7 +57,7 @@
 
   function logoutFN(e) {
     e.preventDefault();
-    disconnectSocketStatus();
+    disconnect();
     eraseCookie('refresh_token');
     eraseCookie('access_token');
     pullHeader(true);

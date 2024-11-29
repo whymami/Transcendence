@@ -1,26 +1,71 @@
 .home-container {
-  background-color: var(--background-color);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   padding: 40px;
-  border-radius: 12px;
-  text-align: center;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-  color: var(--text-color);
 }
 
-h1 {
-  font-size: 2.5rem;
-  margin-bottom: 20px;
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 2rem;
+  max-width: 800px;
+  width: 100%;
 }
 
-p {
-  font-size: 1.2rem;
-  margin-bottom: 30px;
+.card {
+  background-color: var(--background-color);
+  border-radius: 15px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+  padding: 20px;
 }
 
-.play-button {
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+}
+
+.card-content {
+  padding: 1.5rem;
+}
+
+.card-content h2 {
+  color: #e1e1e1;
+  margin-bottom: 1rem;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-direction: row-reverse;
+  width: fit-content;
+}
+
+.card-content p {
+  color: var(--text-color, #666);
+  margin-bottom: 1.5rem;
+  line-height: 1.5;
+}
+
+.card-button {
+  display: inline-block;
+  padding: 0.8rem 1.5rem;
+  background-color: var(--primary-color, #007bff);
   color: white;
-  background-color: var(--primary-color);
   text-decoration: none;
-  padding: 12px 45px;
-  border-radius: 10px;
+  border-radius: 8px;
+  transition: background-color 0.3s ease;
+}
+
+.card-button:hover {
+  background-color: var(--secondary-color);
+}
+
+@media screen and (max-width: 780px) {
+  .cards-container {
+    display: flex;
+    flex-direction: column;
+  }
 }

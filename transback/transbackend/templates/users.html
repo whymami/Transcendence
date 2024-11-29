@@ -16,6 +16,7 @@
             src="{% if user.profile_picture %}{{ user.profile_picture }}{% else %}{% static 'images/default-profile.webp' %}{% endif %}"
             alt="{{ user.username }}"
             class="profile-picture"
+             onerror="this.src='{% static 'images/default-profile.webp' %}'"
           />
         </div>
         <div class="user-info">

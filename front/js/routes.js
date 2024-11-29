@@ -44,6 +44,14 @@ function updateUserOnlineStatus(username, isOnline) {
   }
 }
 
+function disconnect() {
+  if (statusSocket) {
+    statusSocket.close();
+    //console.log("WebSocket bağlantısı kapatıldı.");
+  }
+}
+
+
 // Call this function to establish the WebSocket connection
 connectWebSocket();
 
@@ -81,7 +89,7 @@ function createScript(script) {
 
 const urlRoutes = {
   404: {
-    endPoint: "api/404/",
+    endPoint: "/api/404/",
   },
   "/": {
     endPoint: "/api/home/",
@@ -118,6 +126,18 @@ const urlRoutes = {
   },
   "/lobby": {
     endPoint: "/api/lobby/"
+  },
+  "/local": {
+    endPoint: "/api/local"
+  },
+  "/local/game/ai": {
+    endPoint: "/api/game/ai"
+  },
+  "/local/game/two-player": {
+    endPoint: "/api/game/two-player"
+  },
+  "/local/game/four-player": {
+    endPoint: "/api/game/four-player"
   }
 };
 
