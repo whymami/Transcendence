@@ -1,13 +1,7 @@
 .users-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px;
-}
-
-.users-container h1 {
-    color: var(--text-color);
-    text-align: center;
-    margin-bottom: 30px;
+    padding: 20px; 
 }
 
 .users-list {
@@ -17,6 +11,8 @@
     background-color: var(--background-color);
     border-radius: 8px;
     padding: 20px;
+    height: 80dvh;
+    overflow: auto;
 }
 
 .user-card {

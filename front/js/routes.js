@@ -128,18 +128,21 @@ const urlRoutes = {
     endPoint: "/api/lobby/"
   },
   "/local": {
-    endPoint: "/api/local"
+    endPoint: "/api/local/"
   },
   "/local/game/ai": {
-    endPoint: "/api/game/ai"
+    endPoint: "/api/game/ai/"
   },
   "/local/game/two-player": {
-    endPoint: "/api/game/two-player"
+    endPoint: "/api/game/two-player/"
   },
   "/local/game/four-player": {
-    endPoint: "/api/game/four-player"
+    endPoint: "/api/game/four-player/"
+  },
+  "/online/game":{
+    endPoint: "/api/game/online/"
   }
-};
+}; 
 
 const urlRoute = (event) => {
   event = event || window.event;
@@ -161,7 +164,7 @@ const urlLocationHandler = async () => {
 
   let route = urlRoutes[location] || urlRoutes["404"];
   const container = document.getElementById("container");
-  const lang = await getCookie('lang') || 'en';
+  const lang = await getCookie('lang') || 'en-US';
 
   let username = null;
 
@@ -231,7 +234,7 @@ async function pullHeader(repull = false) {
   }
 
   const token = await getCookie('access_token');
-  const lang = await getCookie('lang') || 'en';
+  const lang = await getCookie('lang') || 'en-US';
   // console.log(window.navigator.languages);
   fetch('/api/header/',
     {

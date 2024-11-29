@@ -147,16 +147,16 @@ AUTH_PASSWORD_VALIDATORS = [
 from django.utils.translation import gettext_lazy as _
 
 LANGUAGES = [
-    ('en', _('English')),
-    ('tr', _('Turkish')),
-    ('fr', _('French')),
+    ('en-US', _('English')),
+    ('tr-TR', _('Turkish')),
+    ('fr-FR', _('French')),
 ]
 
 LOCALE_PATHS = [
     os.path.join(BASE_DIR, 'locale'),
 ]
 
-LANGUAGE_CODE = 'en'
+LANGUAGE_CODE = 'en-US'
 
 TIME_ZONE = 'UTC'
 

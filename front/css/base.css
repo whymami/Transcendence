@@ -12,6 +12,12 @@
   --background-color: #1e1e1e;
   --component-bg-color: #131313;
   --text-color: #888888;
+  --success-color: #28a745;
+  --success-hover-color: #218838;
+  --danger-color: #dc3545;
+  --danger-hover-color: #c82333;
+  --border-color: #2d2d2d;
+  --secondary-text-color: #666666;
 }
 
 body {

@@ -37,7 +37,7 @@
   const langSelects = document.getElementsByClassName('language-select');
   Array.from(langSelects).forEach(async (langSelect) => {
     langSelect.addEventListener('change', changeLanguage);
-    const curLang = await getCookie('lang') || 'en';
+    const curLang = await getCookie('lang') || 'en-US';
     console.log(curLang)
     langSelect.value = curLang;
   });

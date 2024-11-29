@@ -68,12 +68,6 @@ async function sendFriend(username, status) {
     }
 }
 
-const settingsLink = document.getElementById('settings-link');
-settingsLink?.addEventListener('click', () => {
-    history.pushState({}, '', '/settings');
-    urlLocationHandler();
-});
-
 const urlParams = new URLSearchParams(window.location.search);
 const username = urlParams.get('username');
 if (username) {
@@ -90,4 +84,12 @@ if (username) {
             checkUserOnlineStatus(username);
         }, 1000);
     };
+}
+
+{
+    document.getElementById('settings-link')?.addEventListener('click', (e) => {
+        e.preventDefault();
+        history.pushState({}, '', '/settings');
+        urlLocationHandler();
+    });
 }

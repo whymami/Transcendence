@@ -2,7 +2,7 @@
 
 <head>
   <title>{% trans "Local Game" %}</title>
-  <link rel="stylesheet" href="{% static 'css/home.css' %}" />
+  <link rel="stylesheet" href="{% static 'css/local.css' %}" />
 </head>
 
 <body>
@@ -46,6 +46,28 @@
           </div>
         </div>
       </div>
+
+      <div class="card">
+        <div class="card-content">
+          <h2>
+            {% trans "Tournament" %}
+            <img
+              src="{% static 'images/tournament.svg' %}"
+              alt="Tournament" 
+              width="30"
+              height="30"
+            />
+          </h2>
+          <p>{% trans "Create a tournament and compete with your friends" %}</p>
+          <div class="button-group">
+            <a href="/local/tournament" class="card-button"
+              >{% trans "Go To Tournament" %}</a
+            >
+            
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
   <script data-static="true" src="{% static 'js/home.js' %}"></script>

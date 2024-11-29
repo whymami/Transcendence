@@ -115,7 +115,7 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
                 showToast("error", gettext("An error occurred: ") + (result?.message || result?.detail || gettext('Unknown error')));
             }
         } catch (error) {
-            console.error("Fetch Hatası:", error);
+            console.error("Error:", error);
             showToast("error", error.message);
         } finally {
             usernameInput.disabled = false;
