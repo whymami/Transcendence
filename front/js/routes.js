@@ -1,40 +1,51 @@
-let isConnected = false;
-let statusSocket;
+let status;
+function connectWebSocket() {
+  const token = getCookie('access_token'); // Assume a function to get the token
 
-const socket = async () => {
-  if (isConnected)
-    return;
-
-  const token = await getCookie('access_token');
-
-  if (!token)
-    return;
+  if (!token) return;
 
   statusSocket = new WebSocket(`ws://${window.location.host}:8000/ws/online-status/?token=${token}`);
 
+  statusSocket.onopen = function () {
+    console.log("WebSocket connection opened.");
+  };
+
   statusSocket.onmessage = function (event) {
-    console.log(event.data);
+    const data = JSON.parse(event.data);
+    if (data.type === "online_status") {
+      updateUserOnlineStatus(data.username, data.is_online);
+    }
   };
 
-  statusSocket.onopen = function (event) {
-    console.log("open");
-    isConnected = true;
+  statusSocket.onclose = function () {
+    console.log("WebSocket connection closed.");
   };
-
-  statusSocket.onclose = function (event) {
-    console.log("close");
-    isConnected = false;
-  };
-
 }
 
-const disconnectSocketStatus = () => {
-  if (statusSocket && isConnected) {
-    statusSocket.close();
-    statusSocket = null;
-    isConnected = false;
+function checkUserOnlineStatus(username) {
+  if (statusSocket && statusSocket.readyState === WebSocket.OPEN) {
+    statusSocket.send(JSON.stringify({
+      type: "check_online",
+      username: username
+    }));
   }
 }
+
+function updateUserOnlineStatus(username, isOnline) {
+  console.log(`${username} is ${isOnline ? "online" : "offline"}`);
+  const curStatus = isOnline ? "online" : "offline"
+  if (status != curStatus) {
+    status = isOnline ? "online" : "offline"
+    const statusElement = document.getElementsByClassName('status')[0];
+    if (statusElement) {
+      statusElement.innerHTML = `<span class="${isOnline ? 'online' : 'offline'}">
+      ${isOnline ? gettext('Online') : gettext('Offline')}</span>`
+    }
+  }
+}
+
+// Call this function to establish the WebSocket connection
+connectWebSocket();
 
 document.addEventListener("click", (e) => {
   const { target } = e;
@@ -59,7 +70,6 @@ async function getToken() {
   }
   return token;
 }
-
 
 function createScript(script) {
   const newScript = document.createElement('script');
@@ -102,6 +112,12 @@ const urlRoutes = {
   },
   "/users": {
     endPoint: "/api/users/"
+  },
+  "/friends": {
+    endPoint: "/api/friends/"
+  },
+  "/lobby": {
+    endPoint: "/api/lobby/"
   }
 };
 
@@ -119,7 +135,6 @@ const urlLocationHandler = async () => {
     location = "/";
   }
 
-  socket();
 
   const token = await getCookie('access_token');
   const language = document.documentElement.lang;
@@ -150,13 +165,16 @@ const urlLocationHandler = async () => {
       return;
     }
     const html = await response.text();
-    container.innerHTML = html;
     const parsedHtml = new DOMParser().parseFromString(html, "text/html");
     document.title = parsedHtml.title;
+    parsedHtml.head.querySelector('title').remove();
     document
       .querySelector('meta[name="description"]')
       .setAttribute("content", parsedHtml.description);
     document.head.appendChild(parsedHtml.head.querySelector('link[rel="stylesheet"]'));
+    parsedHtml.head.querySelectorAll('link[rel="stylesheet"]').forEach(link => {
+      link.remove();
+    });
     const oldScript = document.querySelectorAll('script[data-static="true"]');
     if (oldScript) {
       oldScript.forEach(script => {
@@ -165,10 +183,13 @@ const urlLocationHandler = async () => {
     }
     parsedHtml.body.querySelectorAll('script').forEach(script => {
       const created = createScript(script);
-      console.log(created);
-
-      document.body.appendChild(created);
+      if (created)
+        document.body.appendChild(created);
+      script.remove();
     });
+
+    container.innerHTML = parsedHtml.body.innerHTML;
+
   } catch (error) {
     console.error("Error:", error);
     showToast("error", "Error: " + error,);
@@ -214,10 +235,9 @@ async function pullHeader(repull = false) {
 
     }).catch(error => {
       console.error('Error:', error);
-      showToast('Error: ' + error, 'error');
+      showToast("error", 'Error: ' + error, 'error');
     });
 }
-
 
 window.onpopstate = urlLocationHandler;
 window.route = urlRoute;

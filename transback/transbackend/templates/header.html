@@ -6,6 +6,7 @@
     type="text/css"
     href="{% static '/css/header.css' %}"
   />
+  <script data-static="true" src="{% url 'javascript-catalog' %}"></script>
   <script src="{% static '/js/header.js' %}" defer></script>
 </head>
 
@@ -21,10 +22,10 @@
         <div class="nav-links" id="desktop-nav">
           <a href="/" class="nav-link">{% trans "Home" %}</a>
           {% if user.is_authenticated %}
-          <a href="/settings" class="nav-link">{% trans "Settings" %}</a>
-          <a href="/" class="logout">{% trans "Logout" %}</a>
+            <a href="/profile" class="nav-link">{{ user.username }}</a>
+            <a href="/" class="logout">{% trans "Logout" %}</a>
           {% else %}
-          <a href="/login" class="nav-link">{% trans "Login" %}</a>
+            <a href="/login" class="nav-link">{% trans "Login" %}</a>
           {% endif %}
           <div class="language-select-container">
             <select id="lang-select" class="language-select" >
@@ -61,9 +62,9 @@
     </ul>
     <div class="language-select-container">
       <select id="lang-select" class="language-select" >
-        <option value="en">English</option>
-        <option value="tr">Türkçe</option>
-        <option value="fr">Français</option>
+        <option value="en-US">English</option>
+        <option value="tr-TR">Türkçe</option>
+        <option value="fr-FR">Français</option>
       </select>
     </div>
   </div>

@@ -25,17 +25,29 @@
 
   const navLinks = document.querySelectorAll('.nav-link');
   navLinks.forEach((link) => {
-    link.addEventListener('click', burgerClick);
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const href = link.getAttribute('href');
+      burgerClick(e);
+      history.pushState({}, '', href);
+      urlLocationHandler();
+    });
   });
 
-  const langSelect = document.getElementById('lang-select');
-  langSelect.addEventListener('change', changeLanguage);
-  langSelect.value = getCookie('lang') || 'en-US';
+  const langSelects = document.getElementsByClassName('language-select');
+  Array.from(langSelects).forEach(async (langSelect) => {
+    langSelect.addEventListener('change', changeLanguage);
+    const curLang = await getCookie('lang') || 'en';
+    console.log(curLang)
+    langSelect.value = curLang;
+  });
 
-  function changeLanguage() {
-    const lang = langSelect.value;
-    setCookie('lang', lang, 365);
-    location.reload();
+  async function changeLanguage(e) {
+    const lang = e.target.value;
+    console.log(lang)
+    await setCookie('lang', lang, 365);
+    await pullHeader(true);
+    urlLocationHandler();
   }
 
   const logouts = document.querySelectorAll('.logout');
@@ -51,6 +63,6 @@
     pullHeader(true);
     history.pushState({}, "", "/");
     urlLocationHandler();
-
   }
+
 }

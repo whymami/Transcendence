@@ -8,6 +8,8 @@ import json
 from transbackend.models import User, Game
 from django.db.models import Q
 from transbackend.utils.response_utils import json_response
+from transbackend.models import Friendship
+from transbackend.services.user_service import UserService
 
 class HeaderView(APIView):
     permission_classes = [AllowAny]
@@ -40,7 +42,7 @@ class ProfileView(APIView):
         username = request.query_params.get('username')
         if not username or username == "":
             user = request.user
-            user.is_online = True
+            is_self = True
 
             last_games = []
             games = Game.objects.filter(Q(player1=user) | Q(player2=user)).order_by('-start_time')[:5]
@@ -62,7 +64,7 @@ class ProfileView(APIView):
             return TemplateResponse(
                 request,
                 'profile.html', 
-                {"user": user, "last_games": last_games}
+                {"user": user, "last_games": last_games, "is_self": is_self}
             )
         try:
             user = User.objects.get(username=username)
@@ -86,10 +88,23 @@ class ProfileView(APIView):
 
             last_games.append(f"{user.username} vs {opponent} - Score: {user_score}-{opponent_score} {result}")
 
+        is_self = False
+
+        friendship_status = None
+        try:
+            friendship = Friendship.objects.filter(
+                (Q(sender=request.user) & Q(receiver=user)) |
+                (Q(sender=user) & Q(receiver=request.user))
+            ).first()
+            if friendship:
+                friendship_status = friendship.status
+        except Friendship.DoesNotExist:
+            friendship_status = None
+
         return TemplateResponse(
             request,
             'profile.html', 
-            {"user": user, "last_games": last_games}
+            {"user": user, "last_games": last_games, "is_self": is_self, "friendship_status": friendship_status}
         )
 
 class UserSettingsView(APIView):
@@ -104,16 +119,44 @@ class UserSettingsView(APIView):
         try:
             data = request.data
             user = request.user
-            if data.get('username'):
-                user.username = data.get('username')
-            if data.get('email'):
-                user.email = data.get('email')
+            email_changed = False
+            new_email = None
+            original_email = None
 
-            if data.get('profile_picture'):
+            if data.get('username') and data.get('username') != "":
+                user.username = data.get('username')
+                if User.objects.filter(username=user.username).exclude(id=user.id).exists():
+                    return JsonResponse({"error": "Username already exists."}, status=400)
+
+            if data.get('email') and data.get('email') != "":
+                new_email = data.get('email')
+                original_email = user.email
+                if User.objects.filter(email=new_email).exclude(id=user.id).exists():
+                    return JsonResponse({"error": "Email already exists."}, status=400)
+                email_changed = True
+
+            if data.get('profile_picture') and data.get('profile_picture') != "":
+                if user.profile_picture:
+                    import os
+                    old_picture_path = user.profile_picture.path
+                    if os.path.exists(old_picture_path):
+                        os.remove(old_picture_path)
                 user.profile_picture = data.get('profile_picture')
 
-            user.save()
-            return JsonResponse({"message": "Profile updated successfully!"}, status=200)
+            if email_changed:
+                # Don't update email yet, just send verification code
+                user.set_verification_code()
+                UserService.handle_verification_email(user, new_email)
+                return JsonResponse({
+                    "message": "Please check your new email for verification code before changes take effect.",
+                    "requires_verification": True,
+                    "email": new_email,
+                    "original_email": original_email
+                }, status=200)
+            else:
+                user.save()
+                return JsonResponse({"message": "Profile updated successfully!"}, status=200)
+
         except json.JSONDecodeError:
             return JsonResponse({"error": "Invalid JSON data."}, status=400)
 
@@ -131,3 +174,11 @@ class UserListView(APIView):
             return TemplateResponse(request, 'users.html', {"users": users})
         except Exception as e:
             return json_response(error="Failed to fetch users", status=500)
+
+class LobbyView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        return TemplateResponse(request, 'lobby.html', {"user": request.user})
+

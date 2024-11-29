@@ -46,24 +46,6 @@
     border: 2px solid var(--primary-color);
 }
 
-.status-indicator {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 15px;
-    height: 15px;
-    border-radius: 50%;
-    border: 2px solid var(--background-color);
-}
-
-.status-indicator.online {
-    background-color: #4caf50;
-}
-
-.status-indicator.offline {
-    background-color: #ff4d4d;
-}
-
 .user-info {
     flex-grow: 1;
     display: flex;

@@ -2,8 +2,6 @@
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
 
-    canvas.focus();
-
     // Retrieve the token from cookies
     const token = getCookie("access_token");
     if (!token) {

@@ -1,0 +1,85 @@
+{% load static %} {% load i18n %}
+<head>
+  <title>{% trans "Friends" %}</title>
+  <link rel="stylesheet" href="{% static 'css/friends.css' %}" />
+</head>
+<body>
+  <div class="container mt-4">
+    <!-- Pending Requests Section -->
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5>{% trans "Pending Friend Requests" %}</h5>
+      </div>
+      <div class="card-body">
+        <div id="pendingRequests" class="list-group">
+          {% if pending_requests %} {% for request in pending_requests %}
+          <div class="friend-item">
+            <div class="friend-info">
+              {% if request.profile_picture %}
+              <img
+                src="{{ request.profile_picture.url }}"
+                alt="{{ request.username }}"
+                class="friend-avatar"
+              />
+              {% endif %}
+              <span>{{ request.username }}</span>
+              <span class="friend-status">{{ request.status }}</span>
+              <div class="friend-actions">
+                <button
+                  class="btn btn-sm btn-success"
+                  onclick="actionFriend('{{ request.username }}', 'accept')"
+                >
+                  {% trans "Accept" %}
+                </button>
+                <button
+                  class="btn btn-sm btn-danger"
+                  onclick="actionFriend('{{ request.username }}', 'reject')"
+                >
+                  {% trans "Reject" %}
+                </button>
+              </div>
+            </div>
+          </div>
+          {% endfor %} {% else %}
+          <p>{% trans "No pending friend requests" %}</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+    <div class="card mb-4">
+      <div class="card-header">
+        <h5>{% trans "Friends" %}</h5>
+      </div>
+      <div class="card-body">
+        <div id="friendsList" class="list-group">
+          {% if friends %} {% for friend in friends %}
+          <div class="friend-item">
+            <div class="friend-info">
+              {% if friend.profile_picture %}
+              <img
+                src="{{ friend.profile_picture.url }}"
+                alt="{{ friend.username }}"
+                class="friend-avatar"
+              />
+              {% endif %}
+              <span>{{ friend.username }}</span>
+              <span class="friend-status">{{ friend.status }}</span>
+            </div>
+            <div class="friend-actions">
+              <button
+                class="btn btn-sm btn-danger"
+                onclick="actionFriend('{{ friend.username }}', 'remove')"
+              >
+                {% trans "Remove" %}
+              </button>
+            </div>
+          </div>
+          {% endfor %} {% else %}
+          <p>{% trans "No friends" %}</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+  <script data-static="true" src="{% static 'js/friends.js' %}"></script>
+</body>

@@ -1,5 +1,15 @@
 document.getElementById('uploadProfilePic').addEventListener('change', async function (event) {
+    const maxSize = 1 * 1024 * 1024; // 3MB
+
+    if (event.target.files[0].size > maxSize) {
+        showError('profilePicError', gettext("File size must be less than 1MB."));
+        event.target.value = '';
+        console.error(gettext("File size must be less than 1MB."));
+        return;
+    }
+
     const file = event.target.files[0];
+
     if (file) {
         const validImageTypes = ['image/jpeg', 'image/png', 'image/gif'];
         if (!validImageTypes.includes(file.type)) {
@@ -31,11 +41,11 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
     event.preventDefault();
 
     const usernameInput = document.getElementById('username');
-    const emailInput = document.getElementById('email');
     const profilePicInput = document.getElementById('uploadProfilePic');
     const saveBtn = document.getElementsByClassName('save-btn')[0];
-    const username = usernameInput.value.trim();
-    const email = emailInput.value.trim();
+    const emailInput = document.getElementById('email');
+    let username = usernameInput.value.trim();
+    let email = emailInput.value.trim();
     const profilePic = profilePicInput.files[0];
 
     let isValid = true;
@@ -59,11 +69,21 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
 
     if (isValid) {
         try {
+            const oldEmail = emailInput.getAttribute('data-original-email');
+            const oldUsername = usernameInput.getAttribute('data-original-username');
             usernameInput.disabled = true;
             emailInput.disabled = true;
             profilePicInput.disabled = true;
             saveBtn.disabled = true;
             saveBtn.textContent = gettext("Saving...");
+
+            if (email === oldEmail) {
+                email = "";
+            }
+
+            if (username === oldUsername) {
+                username = "";
+            }
 
             const formData = new FormData();
             formData.append('username', username);
@@ -71,6 +91,8 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
 
             if (profilePic) {
                 formData.append('profile_picture', profilePic);
+            } else {
+                formData.append('profile_picture', "");
             }
 
             const response = await fetch('/api/settings/', {
@@ -87,6 +109,7 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
             if (response.ok) {
                 console.log(gettext("Profile updated successfully:"), result);
                 showToast("success", gettext("Settings saved successfully!"));
+                urlLocationHandler();
             } else {
                 console.error(gettext("Error:"), result);
                 showToast("error", gettext("An error occurred: ") + (result?.message || result?.detail || gettext('Unknown error')));

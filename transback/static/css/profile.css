@@ -1,4 +1,5 @@
 .profile-card {
+    position: relative;
     width: 400px;
     padding: 30px;
     background-color: var(--background-color);
@@ -94,4 +95,37 @@
 .profile-card .offline {
     background-color: #ff4d4d;
     color: white;
+}
+
+.settings-link {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.settings-link>svg {
+    width: 30px;
+    height: 30px;
+    fill: #ddd;
+}
+
+.settings-link:hover {
+    background-color: var(--primary-color);
+    scale: 1.1;
+    transition: all 0.3s ease;
+}
+
+#friendshipButton {
+    background-color: var(--primary-color);
+}
+
+#friendshipButton:hover {
+    background-color: var(--primary-color);
+    scale: 1.1;
+    transition: all 0.3s ease;
+}
+
+#friendshipButton:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
 }

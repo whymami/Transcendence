@@ -12,23 +12,27 @@
             class="profile-picture"
             src="{% if user.profile_picture %}{{ user.profile_picture }}{% else %}{% static 'images/default-profile.webp' %}{% endif %}"
             alt="{% trans 'User Profile' %}"
+            onerror="this.src='{% static 'images/default-profile.webp' %}'"
         />
+        {{ user.profile_picture }}
         <br />
         <button class="upload-btn" id="choosePicBtn">{% trans "Upload Profile Picture" %}</button>
         <input accept="image/png, image/jpeg, image/gif" type="file" id="uploadProfilePic" style="display: none" />
+        <br />
+        <br />
         <span class="error-message" id="profilePicError"></span>
 
         <!-- Kullanıcı Bilgileri Formu -->
         <form id="userSettingsForm">
             <div class="input-group">
                 <label for="username">{% trans "Username" %}</label>
-                <input type="text" id="username" value="{{ user.username }}" placeholder="{% trans 'Enter your username' %}" />
+                <input type="text" id="username" value="{{ user.username }}" data-original-username="{{ user.username }}" placeholder="{% trans 'Enter your username' %}" />
                 <span class="error-message" id="usernameError"></span>
             </div>
 
             <div class="input-group">
                 <label for="email">{% trans "Email" %}</label>
-                <input type="email" id="email" value="{{ user.email }}" placeholder="{% trans 'Enter your email' %}" />
+                <input type="email" id="email" value="{{ user.email }}" data-original-email="{{ user.email }}" placeholder="{% trans 'Enter your email' %}" />
                 <span class="error-message" id="emailError"></span>
             </div>
 
@@ -41,6 +45,5 @@
         </div>
     </div>
     
-    <script src="{% url 'javascript-catalog' %}"></script>
     <script data-static="true" src="{% static 'js/settings.js' %}"></script>
 </body>
