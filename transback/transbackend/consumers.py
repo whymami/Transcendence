@@ -299,10 +299,11 @@ class OnlineStatusConsumer(AsyncWebsocketConsumer):
                 "is_online": is_online
             }))
 
-
 class MatchmakingConsumer(AsyncWebsocketConsumer):
     waiting_players = []  # Queue of players waiting for a match
     rooms = {}  # Dictionary to store active game rooms
+    room_counter = 0  # Counter to generate unique integer room IDs
+    player_channels = {}  # Kanal isimlerini saklamak için yeni sözlük
 
     async def connect(self):
         query_string = self.scope.get('query_string', b'').decode('utf-8')
@@ -313,42 +314,67 @@ class MatchmakingConsumer(AsyncWebsocketConsumer):
             return
 
         await self.accept()
-        self.player_id = self.user.username  # Use username as a unique player identifier
+        self.player_id = self.user.username
         self.room_name = None
+        # Oyuncunun kanal ismini sakla
+        self.player_channels[self.player_id] = self.channel_name
+        print(f"Player {self.player_id} connected to matchmaking")
 
     async def disconnect(self, close_code):
-        if self.room_name:
-            # Remove player from room
+        if self.player_id in self.player_channels:
+            del self.player_channels[self.player_id]
+        if self.player_id in self.waiting_players:
+            self.waiting_players.remove(self.player_id)
+        if self.room_name and self.room_name in self.rooms:
             self.rooms[self.room_name].remove(self.player_id)
-            if not self.rooms[self.room_name]:  # If room is empty, delete it
+            if not self.rooms[self.room_name]:
                 del self.rooms[self.room_name]
 
     async def receive(self, text_data):
         data = json.loads(text_data)
+        print(f"Received data from {self.player_id}: {data}")
         if data.get('action') == 'join_game':
             await self.join_game()
 
     async def join_game(self):
-        self.waiting_players.append(self.player_id)
-        if len(self.waiting_players) >= 2:  # Check if enough players are available
-            room_id = f"room_{len(self.rooms) + 1}"
-            self.rooms[room_id] = self.waiting_players[:2]  # Create a new room with 2 players
-            self.waiting_players = self.waiting_players[2:]  # Remove these players from the queue
-
-            # Notify players they have been matched
-            for player_id in self.rooms[room_id]:
-                await self.channel_layer.send(
-                    player_id,
-                    {
-                        "type": "game_start",
-                        "room_id": room_id,
-                    }
-                )
+        print(f"Player {self.player_id} is joining matchmaking queue")
+        if self.player_id not in self.waiting_players:
+            self.waiting_players.append(self.player_id)
+        
+        print(f"Current waiting players: {self.waiting_players}")
+        if len(self.waiting_players) >= 2:
+            # İlk iki oyuncuyu al
+            player1_id = self.waiting_players[0]
+            player2_id = self.waiting_players[1]
+            
+            # Oda oluştur
+            self.room_counter += 1
+            room_id = str(self.room_counter)
+            self.rooms[room_id] = [player1_id, player2_id]
+            
+            # Oyuncuları kuyruktan çıkar
+            self.waiting_players = self.waiting_players[2:]
+            
+            print(f"Created room {room_id} for players: {player1_id} and {player2_id}")
+            
+            # Her iki oyuncuya da oda bilgisini gönder
+            for player_id in [player1_id, player2_id]:
+                if player_id in self.player_channels:
+                    channel_name = self.player_channels[player_id]
+                    await self.channel_layer.send(
+                        channel_name,
+                        {
+                            "type": "game.start",
+                            "room_id": room_id,
+                        }
+                    )
 
     async def game_start(self, event):
-        self.room_name = event['room_id']
+        """
+        Bu metod, channel_layer üzerinden gelen mesajları işler
+        """
+        print(f"Sending game start message to {self.player_id} for room {event['room_id']}")
         await self.send(text_data=json.dumps({
-            "message": f"You have been matched! Your game ID is {self.room_name}",
-            "room_id": self.room_name
+            "message": "Match found!",
+            "room_id": event['room_id']
         }))
-
