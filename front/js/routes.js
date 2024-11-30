@@ -1,4 +1,7 @@
 let status;
+let statusSocket;
+let username;
+let oldUsername;
 function connectWebSocket() {
   const token = getCookie('access_token'); // Assume a function to get the token
 
@@ -32,15 +35,10 @@ function checkUserOnlineStatus(username) {
 }
 
 function updateUserOnlineStatus(username, isOnline) {
-  console.log(`${username} is ${isOnline ? "online" : "offline"}`);
-  const curStatus = isOnline ? "online" : "offline"
-  if (status != curStatus) {
-    status = isOnline ? "online" : "offline"
-    const statusElement = document.getElementsByClassName('status')[0];
-    if (statusElement) {
-      statusElement.innerHTML = `<span class="${isOnline ? 'online' : 'offline'}">
-      ${isOnline ? gettext('Online') : gettext('Offline')}</span>`
-    }
+  status = isOnline ? "online" : "offline"
+  const statusElement = document.getElementById('status');
+  if (statusElement) {
+    statusElement.classList[1] != status && (statusElement.classList.replace(statusElement.classList[1], status));
   }
 }
 
@@ -50,7 +48,7 @@ function disconnect() {
     //console.log("WebSocket bağlantısı kapatıldı.");
   }
 }
-
+disconnect();
 
 // Call this function to establish the WebSocket connection
 connectWebSocket();
@@ -139,10 +137,13 @@ const urlRoutes = {
   "/local/game/four-player": {
     endPoint: "/api/game/four-player/"
   },
-  "/online/game":{
+  "/local/game/tournament": {
+    endPoint: "/api/game/tournament/"
+  },
+  "/online/game": {
     endPoint: "/api/game/online/"
   }
-}; 
+};
 
 const urlRoute = (event) => {
   event = event || window.event;
@@ -157,7 +158,6 @@ const urlLocationHandler = async () => {
   if (location.length == 0) {
     location = "/";
   }
-
 
   const token = await getCookie('access_token');
   const language = document.documentElement.lang;

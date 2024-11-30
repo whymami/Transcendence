@@ -34,10 +34,7 @@
       </svg>
     </a>
     {% endif %}
-    <h1>{{ user.username }}</h1>
-    <p class="status">
-      <!--status-->
-    </p>
+    <h1>{{ user.username }}<span class="status offline" id="status"><!--status--></span></h1>
 
     <div class="stats">
       <p>{% trans "Games Played:" %} <span>{{ user.games_played }}</span></p>

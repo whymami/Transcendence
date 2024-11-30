@@ -1,0 +1,16 @@
+{% load static %} {% load i18n %}
+
+<head>
+  <title>{% trans "Pong Game" %}</title>
+  <link rel="stylesheet" href="{% static 'css/two-game.css' %}" />
+</head>
+<body>
+  <div id="pongCanvas">
+    <div id="score">0 : 0</div>
+    <div id="startMessage">{% trans "Press Space to Start" %}</div>
+    <div id="paddleLeft" class="paddle"></div>
+    <div id="paddleRight" class="paddle"></div>
+    <div id="ball" class="ball"></div>
+  </div>
+  <script src="{% static 'js/two-game.js' %}" data-static="true"></script>
+</body>

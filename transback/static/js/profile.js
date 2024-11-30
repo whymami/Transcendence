@@ -1,5 +1,3 @@
-const friendshipButton = document.getElementById('friendshipButton');
-
 async function sendFriendRequest(username) {
     token = await getCookie('access_token');
     try {
@@ -68,24 +66,32 @@ async function sendFriend(username, status) {
     }
 }
 
-const urlParams = new URLSearchParams(window.location.search);
-const username = urlParams.get('username');
-if (username) {
-    checkUserOnlineStatus(username);
+{
+    const urlParams = new URLSearchParams(window.location.search);
+    username = urlParams.get('username');
 
-    setInterval(() => {
-        checkUserOnlineStatus(username);
-    }, 1000);
+    if (username) {
+        setInterval(() => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentUsername = urlParams.get('username');
+            const pathname = window.location.pathname;
 
-    statusSocket.onclose = function () {
-        console.log("WebSocket bağlantısı koptu, yeniden bağlanılıyor...");
-        setTimeout(() => {
-            connectWebSocket();
-            checkUserOnlineStatus(username);
+            if (pathname == "/profile" && (currentUsername !== oldUsername || currentUsername == oldUsername)) {
+                oldUsername = currentUsername;
+                username = currentUsername;
+                checkUserOnlineStatus(currentUsername);
+            }
         }, 1000);
-    };
-}
 
+        statusSocket.onclose = function () {
+            console.log("WebSocket bağlantısı koptu, yeniden bağlanılıyor...");
+            setTimeout(() => {
+                connectWebSocket();
+                checkUserOnlineStatus(username);
+            }, 1000);
+        };
+    }
+}
 {
     document.getElementById('settings-link')?.addEventListener('click', (e) => {
         e.preventDefault();

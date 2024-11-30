@@ -33,6 +33,30 @@ class GameView(APIView):
     def get(self, request):
         user = request.user
         return TemplateResponse(request, 'game.html', {"user": user})
+    
+class AiGameView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        user = request.user
+        return TemplateResponse(request, 'ai-game.html', {"user": user})
+    
+class TwoPlayerGameView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        user = request.user
+        return TemplateResponse(request, 'two-game.html', {"user": user})
+    
+class TournamentView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        user = request.user
+        return TemplateResponse(request, 'tournament.html', {"user": user})
 
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated]

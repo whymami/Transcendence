@@ -14,7 +14,6 @@
             alt="{% trans 'User Profile' %}"
             onerror="this.src='{% static 'images/default-profile.webp' %}'"
         />
-        {{ user.profile_picture }}
         <br />
         <button class="upload-btn" id="choosePicBtn">{% trans "Upload Profile Picture" %}</button>
         <input accept="image/png, image/jpeg, image/gif" type="file" id="uploadProfilePic" style="display: none" />

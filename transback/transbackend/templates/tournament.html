@@ -1,0 +1,42 @@
+{% load static %} {% load i18n %}
+<head>
+  <title>{% trans "Pong Tournament" %}</title>
+  <link
+    rel="stylesheet"
+    href="{% static 'css/tournament.css' %}"
+    data-static="true"
+  />
+</head>
+<body>
+  <div id="tournamentSetup">
+    <h1>{% trans "Pong Tournament" %}</h1>
+    <label for="numPlayers">{% trans "Enter number of players (4 or 8):" %}</label>
+    <input type="number" id="numPlayers" min="4" max="8" step="4" />
+    <button onclick="startTournament()">{% trans "Start Tournament" %}</button>
+  </div>
+
+  <div id="playerNames">
+    <h2>{% trans "Enter Player Usernames" %}</h2>
+    <div id="nameInputs"></div>
+    <button onclick="startGame()">{% trans "Start Tournament Matches" %}</button>
+  </div>
+
+  <div id="roundInfo">
+    <h2>{% trans "Round Info" %}</h2>
+    <button id="restartButton" onclick="restartTournament()">
+      {% trans "Restart Tournament" %}
+    </button>
+    <div id="matchupList"></div>
+  </div>
+
+  <div id="matchResult"></div>
+
+  <div id="pongCanvas">
+    <div id="score">0 : 0</div>
+    <div id="startMessage">{% trans "Press Space to Start" %}</div>
+    <div id="paddleLeft" class="paddle"></div>
+    <div id="paddleRight" class="paddle"></div>
+    <div id="ball" class="ball"></div>
+  </div>
+  <script src="{% static 'js/tournament.js' %}" data-static="true"></script>
+</body>

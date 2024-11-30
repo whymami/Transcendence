@@ -1,0 +1,86 @@
+#pongCanvas {
+    width: 800px;
+    height: 400px;
+    background-color: #1E1E1E;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+    display: none;
+}
+
+.paddle {
+    width: 10px;
+    height: 80px;
+    background-color: white;
+    border-radius: 50px;
+    position: absolute;
+}
+
+#paddleLeft {
+    left: 10px;
+    top: 160px;
+}
+
+#paddleRight {
+    right: 10px;
+    top: 160px;
+}
+
+.ball {
+    width: 15px;
+    height: 15px;
+    background-color: white;
+    position: absolute;
+    border-radius: 50%;
+}
+
+#score {
+    color: white;
+    font-size: 24px;
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#startMessage {
+    color: white;
+    font-size: 18px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+#tournamentSetup,
+#playerNames,
+#roundInfo,
+#matchResult {
+    margin-top: 20px;
+}
+
+#playerNames,
+#roundInfo,
+#pongCanvas {
+    display: none;
+}
+
+#restartButton {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background-color: black;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+#restartButton:hover {
+    background-color: #e03a3a;
+}
+
+.hidden {
+    display: none;
+}

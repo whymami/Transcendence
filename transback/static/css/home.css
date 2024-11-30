@@ -67,5 +67,32 @@
   .cards-container {
     display: flex;
     flex-direction: column;
+    margin: 0 auto;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
   }
+
+  .card:nth-child(3) {
+    width: 100%;
+    max-width: 380px;
+  }
+
+  .card {
+    max-width: 380px;
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .card {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .card:nth-child(3) {
+    width: 100%;
+    max-width: 100%;
+  }
+
 }

@@ -1,7 +1,7 @@
 .users-container {
     max-width: 1200px;
     margin: 0 auto;
-    padding: 20px; 
+    padding: 20px;
 }
 
 .users-list {
@@ -77,4 +77,6 @@
 .go-to-profile-button {
     background-color: var(--primary-color);
     color: var(--text-color);
+    margin: 0;
+    margin-left: 30px;
 }

@@ -38,13 +38,13 @@
   Array.from(langSelects).forEach(async (langSelect) => {
     langSelect.addEventListener('change', changeLanguage);
     const curLang = await getCookie('lang') || 'en-US';
-    console.log(curLang)
+    //console.log(curLang)
     langSelect.value = curLang;
   });
 
   async function changeLanguage(e) {
     const lang = e.target.value;
-    console.log(lang)
+    //console.log(lang)
     await setCookie('lang', lang, 365);
     await pullHeader(true);
     urlLocationHandler();
@@ -64,5 +64,11 @@
     history.pushState({}, "", "/");
     urlLocationHandler();
   }
+
+  document.getElementById('logo-link').addEventListener('click', (e) => {
+    e.preventDefault();
+    history.pushState({}, "", "/");
+    urlLocationHandler();
+  });
 
 }

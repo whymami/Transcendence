@@ -77,5 +77,27 @@
   .cards-container {
     display: flex;
     flex-direction: column;
+    margin: 0 auto;
+  }
+
+  .card:nth-child(3) {
+    width: 100%;
+    max-width: 380px;
+  }
+
+  .card {
+    max-width: 380px;
+    width: 100%;
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .card {
+    width: 100%;
+    max-width: 80%;
+  }
+  .card:nth-child(3) {
+    width: 100%;
+    max-width: 80%;
   }
 }
