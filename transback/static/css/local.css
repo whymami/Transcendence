@@ -7,8 +7,10 @@
 }
 
 .cards-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
   gap: 2rem;
   max-width: 800px;
   width: 100%;
@@ -21,6 +23,14 @@
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   overflow: hidden;
   padding: 20px;
+  width: fit-content;
+  max-width: 380px;
+}
+
+
+.card:nth-child(3) {
+  width: 100%;
+  max-width: 100%;
 }
 
 .card:hover {
@@ -68,9 +78,6 @@
     display: flex;
     flex-direction: column;
     margin: 0 auto;
-    align-items: center;
-    gap: 1rem;
-    width: 100%;
   }
 
   .card:nth-child(3) {
@@ -87,12 +94,10 @@
 @media screen and (max-width: 480px) {
   .card {
     width: 100%;
-    max-width: 100%;
+    max-width: 80%;
   }
-
   .card:nth-child(3) {
     width: 100%;
-    max-width: 100%;
+    max-width: 80%;
   }
-
 }

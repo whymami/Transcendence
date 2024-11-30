@@ -112,11 +112,11 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
                 urlLocationHandler();
             } else {
                 console.error(gettext("Error:"), result);
-                showToast("error", gettext("An error occurred: ") + (result?.message || result?.detail || gettext('Unknown error')));
+                showToast("error", gettext("An error occurred: ") + (result?.error || result?.detail || gettext('Unknown error')));
             }
         } catch (error) {
-            console.error("Fetch Hatası:", error);
-            showToast("error", error.message);
+            console.error("Error:", error);
+            showToast("error", error.error);
         } finally {
             usernameInput.disabled = false;
             emailInput.disabled = false;

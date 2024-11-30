@@ -6,78 +6,94 @@
 <body>
   <div class="container mt-4">
     <!-- Pending Requests Section -->
-    <div class="card mb-4">
-      <div class="card-header">
+    <div class="section">
+      <div class="section-header">
         <h5>{% trans "Pending Friend Requests" %}</h5>
       </div>
-      <div class="card-body">
-        <div id="pendingRequests" class="list-group">
-          {% if pending_requests %} {% for request in pending_requests %}
-          <div class="friend-item">
-            <div class="friend-info">
-              {% if request.profile_picture %}
-              <img
-                src="{{ request.profile_picture.url }}"
-                alt="{{ request.username }}"
-                class="friend-avatar"
-              />
-              {% endif %}
-              <span>{{ request.username }}</span>
-              <span class="friend-status">{{ request.status }}</span>
-              <div class="friend-actions">
-                <button
-                  class="btn btn-sm btn-success"
-                  onclick="actionFriend('{{ request.username }}', 'accept')"
-                >
-                  {% trans "Accept" %}
-                </button>
-                <button
-                  class="btn btn-sm btn-danger"
-                  onclick="actionFriend('{{ request.username }}', 'reject')"
-                >
-                  {% trans "Reject" %}
-                </button>
-              </div>
+      <div class="section-content">
+        {% if pending_requests %} {% for request in pending_requests %}
+        <div class="user-card">
+          <div class="user-info">
+            {% if request.profile_picture %}
+            <img
+              src="{{ request.profile_picture.url }}"
+              alt="{{ request.username }}"
+              class="user-avatar"
+              onerror="this.src='{% static 'images/default-profile.webp' %}'"
+            />
+            {% else %}
+            <img
+              src="{% static 'images/default-profile.webp' %}"
+              alt="{{ request.username }}"
+              class="user-avatar"
+            />
+            {% endif %}
+            <div class="user-details">
+              <span class="username">{{ request.username }}</span>
+              <span class="status">{{ request.status }}</span>
             </div>
           </div>
-          {% endfor %} {% else %}
-          <p>{% trans "No pending friend requests" %}</p>
-          {% endif %}
+          <div class="action-buttons">
+            <button
+              class="btn accept"
+              onclick="actionFriend('{{ request.username }}', 'accept')"
+            >
+              {% trans "Accept" %}
+            </button>
+            <button
+              class="btn reject"
+              onclick="actionFriend('{{ request.username }}', 'reject')"
+            >
+              {% trans "Reject" %}
+            </button>
+          </div>
         </div>
+        {% endfor %} {% else %}
+        <p class="no-content">{% trans "No pending friend requests" %}</p>
+        {% endif %}
       </div>
     </div>
-    <div class="card mb-4">
-      <div class="card-header">
+
+    <!-- Friends Section -->
+    <div class="section">
+      <div class="section-header">
         <h5>{% trans "Friends" %}</h5>
       </div>
-      <div class="card-body">
-        <div id="friendsList" class="list-group">
-          {% if friends %} {% for friend in friends %}
-          <div class="friend-item">
-            <div class="friend-info">
-              {% if friend.profile_picture %}
-              <img
-                src="{{ friend.profile_picture.url }}"
-                alt="{{ friend.username }}"
-                class="friend-avatar"
-              />
-              {% endif %}
-              <span>{{ friend.username }}</span>
-              <span class="friend-status">{{ friend.status }}</span>
-            </div>
-            <div class="friend-actions">
-              <button
-                class="btn btn-sm btn-danger"
-                onclick="actionFriend('{{ friend.username }}', 'remove')"
-              >
-                {% trans "Remove" %}
-              </button>
+      <div class="section-content">
+        {% if friends %} {% for friend in friends %}
+        <div class="user-card">
+          <div class="user-info">
+            {% if request.profile_picture %}
+            <img
+              src="{{ request.profile_picture.url }}"
+              alt="{{ request.username }}"
+              class="user-avatar"
+              onerror="this.src='{% static 'images/default-profile.webp' %}'"
+            />
+            {% else %}
+            <img
+              src="{% static 'images/default-profile.webp' %}"
+              alt="{{ request.username }}"
+              class="user-avatar"
+            />
+            {% endif %}
+            <div class="user-details">
+              <span class="username">{{ friend.username }}</span>
+              <span class="status">{{ friend.status }}</span>
             </div>
           </div>
-          {% endfor %} {% else %}
-          <p>{% trans "No friends" %}</p>
-          {% endif %}
+          <div class="action-buttons">
+            <button
+              class="btn reject"
+              onclick="actionFriend('{{ friend.username }}', 'remove')"
+            >
+              {% trans "Remove" %}
+            </button>
+          </div>
         </div>
+        {% endfor %} {% else %}
+        <p class="no-content">{% trans "No friends" %}</p>
+        {% endif %}
       </div>
     </div>
   </div>

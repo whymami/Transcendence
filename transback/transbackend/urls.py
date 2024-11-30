@@ -3,7 +3,7 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView,TokenObtainPairView
 from django.views.i18n import JavaScriptCatalog
 from .views.auth import RegisterView, LoginView, ResetPasswordView
-from .views.template_views import HomeView, HeaderView, GameView, UserSettingsView, ProfileView, UserListView, LobbyView
+from .views.template_views import HomeView, HeaderView, GameView, UserSettingsView, ProfileView, UserListView, LocalView, AiGameView, TwoPlayerGameView, TournamentView
 from .views.verify import VerifyLoginView, VerifyAccountView, ReSendVerifyCodeView
 from .views.utils import NotFoundView
 from .views.friend_views import FriendListView, FriendRequestView, FriendRequestResponseView
@@ -17,7 +17,10 @@ urlpatterns = [
     path('api/register/', RegisterView.as_view(), name='register'),
     path('api/verify-account/', VerifyAccountView.as_view(), name='profile'),
     path('api/settings/', UserSettingsView.as_view(), name='profile'),
-    path('api/game/', GameView.as_view(), name='game'),
+    path('api/game/online/', GameView.as_view(), name='game'),
+    path('api/game/ai/', AiGameView.as_view(), name='ai_game'),
+    path('api/game/two-player/', TwoPlayerGameView.as_view(), name='two_player_game'),
+    path('api/game/tournament/', TournamentView.as_view(), name='tournament'),
     path('api/reset-password/', ResetPasswordView.as_view(), name='reset_password'),
     path('api/verify-login/', VerifyLoginView.as_view(), name='verify_code'),
     path('api/jsi18n/', JavaScriptCatalog.as_view(), name='javascript-catalog'),
@@ -28,5 +31,5 @@ urlpatterns = [
     path('api/friends/', FriendListView.as_view(), name='friends'),
     path('api/friends/request/', FriendRequestView.as_view(), name='friend_request'),
     path('api/friends/response/', FriendRequestResponseView.as_view(), name='friend_request_response'),
-    path('api/lobby/', LobbyView.as_view(), name='lobby'),
+    path('api/local/', LocalView.as_view(), name='local'),
 ]

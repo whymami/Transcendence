@@ -37,14 +37,14 @@
   const langSelects = document.getElementsByClassName('language-select');
   Array.from(langSelects).forEach(async (langSelect) => {
     langSelect.addEventListener('change', changeLanguage);
-    const curLang = await getCookie('lang') || 'en';
-    console.log(curLang)
+    const curLang = await getCookie('lang') || 'en-US';
+    //console.log(curLang)
     langSelect.value = curLang;
   });
 
   async function changeLanguage(e) {
     const lang = e.target.value;
-    console.log(lang)
+    //console.log(lang)
     await setCookie('lang', lang, 365);
     await pullHeader(true);
     urlLocationHandler();
@@ -57,12 +57,18 @@
 
   function logoutFN(e) {
     e.preventDefault();
-    disconnectSocketStatus();
+    disconnect();
     eraseCookie('refresh_token');
     eraseCookie('access_token');
     pullHeader(true);
     history.pushState({}, "", "/");
     urlLocationHandler();
   }
+
+  document.getElementById('logo-link').addEventListener('click', (e) => {
+    e.preventDefault();
+    history.pushState({}, "", "/");
+    urlLocationHandler();
+  });
 
 }

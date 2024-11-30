@@ -33,6 +33,30 @@ class GameView(APIView):
     def get(self, request):
         user = request.user
         return TemplateResponse(request, 'game.html', {"user": user})
+    
+class AiGameView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        user = request.user
+        return TemplateResponse(request, 'ai-game.html', {"user": user})
+    
+class TwoPlayerGameView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        user = request.user
+        return TemplateResponse(request, 'two-game.html', {"user": user})
+    
+class TournamentView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        user = request.user
+        return TemplateResponse(request, 'tournament.html', {"user": user})
 
 class ProfileView(APIView):
     permission_classes = [IsAuthenticated]
@@ -175,10 +199,9 @@ class UserListView(APIView):
         except Exception as e:
             return json_response(error="Failed to fetch users", status=500)
 
-class LobbyView(APIView):
-    permission_classes = [IsAuthenticated]
-    authentication_classes = [JWTAuthentication]
-
+class LocalView(APIView):
     def get(self, request):
-        return TemplateResponse(request, 'lobby.html', {"user": request.user})
-
+        try:
+            return TemplateResponse(request, 'local.html')
+        except Exception as e:
+            return json_response(error="Yerel oyun sayfası yüklenemedi", status=500)

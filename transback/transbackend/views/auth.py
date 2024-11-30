@@ -68,11 +68,11 @@ class LoginView(APIView):
             return json_response(error="An unexpected error occurred.", status=500)
 
 class ResetPasswordView(APIView):
-    permission_classes = [IsAnonymousUser]
+    permission_classes = [AllowAny]
     authentication_classes = [JWTAuthentication]
 
     def get(self, request):
-        return TemplateResponse(request, 'reset_password.html')
+        return TemplateResponse(request, 'reset-password.html')
 
     def post(self, request):
         try:

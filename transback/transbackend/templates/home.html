@@ -1,5 +1,4 @@
 {% load static %} {% load i18n %}
-
 <head>
   <link
     data-static="true"
@@ -7,21 +6,113 @@
     type="text/css"
     href="{% static 'css/home.css' %}"
   />
-  <title>
-    {% trans "Home" %}
-  </title>
+  <title>{% trans "Home" %}</title>
 </head>
 
 <body>
   <div class="home-container">
-    <h1>{% trans "Welcome to Ping Pong!" %}</h1>
-    <p>{% trans "Are you ready to test your reflexes?" %}</p>
-    {% if user.is_authenticated %}
-    <a href="/game" class="play-button">{% trans "Play" %}</a>
-    {% else %}
-    <a href="/login" class="play-button">{% trans "Go to Login" %}</a>
-    {% endif %}
+    <div class="cards-container">
+      {% if user.is_authenticated %}
+      <div class="card">
+        <div class="card-content">
+          <h2>
+            {% trans "Play Local" %}
+            <img
+              src="{% static 'images/local.svg' %}"
+              alt="Local"
+              width="30"
+              height="30"
+            />
+          </h2>
+
+          <p>{% trans "Play games locally on your device" %}</p>
+          <a href="/local" class="card-button">{% trans "Start" %}</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <h2>
+            {% trans "Play Online" %}
+            <img
+              src="{% static 'images/online.svg' %}"
+              alt="Local"
+              width="30"
+              height="30"
+            />
+          </h2>
+          <p>{% trans "Play with other players online" %}</p>
+          <a href="/online/game" class="card-button">{% trans "Start" %}</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <h2>
+            {% trans "Friends" %}
+            <img
+              src="{% static 'images/friends.svg' %}"
+              alt="Local"
+              width="30"
+              height="30"
+            />
+          </h2>
+          <p>{% trans "Manage your friends list" %}</p>
+          <a href="/friends" class="card-button">{% trans "View" %}</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <h2>
+            {% trans "All Users" %}
+            <img
+              src="{% static 'images/world.svg' %}"
+              alt="Local"
+              width="30"
+              height="30"
+            />
+          </h2>
+          <p>{% trans "Browse all registered users" %}</p>
+          <a href="/users" class="card-button">{% trans "View" %}</a>
+        </div>
+      </div>
+      {% else %}
+      <div class="card">
+        <div class="card-content">
+          <h2>
+            {% trans "Play Local" %}
+            <img
+              src="{% static 'images/local.svg' %}"
+              alt="Local"
+              width="30"
+              height="30"
+            />
+          </h2>
+
+          <p>{% trans "Play games locally on your device" %}</p>
+          <a href="/login" class="card-button">{% trans "Login" %}</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-content">
+          <h2>
+            {% trans "Play Online" %}
+            <img
+              src="{% static 'images/online.svg' %}"
+              alt="Local"
+              width="30"
+              height="30"
+            />
+          </h2>
+          <p>{% trans "Play with other players online" %}</p>
+          <a href="/login" class="card-button">{% trans "Login" %}</a>
+        </div>
+      </div>
+      {% endif %}
+    </div>
   </div>
-  
+
   <script data-static="true" src="{% static 'js/home.js' %}"></script>
 </body>

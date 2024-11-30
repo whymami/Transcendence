@@ -1,4 +1,7 @@
 let status;
+let statusSocket;
+let username;
+let oldUsername;
 function connectWebSocket() {
   const token = getCookie('access_token'); // Assume a function to get the token
 
@@ -32,17 +35,20 @@ function checkUserOnlineStatus(username) {
 }
 
 function updateUserOnlineStatus(username, isOnline) {
-  console.log(`${username} is ${isOnline ? "online" : "offline"}`);
-  const curStatus = isOnline ? "online" : "offline"
-  if (status != curStatus) {
-    status = isOnline ? "online" : "offline"
-    const statusElement = document.getElementsByClassName('status')[0];
-    if (statusElement) {
-      statusElement.innerHTML = `<span class="${isOnline ? 'online' : 'offline'}">
-      ${isOnline ? gettext('Online') : gettext('Offline')}</span>`
-    }
+  status = isOnline ? "online" : "offline"
+  const statusElement = document.getElementById('status');
+  if (statusElement) {
+    statusElement.classList[1] != status && (statusElement.classList.replace(statusElement.classList[1], status));
   }
 }
+
+function disconnect() {
+  if (statusSocket) {
+    statusSocket.close();
+    //console.log("WebSocket bağlantısı kapatıldı.");
+  }
+}
+disconnect();
 
 // Call this function to establish the WebSocket connection
 connectWebSocket();
@@ -81,7 +87,7 @@ function createScript(script) {
 
 const urlRoutes = {
   404: {
-    endPoint: "api/404/",
+    endPoint: "/api/404/",
   },
   "/": {
     endPoint: "/api/home/",
@@ -118,6 +124,24 @@ const urlRoutes = {
   },
   "/lobby": {
     endPoint: "/api/lobby/"
+  },
+  "/local": {
+    endPoint: "/api/local/"
+  },
+  "/local/game/ai": {
+    endPoint: "/api/game/ai/"
+  },
+  "/local/game/two-player": {
+    endPoint: "/api/game/two-player/"
+  },
+  "/local/game/four-player": {
+    endPoint: "/api/game/four-player/"
+  },
+  "/local/game/tournament": {
+    endPoint: "/api/game/tournament/"
+  },
+  "/online/game": {
+    endPoint: "/api/game/online/"
   }
 };
 
@@ -135,13 +159,12 @@ const urlLocationHandler = async () => {
     location = "/";
   }
 
-
   const token = await getCookie('access_token');
   const language = document.documentElement.lang;
 
   let route = urlRoutes[location] || urlRoutes["404"];
   const container = document.getElementById("container");
-  const lang = await getCookie('lang') || 'en';
+  const lang = await getCookie('lang') || 'en-US';
 
   let username = null;
 
@@ -211,7 +234,7 @@ async function pullHeader(repull = false) {
   }
 
   const token = await getCookie('access_token');
-  const lang = await getCookie('lang') || 'en';
+  const lang = await getCookie('lang') || 'en-US';
   // console.log(window.navigator.languages);
   fetch('/api/header/',
     {

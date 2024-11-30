@@ -55,6 +55,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         self.save()
 
 class Game(models.Model):
+    id = models.AutoField(primary_key=True)
     player1 = models.ForeignKey(User, related_name="games_as_player1", on_delete=models.CASCADE)
     player2 = models.ForeignKey(User, related_name="games_as_player2", on_delete=models.CASCADE)
     player1_score = models.IntegerField()

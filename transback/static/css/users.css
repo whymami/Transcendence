@@ -4,12 +4,6 @@
     padding: 20px;
 }
 
-.users-container h1 {
-    color: var(--text-color);
-    text-align: center;
-    margin-bottom: 30px;
-}
-
 .users-list {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -17,6 +11,8 @@
     background-color: var(--background-color);
     border-radius: 8px;
     padding: 20px;
+    height: 80dvh;
+    overflow: auto;
 }
 
 .user-card {
@@ -81,4 +77,6 @@
 .go-to-profile-button {
     background-color: var(--primary-color);
     color: var(--text-color);
+    margin: 0;
+    margin-left: 30px;
 }

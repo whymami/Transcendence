@@ -7,7 +7,6 @@
 
 <body>
   <div class="users-container">
-    <h1>{% trans "Users" %}</h1>
     <div class="users-list">
       {% for user in users %}
       <div class="user-card">
@@ -16,15 +15,13 @@
             src="{% if user.profile_picture %}{{ user.profile_picture }}{% else %}{% static 'images/default-profile.webp' %}{% endif %}"
             alt="{{ user.username }}"
             class="profile-picture"
+            onerror="this.src='{% static 'images/default-profile.webp' %}'"
           />
         </div>
         <div class="user-info">
           <h3 class="username">{{ user.username }}</h3>
-          <button
-            onclick="goToProfile('{{ user.username }}')"
-            class="go-to-profile-button"
-          >
-            {% trans "Go to Profile" %}
+          <button class="go-to-profile-button">
+            {% trans "Profile" %}
           </button>
         </div>
       </div>

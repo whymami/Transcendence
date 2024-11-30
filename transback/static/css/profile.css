@@ -24,16 +24,19 @@
 }
 
 .profile-card .status {
-    font-size: 0.9em;
-    margin-bottom: 15px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 5px;
 }
 
-.profile-card .online {
-    color: #4caf50;
+.status.online {
+    background-color: #4caf50;
 }
 
-.profile-card .offline {
-    color: #ff4d4d;
+.status.offline {
+    background-color: #ff4d4d;
 }
 
 .profile-card .stats p {
@@ -79,24 +82,6 @@
     }
 }
 
-.profile-card .status span {
-    display: inline-block;
-    padding: 5px 10px;
-    border-radius: 15px;
-    font-size: 0.85em;
-    text-transform: uppercase;
-}
-
-.profile-card .online {
-    background-color: #4caf50;
-    color: white;
-}
-
-.profile-card .offline {
-    background-color: #ff4d4d;
-    color: white;
-}
-
 .settings-link {
     position: absolute;
     top: 20px;
@@ -110,7 +95,6 @@
 }
 
 .settings-link:hover {
-    background-color: var(--primary-color);
     scale: 1.1;
     transition: all 0.3s ease;
 }
