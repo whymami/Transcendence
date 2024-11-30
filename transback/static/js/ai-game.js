@@ -1,173 +1,165 @@
 {
-    const canvas = document.getElementById('pongCanvas');
-    const paddleLeft = document.getElementById('paddleLeft');
-    const paddleRight = document.getElementById('paddleRight');
-    const ball = document.getElementById('ball');
-    const scoreDisplay = document.getElementById('score');
-    const startMessage = document.getElementById('startMessage');
+    const ai_canvas = document.getElementById('pongCanvas');
+    const ai_paddleLeft = document.getElementById('paddleLeft');
+    const ai_paddleRight = document.getElementById('paddleRight');
+    const ai_ball = document.getElementById('ball');
+    const ai_scoreDisplay = document.getElementById('score');
+    const ai_startMessage = document.getElementById('startMessage');
 
-    let paddleLeftY = 160;
-    let paddleRightY = 160;
-    const paddleSpeed = 6;
-    const paddleHeight = paddleLeft.offsetHeight;
+    let ai_paddleLeftY = 160;
+    let ai_paddleRightY = 160;
+    const ai_paddleSpeed = 6;
+    const ai_paddleHeight = ai_paddleLeft.offsetHeight;
 
-    let ballPosition = { x: 392.5, y: 192.5 };
-    let ballSpeed = { x: 10, y: 10 };
-    let ballSpeedIncrement = 0.3;
-    const maxBallSpeed = 15;
+    let ai_ballPosition = { x: 392.5, y: 192.5 };
+    let ai_ballSpeed = { x: 10, y: 10 };
+    let ai_ballSpeedIncrement = 0.3;
+    const ai_maxBallSpeed = 15;
 
-    let scoreLeft = 0;
-    let scoreRight = 0;
-    let collisionCount = 0;
+    let ai_scoreLeft = 0;
+    let ai_scoreRight = 0;
+    let ai_collisionCount = 0;
 
-    const keysPressed = {};
-    let gameRunning = false;
+    const ai_keysPressed = {};
+    let ai_gameRunning = false;
 
     document.addEventListener('keydown', (event) => {
-        keysPressed[event.key] = true;
-        if (event.key === ' ' && !gameRunning) {
-            restartGame();
+        ai_keysPressed[event.key] = true;
+        if (event.key === ' ' && !ai_gameRunning) {
+            ai_restartGame();
         }
     });
 
     document.addEventListener('keyup', (event) => {
-        keysPressed[event.key] = false;
+        ai_keysPressed[event.key] = false;
     });
 
-    function restartGame() {
-        scoreLeft = 0;
-        scoreRight = 0;
-        collisionCount = 0;
-        updateScore();
-        startGame();
+    function ai_restartGame() {
+        ai_scoreLeft = 0;
+        ai_scoreRight = 0;
+        ai_collisionCount = 0;
+        ai_updateScore();
+        ai_startGame();
     }
 
-    function startGame() {
-        startMessage.style.display = 'none';
-        ball.style.display = 'block';
-        resetBall();
-        gameRunning = true;
-        gameLoop();
+    function ai_startGame() {
+        ai_startMessage.style.display = 'none';
+        ai_ball.style.display = 'block';
+        ai_resetBall();
+        ai_gameRunning = true;
+        ai_gameLoop();
     }
 
-    function resetBall() {
-        ballPosition = { x: 392.5, y: 192.5 };
-        ballSpeed.x = Math.random() < 0.5 ? 5 : -5;
-        ballSpeed.y = Math.random() < 0.5 ? 5 : -5;
+    function ai_resetBall() {
+        ai_ballPosition = { x: 392.5, y: 192.5 };
+        ai_ballSpeed.x = Math.random() < 0.5 ? 5 : -5;
+        ai_ballSpeed.y = Math.random() < 0.5 ? 5 : -5;
     }
 
-    function movePaddles() {
-        if (keysPressed['w'] && paddleLeftY > 0) {
-            paddleLeftY -= paddleSpeed;
+    function ai_movePaddles() {
+        if (ai_keysPressed['w'] && ai_paddleLeftY > 0) {
+            ai_paddleLeftY -= ai_paddleSpeed;
         }
-        if (keysPressed['s'] && paddleLeftY < canvas.offsetHeight - paddleHeight) {
-            paddleLeftY += paddleSpeed;
-        }
-
-        if (keysPressed['ArrowUp'] && paddleRightY > 0) {
-            paddleRightY -= paddleSpeed;
-        }
-        if (keysPressed['ArrowDown'] && paddleRightY < canvas.offsetHeight - paddleHeight) {
-            paddleRightY += paddleSpeed;
+        if (ai_keysPressed['s'] && ai_paddleLeftY < ai_canvas.offsetHeight - ai_paddleHeight) {
+            ai_paddleLeftY += ai_paddleSpeed;
         }
 
-        paddleLeft.style.top = paddleLeftY + 'px';
-        paddleRight.style.top = paddleRightY + 'px';
+        ai_paddleLeft.style.top = ai_paddleLeftY + 'px';
     }
 
-    function updateAI() {
-        let predictedBallY = ballPosition.y + ballSpeed.y * (canvas.offsetWidth - ballPosition.x) / Math.abs(ballSpeed.x);
-        predictedBallY = Math.max(0, Math.min(canvas.offsetHeight - paddleHeight, predictedBallY));
-        const deadZone = 10;
-        const paddleCenter = paddleRightY + paddleHeight / 2;
+    function ai_updateAI() {
+        let ai_predictedBallY = ai_ballPosition.y + ai_ballSpeed.y * (ai_canvas.offsetWidth - ai_ballPosition.x) / Math.abs(ai_ballSpeed.x);
+        ai_predictedBallY = Math.max(0, Math.min(ai_canvas.offsetHeight - ai_paddleHeight, ai_predictedBallY));
+        const ai_deadZone = 10;
+        const ai_paddleCenter = ai_paddleRightY + ai_paddleHeight / 2;
 
-        if (Math.abs(paddleCenter - predictedBallY) > deadZone) {
-            if (paddleCenter < predictedBallY) {
-                paddleRightY += paddleSpeed;
+        if (Math.abs(ai_paddleCenter - ai_predictedBallY) > ai_deadZone) {
+            if (ai_paddleCenter < ai_predictedBallY) {
+                ai_paddleRightY += ai_paddleSpeed;
             } else {
-                paddleRightY -= paddleSpeed;
+                ai_paddleRightY -= ai_paddleSpeed;
             }
         }
 
-        paddleRightY = Math.max(0, Math.min(canvas.offsetHeight - paddleHeight, paddleRightY));
-        paddleRight.style.top = paddleRightY + 'px';
+        ai_paddleRightY = Math.max(0, Math.min(ai_canvas.offsetHeight - ai_paddleHeight, ai_paddleRightY));
+        ai_paddleRight.style.top = ai_paddleRightY + 'px';
     }
 
-    function moveBall() {
-        ballPosition.x += ballSpeed.x;
-        ballPosition.y += ballSpeed.y;
+    function ai_moveBall() {
+        ai_ballPosition.x += ai_ballSpeed.x;
+        ai_ballPosition.y += ai_ballSpeed.y;
 
-        if (ballPosition.y <= 0 || ballPosition.y >= canvas.offsetHeight - ball.offsetHeight) {
-            ballSpeed.y = -ballSpeed.y;
+        if (ai_ballPosition.y <= 0 || ai_ballPosition.y >= ai_canvas.offsetHeight - ai_ball.offsetHeight) {
+            ai_ballSpeed.y = -ai_ballSpeed.y;
         }
 
-        let ballHit = false;
+        let ai_ballHit = false;
 
         if (
-            ballPosition.x <= paddleLeft.offsetLeft + paddleLeft.offsetWidth &&
-            ballPosition.y + ball.offsetHeight >= paddleLeftY &&
-            ballPosition.y <= paddleLeftY + paddleHeight
+            ai_ballPosition.x <= ai_paddleLeft.offsetLeft + ai_paddleLeft.offsetWidth &&
+            ai_ballPosition.y + ai_ball.offsetHeight >= ai_paddleLeftY &&
+            ai_ballPosition.y <= ai_paddleLeftY + ai_paddleHeight
         ) {
-            ballSpeed.x = -ballSpeed.x;
-            ballPosition.x = paddleLeft.offsetLeft + paddleLeft.offsetWidth;
-            ballHit = true;
+            ai_ballSpeed.x = -ai_ballSpeed.x;
+            ai_ballPosition.x = ai_paddleLeft.offsetLeft + ai_paddleLeft.offsetWidth;
+            ai_ballHit = true;
         }
 
         if (
-            ballPosition.x + ball.offsetWidth >= paddleRight.offsetLeft &&
-            ballPosition.y + ball.offsetHeight >= paddleRightY &&
-            ballPosition.y <= paddleRightY + paddleHeight
+            ai_ballPosition.x + ai_ball.offsetWidth >= ai_paddleRight.offsetLeft &&
+            ai_ballPosition.y + ai_ball.offsetHeight >= ai_paddleRightY &&
+            ai_ballPosition.y <= ai_paddleRightY + ai_paddleHeight
         ) {
-            ballSpeed.x = -ballSpeed.x;
-            ballPosition.x = paddleRight.offsetLeft - ball.offsetWidth;
-            ballHit = true;
+            ai_ballSpeed.x = -ai_ballSpeed.x;
+            ai_ballPosition.x = ai_paddleRight.offsetLeft - ai_ball.offsetWidth;
+            ai_ballHit = true;
         }
 
-        if (ballHit) {
-            collisionCount++;
-            if (collisionCount % 5 === 0) {
-                ballSpeed.x += ballSpeed.x > 0 ? ballSpeedIncrement : -ballSpeedIncrement;
-                ballSpeed.y += ballSpeed.y > 0 ? ballSpeedIncrement : -ballSpeedIncrement;
+        if (ai_ballHit) {
+            ai_collisionCount++;
+            if (ai_collisionCount % 5 === 0) {
+                ai_ballSpeed.x += ai_ballSpeed.x > 0 ? ai_ballSpeedIncrement : -ai_ballSpeedIncrement;
+                ai_ballSpeed.y += ai_ballSpeed.y > 0 ? ai_ballSpeedIncrement : -ai_ballSpeedIncrement;
             }
         }
 
-        ballSpeed.x = Math.max(-maxBallSpeed, Math.min(maxBallSpeed, ballSpeed.x));
-        ballSpeed.y = Math.max(-maxBallSpeed, Math.min(maxBallSpeed, ballSpeed.y));
+        ai_ballSpeed.x = Math.max(-ai_maxBallSpeed, Math.min(ai_maxBallSpeed, ai_ballSpeed.x));
+        ai_ballSpeed.y = Math.max(-ai_maxBallSpeed, Math.min(ai_maxBallSpeed, ai_ballSpeed.y));
 
-        if (ballPosition.x < 0) {
-            scoreRight++;
-            resetBall();
-        } else if (ballPosition.x > canvas.offsetWidth) {
-            scoreLeft++;
-            resetBall();
+        if (ai_ballPosition.x < 0) {
+            ai_scoreRight++;
+            ai_resetBall();
+        } else if (ai_ballPosition.x > ai_canvas.offsetWidth) {
+            ai_scoreLeft++;
+            ai_resetBall();
         }
 
-        ball.style.left = ballPosition.x + 'px';
-        ball.style.top = ballPosition.y + 'px';
+        ai_ball.style.left = ai_ballPosition.x + 'px';
+        ai_ball.style.top = ai_ballPosition.y + 'px';
 
-        updateScore();
+        ai_updateScore();
     }
 
-    function updateScore() {
-        scoreDisplay.textContent = `${scoreLeft} : ${scoreRight}`;
-        if (scoreLeft === 5 || scoreRight === 5) {
-            endGame();
+    function ai_updateScore() {
+        ai_scoreDisplay.textContent = `${ai_scoreLeft} : ${ai_scoreRight}`;
+        if (ai_scoreLeft === 5 || ai_scoreRight === 5) {
+            ai_endGame();
         }
     }
 
-    function endGame() {
-        gameRunning = false;
-        startMessage.style.display = 'block';
-        startMessage.textContent = 'Game Over! Press Space to Restart';
-        ball.style.display = 'none';
+    function ai_endGame() {
+        ai_gameRunning = false;
+        ai_startMessage.style.display = 'block';
+        ai_startMessage.textContent = 'Game Over! Press Space to Restart';
+        ai_ball.style.display = 'none';
     }
 
-    function gameLoop() {
-        if (gameRunning) {
-            movePaddles();
-            updateAI();
-            moveBall();
-            requestAnimationFrame(gameLoop);
+    function ai_gameLoop() {
+        if (ai_gameRunning) {
+            ai_movePaddles();
+            ai_updateAI();
+            ai_moveBall();
+            requestAnimationFrame(ai_gameLoop);
         }
     }
 }
