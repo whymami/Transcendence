@@ -85,6 +85,13 @@ function createScript(script) {
   return newScript;
 }
 
+function createInlineScript(script) {
+  const newScript = document.createElement('script');
+  newScript.textContent = script.textContent;
+  newScript.dataset.static = script.getAttribute('data-static');
+  return newScript;
+}
+
 const urlRoutes = {
   404: {
     endPoint: "/api/404/",
@@ -205,7 +212,13 @@ const urlLocationHandler = async () => {
       });
     }
     parsedHtml.body.querySelectorAll('script').forEach(script => {
-      const created = createScript(script);
+      let created = null;
+
+      if (script.src) {
+        created = createScript(script);
+      } else {
+        created = createInlineScript(script);
+      }
       if (created)
         document.body.appendChild(created);
       script.remove();
