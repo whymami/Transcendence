@@ -1,4 +1,4 @@
-#pongCanvas {
+#two_pongCanvas {
     width: 800px;
     height: 400px;
     background-color: #1E1E1E;
@@ -7,7 +7,7 @@
     position: relative;
 }
 
-.paddle {
+.two_paddle {
     width: 10px;
     height: 80px;
     background-color: white;
@@ -15,17 +15,17 @@
     position: absolute;
 }
 
-#paddleLeft {
+#two_paddleLeft {
     left: 10px;
     top: 160px;
 }
 
-#paddleRight {
+#two_paddleRight {
     right: 10px;
     top: 160px;
 }
 
-.ball {
+.two_ball {
     width: 15px;
     height: 15px;
     background-color: white;
@@ -33,7 +33,7 @@
     border-radius: 50%;
 }
 
-#score {
+#two_score {
     color: white;
     font-size: 24px;
     position: absolute;
@@ -42,7 +42,7 @@
     transform: translateX(-50%);
 }
 
-#startMessage {
+#two_startMessage {
     color: white;
     font-size: 18px;
     position: absolute;

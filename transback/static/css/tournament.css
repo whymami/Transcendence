@@ -1,4 +1,4 @@
-#pongCanvas {
+#tournament_pongCanvas {
     width: 800px;
     height: 400px;
     background-color: #1E1E1E;
@@ -8,7 +8,7 @@
     display: none;
 }
 
-.paddle {
+.tournament_paddle {
     width: 10px;
     height: 80px;
     background-color: white;
@@ -16,17 +16,17 @@
     position: absolute;
 }
 
-#paddleLeft {
+#tournament_paddleLeft {
     left: 10px;
     top: 160px;
 }
 
-#paddleRight {
+#tournament_paddleRight {
     right: 10px;
     top: 160px;
 }
 
-.ball {
+.tournament_ball {
     width: 15px;
     height: 15px;
     background-color: white;
@@ -34,7 +34,7 @@
     border-radius: 50%;
 }
 
-#score {
+#tournament_score {
     color: white;
     font-size: 24px;
     position: absolute;
@@ -43,7 +43,7 @@
     transform: translateX(-50%);
 }
 
-#startMessage {
+#tournament_startMessage {
     color: white;
     font-size: 18px;
     position: absolute;
@@ -52,20 +52,20 @@
     transform: translate(-50%, -50%);
 }
 
-#tournamentSetup,
-#playerNames,
-#roundInfo,
-#matchResult {
+#tournament_tournamentSetup,
+#tournament_playerNames,
+#tournament_roundInfo,
+#tournament_matchResult {
     margin-top: 20px;
 }
 
-#playerNames,
-#roundInfo,
-#pongCanvas {
+#tournament_playerNames,
+#tournament_roundInfo,
+#tournament_pongCanvas {
     display: none;
 }
 
-#restartButton {
+#tournament_restartButton {
     margin-top: 20px;
     padding: 10px 20px;
     font-size: 16px;
@@ -77,10 +77,10 @@
     transition: background-color 0.3s ease;
 }
 
-#restartButton:hover {
+#tournament_restartButton:hover {
     background-color: #e03a3a;
 }
 
-.hidden {
+.tournament_hidden {
     display: none;
 }
