@@ -55,6 +55,7 @@ class User(AbstractBaseUser, PermissionsMixin):
         self.save()
 
 class Game(models.Model):
+    id = models.AutoField(primary_key=True)
     player1 = models.ForeignKey(User, related_name="games_as_player1", on_delete=models.CASCADE)
     player2 = models.ForeignKey(User, related_name="games_as_player2", on_delete=models.CASCADE)
     player1_score = models.IntegerField()
@@ -92,6 +93,20 @@ class Game(models.Model):
 
     def __str__(self):
         return f"{self.player1.username} vs {self.player2.username} ({self.player1_score}-{self.player2_score})"
+
+class Tournament(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=255)
+    created_by = models.ForeignKey(User, related_name="created_tournaments", on_delete=models.CASCADE)
+    players = models.ManyToManyField(User, related_name="tournaments")
+    winner = models.ForeignKey(User, related_name="tournçament_as_winner", on_delete=models.SET_NULL, null=True, blank=True)
+    start_time = models.DateTimeField(default=now)
+    end_time = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
 
 class Friendship(models.Model):
     PENDING = 'pending'
