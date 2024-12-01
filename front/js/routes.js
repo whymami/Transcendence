@@ -310,7 +310,6 @@ async function refreshAccessToken() {
       const data = await response.json();
       setCookie('access_token', data.access, 1);
       const accessToken = await data.access;
-      console.log(accessToken);
       return accessToken;
     } else {
       eraseCookie('access_token');
@@ -332,7 +331,6 @@ async function refreshAccessToken() {
 
 async function getAccessToken() {
   let token = await getCookie('access_token');
-  console.log(token);
   if (!token) {
     token = await refreshAccessToken();
   }
