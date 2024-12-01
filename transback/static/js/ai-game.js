@@ -1,10 +1,10 @@
 {
-    const ai_canvas = document.getElementById('pongCanvas');
-    const ai_paddleLeft = document.getElementById('paddleLeft');
-    const ai_paddleRight = document.getElementById('paddleRight');
-    const ai_ball = document.getElementById('ball');
-    const ai_scoreDisplay = document.getElementById('score');
-    const ai_startMessage = document.getElementById('startMessage');
+    const ai_canvas = document.getElementById('ai_pongCanvas');
+    const ai_paddleLeft = document.getElementById('ai_paddleLeft');
+    const ai_paddleRight = document.getElementById('ai_paddleRight');
+    const ai_ball = document.getElementById('ai_ball');
+    const ai_scoreDisplay = document.getElementById('ai_score');
+    const ai_startMessage = document.getElementById('ai_startMessage');
 
     let ai_paddleLeftY = 160;
     let ai_paddleRightY = 160;
