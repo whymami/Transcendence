@@ -1,5 +1,6 @@
 async function actionFriend(username, action) {
-    const token = getAccessToken();
+    const token = await getAccessToken();
+
     try {
         let response = await fetch('/api/friends/response/', {
             method: 'POST',

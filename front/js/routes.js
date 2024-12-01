@@ -2,8 +2,9 @@ let status;
 let statusSocket;
 let username;
 let oldUsername;
-function connectWebSocket() {
-  const token = getAccessToken(); // Assume a function to get the token
+
+async function connectWebSocket() {
+  const token = await getAccessToken(); // Assume a function to get the token
 
   if (!token) return;
 
@@ -283,7 +284,7 @@ pullHeader(false);
 async function refreshAccessToken() {
   const refreshToken = getCookie('refresh_token');
   const currentPath = window.location.pathname;
-  const publicPages = ['/login', '/register', '/reset-password', '/verify', '/2fa', '/', ];
+  const publicPages = ['/login', '/register', '/reset-password', '/verify', '/2fa', '/',];
 
   if (!refreshToken) {
     eraseCookie('access_token');
@@ -308,8 +309,9 @@ async function refreshAccessToken() {
     if (response.ok) {
       const data = await response.json();
       setCookie('access_token', data.access, 1);
-      console.log(data.access);
-      return data.access;
+      const accessToken = await data.access;
+      console.log(accessToken);
+      return accessToken;
     } else {
       eraseCookie('access_token');
       eraseCookie('refresh_token');
@@ -320,7 +322,7 @@ async function refreshAccessToken() {
     }
   } catch (error) {
     console.error('Token refresh error:', error);
-    eraseCookie('access_token'); 
+    eraseCookie('access_token');
     eraseCookie('refresh_token');
     history.pushState({}, "", "/login");
     urlLocationHandler();
@@ -329,7 +331,8 @@ async function refreshAccessToken() {
 }
 
 async function getAccessToken() {
-  let token = getCookie('access_token');
+  let token = await getCookie('access_token');
+  console.log(token);
   if (!token) {
     token = await refreshAccessToken();
   }
