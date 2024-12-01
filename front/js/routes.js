@@ -3,7 +3,7 @@ let statusSocket;
 let username;
 let oldUsername;
 function connectWebSocket() {
-  const token = getCookie('access_token'); // Assume a function to get the token
+  const token = getAccessToken(); // Assume a function to get the token
 
   if (!token) return;
 
@@ -45,7 +45,7 @@ function updateUserOnlineStatus(username, isOnline) {
 function disconnect() {
   if (statusSocket) {
     statusSocket.close();
-    //console.log("WebSocket bağlantısı kapatıldı.");
+    //console.log("WebSocket connection closed.");
   }
 }
 disconnect();
@@ -63,7 +63,7 @@ document.addEventListener("click", (e) => {
 });
 
 async function getToken() {
-  const token = await getCookie('access_token');
+  const token = await getAccessToken();
   if (!token) {
     const refreshToken = await getCookie('refresh_token');
     if (!refreshToken) {
@@ -81,6 +81,13 @@ function createScript(script) {
   const newScript = document.createElement('script');
   const url = new URL(script.src, window.location.origin);
   newScript.src = url.pathname;
+  newScript.dataset.static = script.getAttribute('data-static');
+  return newScript;
+}
+
+function createInlineScript(script) {
+  const newScript = document.createElement('script');
+  newScript.textContent = script.textContent;
   newScript.dataset.static = script.getAttribute('data-static');
   return newScript;
 }
@@ -159,7 +166,7 @@ const urlLocationHandler = async () => {
     location = "/";
   }
 
-  const token = await getCookie('access_token');
+  const token = await getAccessToken();
   const language = document.documentElement.lang;
 
   let route = urlRoutes[location] || urlRoutes["404"];
@@ -205,7 +212,13 @@ const urlLocationHandler = async () => {
       });
     }
     parsedHtml.body.querySelectorAll('script').forEach(script => {
-      const created = createScript(script);
+      let created = null;
+
+      if (script.src) {
+        created = createScript(script);
+      } else {
+        created = createInlineScript(script);
+      }
       if (created)
         document.body.appendChild(created);
       script.remove();
@@ -233,7 +246,7 @@ async function pullHeader(repull = false) {
     return;
   }
 
-  const token = await getCookie('access_token');
+  const token = await getAccessToken();
   const lang = await getCookie('lang') || 'en-US';
   // console.log(window.navigator.languages);
   fetch('/api/header/',
@@ -266,3 +279,59 @@ window.onpopstate = urlLocationHandler;
 window.route = urlRoute;
 urlLocationHandler();
 pullHeader(false);
+
+async function refreshAccessToken() {
+  const refreshToken = getCookie('refresh_token');
+  const currentPath = window.location.pathname;
+  const publicPages = ['/login', '/register', '/reset-password', '/verify', '/2fa', '/', ];
+
+  if (!refreshToken) {
+    eraseCookie('access_token');
+    eraseCookie('refresh_token');
+    if (!publicPages.includes(currentPath)) {
+      showToast("error", 'Session expired, please log in again.');
+      history.pushState({}, "", "/login");
+      urlLocationHandler();
+    }
+    return null;
+  }
+
+  try {
+    const response = await fetch('/api/token/refresh/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ refresh: refreshToken })
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      setCookie('access_token', data.access, 1);
+      console.log(data.access);
+      return data.access;
+    } else {
+      eraseCookie('access_token');
+      eraseCookie('refresh_token');
+      showToast("error", 'Session expired, please log in again.');
+      history.pushState({}, "", "/login");
+      urlLocationHandler();
+      return null;
+    }
+  } catch (error) {
+    console.error('Token refresh error:', error);
+    eraseCookie('access_token'); 
+    eraseCookie('refresh_token');
+    history.pushState({}, "", "/login");
+    urlLocationHandler();
+    return null;
+  }
+}
+
+async function getAccessToken() {
+  let token = getCookie('access_token');
+  if (!token) {
+    token = await refreshAccessToken();
+  }
+  return token;
+}

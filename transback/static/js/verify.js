@@ -1,10 +1,16 @@
-const username = localStorage.getItem("username");
+const verify_username = localStorage.getItem("username");
 
-if (!username) {
+if (!verify_username) {
     showToast("error", gettext("You need to log in to access this page."));
     history.pushState({}, "", "/login");
     urlLocationHandler();
 }
+
+const verifyForm = document.getElementById("verifyForm");
+verifyForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    await verifyEmail();
+});
 
 async function verifyEmail() {
     const codeInput = document.getElementById("verificationCode");
@@ -27,7 +33,7 @@ async function verifyEmail() {
                 "Content-Type": "application/json",
             },
             body: JSON.stringify({
-                username: username,
+                username: verify_username,
                 verification_code: code,
             }),
         });
@@ -52,3 +58,26 @@ async function verifyEmail() {
         codeInput.disabled = false;
     }
 }
+
+const verify_resendLink = document.getElementById("resend-link");
+verify_resendLink.addEventListener("click", async () => {
+    try {
+        const response = await fetch("/api/resend-verify-code/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                username: verify_username,
+            }),
+        });
+        const data = await response.json();
+        if (response.ok) {
+            showToast('success', data.message);
+        } else {
+            showToast('error', data?.error || gettext("An error occurred. Please try again."));
+        }
+    } catch (error) {
+        showToast('error', error?.error || gettext("An error occurred. Please try again."));
+    }
+});

@@ -48,9 +48,9 @@
             tournament_tournamentSetup.style.display = 'none';
             tournament_playerNamesSection.style.display = 'block';
             tournament_createPlayerInputs(numPlayers);
-            showToast('info', 'Please enter the names of the players.');
+            tournament_showToast('info', 'Please enter the names of the players.');
         } else {
-            showToast('warning', 'Please enter a valid number of players (4 or 8).');
+            tournament_showToast('warning', 'Please enter a valid number of players (4 or 8).');
         }
     }
 
@@ -77,7 +77,7 @@
             tournament_matches = tournament_createMatches(tournament_players);
             tournament_startNextMatch();
         } else {
-            showToast('error', 'Please enter all player names.');
+            tournament_showToast('error', 'Please enter all player names.');
         }
     }
 
@@ -208,12 +208,12 @@
         const winner = tournament_scoreLeft > tournament_scoreRight ? currentMatch[0] : currentMatch[1];
         tournament_matches[tournament_currentMatchIndex] = [winner];
         tournament_currentMatchIndex++;
-        showToast('success', `${winner} wins the match!`);
+        tournament_showToast('success', `${winner} wins the match!`);
         tournament_startNextMatch();
     }
 
     function tournament_showWinner(winner) {
-        showToast('success', `The tournament winner is ${winner}!`);
+        tournament_showToast('success', `The tournament winner is ${winner}!`);
     }
 
     function tournament_gameLoop() {
@@ -243,7 +243,7 @@
         tournament_currentMatchIndex = 0;
         tournament_matches = [];
         tournament_players = [];
-        showToast('info', "Tournament has been restarted. Reload the page or re-enter player names to start fresh.");
+        tournament_showToast('info', "Tournament has been restarted. Reload the page or re-enter player names to start fresh.");
         location.reload();
     }
 

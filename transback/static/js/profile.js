@@ -1,5 +1,5 @@
 async function sendFriendRequest(username) {
-    token = await getCookie('access_token');
+    token = await getAccessToken();
     try {
         let response = await fetch('/api/friends/request/', {
             method: 'POST',
@@ -37,7 +37,7 @@ async function sendFriend(username, status) {
     else
         return;
 
-    token = await getCookie('access_token');
+    token = await getAccessToken();
     try {
         let response = await fetch('/api/friends/response/', {
             method: 'POST',

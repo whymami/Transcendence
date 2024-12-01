@@ -45,12 +45,10 @@ async function verify2FA() {
 
             showToast('success', data.message);
 
-            setTimeout(() => {
-                document.body.removeChild(document.getElementsByTagName('header')[0]);
-                pullHeader();
-                history.pushState({}, "", "/");
-                urlLocationHandler();
-            }, 2000)
+            document.body.removeChild(document.getElementsByTagName('header')[0]);
+            pullHeader();
+            history.pushState({}, "", "/");
+            urlLocationHandler();
         } else {
             showToast('error', data.error || gettext("An error occurred. Please try again."));
         }
@@ -63,3 +61,27 @@ async function verify2FA() {
         verifyButton.textContent = gettext("Verify");
     }
 }
+
+const twoFa_resendLink = document.getElementById("resend-link");
+twoFa_resendLink.addEventListener("click", async () => {
+    const username = localStorage.getItem("username");
+    try {
+        const response = await fetch("/api/resend-verify-code/", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                username: username,
+            }),
+        });
+        const data = await response.json();
+        if (response.ok) {
+            showToast('success', data.message);
+        } else {
+            showToast('error', data?.error || gettext("An error occurred. Please try again."));
+        }
+    } catch (error) {
+        showToast('error', error?.error || gettext("An error occurred. Please try again."));
+    }
+});

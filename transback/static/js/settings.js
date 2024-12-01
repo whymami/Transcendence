@@ -65,7 +65,7 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
         isValid = false;
     }
 
-    const token = getCookie('access_token');
+    const token = getAccessToken();
 
     if (isValid) {
         try {
