@@ -65,7 +65,7 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
         isValid = false;
     }
 
-    const token = getAccessToken();
+    const token = await getAccessToken();
 
     if (isValid) {
         try {
