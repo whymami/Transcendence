@@ -7,7 +7,7 @@
   <div class="verification-card">
     <h2>{% trans "Email Verification" %}</h2>
     <p>{% trans "Please enter the code sent to your email" %}</p>
-    <form id="verifyForm" onsubmit="event.preventDefault(); verifyEmail();">
+    <form id="verifyForm">
       <!-- Verification Code Input -->
       <div class="input-group">
         <label for="verificationCode">{% trans "Verification Code" %}</label>
@@ -23,7 +23,7 @@
       <button type="submit" class="verify-btn">{% trans "Verify" %}</button>
     </form>
     <div class="resend-link">
-      {% trans "Didn't receive a code?" %} <a href="/resend-code">{% trans "Resend Code" %}</a>
+      {% trans "Didn't receive a code?" %} <p id="resend-link" >{% trans "Resend Code" %}</p>
     </div>
   </div>
   

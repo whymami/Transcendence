@@ -72,6 +72,10 @@
     margin-top: 20px;
     font-size: 0.85em;
     color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    gap: 5px;
+    align-items: center;
 }
 
 .resend-link a {
@@ -80,6 +84,19 @@
 }
 
 .resend-link a:hover {
+    text-decoration: underline;
+    color: var(--secondary-color);
+}
+
+#resend-link {
+    cursor: pointer;
+    color: var(--primary-color);
+    text-decoration: none;
+    width: fit-content;
+    margin: 0;
+}
+
+#resend-link:hover {
     text-decoration: underline;
     color: var(--secondary-color);
 }
