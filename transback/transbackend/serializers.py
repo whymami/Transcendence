@@ -57,38 +57,6 @@ class LoginSerializer(serializers.Serializer):
         except User.DoesNotExist:
             raise serializers.ValidationError("Invalid username or password")
 
-class ResetPasswordSerializer(serializers.Serializer):
-    email = serializers.EmailField(required=True)
-
-    def validate_email(self, value):
-        try:
-            user = User.objects.get(email=value)
-            self.context['user'] = user
-            return value
-        except User.DoesNotExist:
-            raise serializers.ValidationError("No account found with this email.")
-
-class ConfirmPasswordResetSerializer(serializers.Serializer):
-    email = serializers.EmailField(required=True)
-    verification_code = serializers.CharField(required=True)
-    new_password = serializers.CharField(required=True, write_only=True)
-
-    def validate(self, data):
-        try:
-            user = User.objects.get(email=data['email'])
-            
-            # Verify the code using the imported UserService
-            UserService.verify_login(user, data['verification_code'])
-            
-            # Store user in context for the view
-            self.context['user'] = user
-            return data
-            
-        except User.DoesNotExist:
-            raise serializers.ValidationError("No account found with this email.")
-        except ValueError as e:
-            raise serializers.ValidationError(str(e))
-
 class FriendshipSerializer(serializers.ModelSerializer):
     sender = UserSerializer(read_only=True)
     receiver = UserSerializer(read_only=True)
