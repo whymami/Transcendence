@@ -82,8 +82,9 @@ class ProfileView(APIView):
                     opponent_score = game.player1_score
 
                 result = "(Won)" if game.winner == user else "(Lost)"
+                match_time = game.start_time.strftime("%Y-%m-%d %H:%M")
 
-                last_games.append(f"{user.username} vs {opponent} - Score: {user_score}-{opponent_score} {result}")
+                last_games.append(f"{user.username} vs {opponent} - Score: {user_score}-{opponent_score} {result} - {match_time}")
 
             return TemplateResponse(
                 request,
@@ -109,8 +110,9 @@ class ProfileView(APIView):
                 opponent_score = game.player1_score
 
             result = "(Won)" if game.winner == user else "(Lost)"
+            match_time = game.start_time.strftime("%Y-%m-%d %H:%M")
 
-            last_games.append(f"{user.username} vs {opponent} - Score: {user_score}-{opponent_score} {result}")
+            last_games.append(f"{user.username} vs {opponent} - Score: {user_score}-{opponent_score} {result} - {match_time}")
 
         is_self = False
 
