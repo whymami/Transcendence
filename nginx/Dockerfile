@@ -1,18 +1,32 @@
-# OWASP ModSecurity'yi NGINX ile çalıştıran temel görüntü
-FROM owasp/modsecurity:nginx-alpine
+FROM owasp/modsecurity-crs:4.9.0-nginx-202412020312
+
+USER root
 
 # ModSecurity konfigürasyon dosyasını kopyala
-COPY modsecurity.conf /etc/nginx/modsec/modsecurity.conf
+COPY modsecurity.conf /etc/nginx/templates/modsecurity.d/modsecurity.conf.template
+RUN touch /var/log/modsec_audit.log
+RUN chmod 777 /var/log/modsec_audit.log
+RUN chown nginx:nginx /var/log/modsec_audit.log
+
+# RUN rm -rf /etc/modsecurity.d/modsecurity.conf
+# RUN mv /etc/nginx/templates/conf.d/modsecurity.conf /etc/modsecurity.d/modsecurity.conf
 
 # NGINX yapılandırma dosyasını şablon olarak kopyala
-COPY ./nginx.conf /etc/nginx/templates/conf.d/default.conf.template
+COPY default.conf /etc/nginx/templates/conf.d/default.conf.template
 
-# Gerekli izinleri ayarla
-RUN mkdir -p /var/log/modsec && \
-    chmod -R 755 /var/log/modsec && \
-    touch /var/log/modsec/modsec_audit.log && \
-    chmod -R 777 /var/log/modsec/modsec_audit.log && \
-    chown nginx:nginx /var/log/modsec
-
-# NGINX'i başlat
 CMD ["nginx", "-g", "daemon off;"]
+
+
+# # OWASP ModSecurity'yi NGINX ile çalıştıran temel görüntü
+# FROM owasp/modsecurity:nginx-alpine
+
+# # ModSecurity konfigürasyon dosyasını kopyala
+# COPY modsecurity.conf /etc/nginx/templates/conf.d/modsecurity.conf
+# RUN rm -rf /etc/modsecurity.d/modsecurity.conf
+# RUN mv /etc/nginx/templates/conf.d/modsecurity.conf /etc/modsecurity.d/modsecurity.conf
+
+# # NGINX yapılandırma dosyasını şablon olarak kopyala
+# COPY nginx.conf /etc/nginx/templates/conf.d/default.conf.template
+
+# # NGINX'i başlat
+# CMD ["nginx", "-g", "daemon off;"]
