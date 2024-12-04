@@ -1,12 +1,11 @@
 services:
   db:
     image: postgres
-    environment:
-      POSTGRES_DB: DragonBall
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: 1234
     volumes:
       - ../db:/var/lib/postgresql/data
+      - shared-data:/vault/token/
+    depends_on:
+      - vault
     networks:
       - app-network
     ports:
@@ -21,34 +20,69 @@ services:
       - ./transback/profile_pictures:/app/profile_pictures  # Django profil resimleri
       - ./transback/transbackend/templates:/app/templates  # Django template dosyaları
       - ./transback/locale:/app/locale  # Django çeviri dosyaları
+      
     ports:
       - "8000:8000"
     depends_on:
       - db
-    environment:
-      SQL_DB: DragonBall
-      SQL_HOST: db
-      SQL_PORT: 5432
-      SQL_USER: admin
-      SQL_PASSWORD: 1234
+      - vault
     networks:
       - app-network
     
   nginx:
     build:
-      context: ./nginx  # Dockerfile'ı kullanarak image'ı oluşturacak
+      context: ./nginx  # Dockerfile kullanılarak imaj oluşturulacak
     volumes:
       - ./front:/usr/share/nginx/html  # Frontend dosyalarının Nginx ile paylaşımı
-      - ./transback/static:/static  # Django statik dosyaları
+      - ./transback/static:/static  # Django uygulamasının statik dosyaları
       - ./transback/profile_pictures:/profile_pictures  # Django profil resimleri
+      - ./nginx-logs/modsec:/var/log/modsec # Dizin montajı
     environment:
-      - BACKEND=http://web:8000
+      - BACKEND=http://web:8000  # Backend servisine bağlantı adresi
+      - VAULT_ADDR=http://vault:8201  # Vault sunucusuna bağlantı adresi
+      - VAULT_TOKEN_FILE=/vault/token/root_token.txt  # Vault kimlik doğrulama token dosyası
     ports:
-      - "80:80"
+      - "80:80"  # Nginx'in 80 numaralı portunu host makinada 80 numaralı porta yönlendirir
     depends_on:
-      - web
+      - web  # Nginx, web servisi başlatılmadan önce başlatılmamalıdır
+      - vault  # Nginx, Vault servisi başlatılmadan önce başlatılmamalıdır
+    networks:
+      - app-network  # Nginx'in bağlanacağı ağ
+
+
+  vault:
+    build: 
+        context: ./vault
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - shared-data:/vault/token/
+    env_file:
+      - ./transback/.env
+    ports:
+      - "8300:8300"
     networks:
       - app-network
+    environment:
+      VAULT_ADDR: http://localhost:8300
+      restart: on-failure
+
+
+  splunk-forwarder:
+    image: splunk/universalforwarder:latest
+    container_name: splunk_forwarder
+    environment:
+      - SPLUNK_START_ARGS=--accept-license
+      - SPLUNK_SERVER=your-splunk-server:8088  # Splunk'ın HTTP Event Collector (HEC) adresi
+      - SPLUNK_TOKEN=your-hec-token  # HEC için belirlenen token
+      - SPLUNK_PASSWORD=2537131Marufg.  # Splunk yönetici şifresi
+    volumes:
+      - ./splunk-config:/opt/splunkforwarder/etc/system/local  # Splunk yapılandırma dosyalarının bağlı olduğu dizin
+      - ./nginx-logs/modsec:/var/log/modsec # Dizin montajı
+
+    networks:
+      - app-network
+    restart: always
 
 networks:
   app-network:
@@ -56,3 +90,4 @@ networks:
 
 volumes:
   postgres_data:
+  shared-data:
