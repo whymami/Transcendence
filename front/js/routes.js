@@ -162,6 +162,20 @@ const urlRoute = (event) => {
 };
 
 const urlLocationHandler = async () => {
+  if (window.gameSocket) {
+    window.gameSocket.close(1000, "Connection closed by client.");
+    window.gameSocket = null;
+    console.log("WebSocket disconnected. gameSocket");
+
+  }
+
+  if (window.matchmakingSocket) {
+    window.matchmakingSocket.close(1000, "Connection closed by client.");
+    window.matchmakingSocket = null;
+    console.log("WebSocket disconnected. matchmakingSocket");
+
+  }
+
   const location = window.location.pathname;
   if (location.length == 0) {
     location = "/";
