@@ -50,9 +50,27 @@ services:
     networks:
       - app-network
 
+  vault:
+    build: 
+        context: ./vault
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - shared-data:/vault/token/
+    env_file:
+      - ./transback/.env
+    ports:
+      - "8300:8300"
+    networks:
+      - app-network
+    environment:
+      VAULT_ADDR: http://localhost:8300
+      restart: on-failure
+
 networks:
   app-network:
     driver: bridge
 
 volumes:
   postgres_data:
+  shared-data:
