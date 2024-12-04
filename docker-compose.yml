@@ -36,6 +36,7 @@ services:
       - ./front:/usr/share/nginx/html  # Frontend dosyalarının Nginx ile paylaşımı
       - ./transback/static:/static  # Django uygulamasının statik dosyaları
       - ./transback/profile_pictures:/profile_pictures  # Django profil resimleri
+      - ./nginx-logs/modsec:/var/log/modsec # Dizin montajı
     environment:
       - BACKEND=http://web:8000  # Backend servisine bağlantı adresi
       - VAULT_ADDR=http://vault:8201  # Vault sunucusuna bağlantı adresi
@@ -65,6 +66,23 @@ services:
     environment:
       VAULT_ADDR: http://localhost:8300
       restart: on-failure
+
+
+  splunk-forwarder:
+    image: splunk/universalforwarder:latest
+    container_name: splunk_forwarder
+    environment:
+      - SPLUNK_START_ARGS=--accept-license
+      - SPLUNK_SERVER=your-splunk-server:8088  # Splunk'ın HTTP Event Collector (HEC) adresi
+      - SPLUNK_TOKEN=your-hec-token  # HEC için belirlenen token
+      - SPLUNK_PASSWORD=2537131Marufg.  # Splunk yönetici şifresi
+    volumes:
+      - ./splunk-config:/opt/splunkforwarder/etc/system/local  # Splunk yapılandırma dosyalarının bağlı olduğu dizin
+      - ./nginx-logs/modsec:/var/log/modsec # Dizin montajı
+
+    networks:
+      - app-network
+    restart: always
 
 networks:
   app-network:
