@@ -3,4 +3,8 @@ listener "tcp" {
   tls_disable = "true"
 }
 
-api_addr = "http://127.0.0.1:8300"
+storage "file" {
+  path  = "/vault/data"
+}
+
+api_addr = "http://127.0.0.1:8301"
