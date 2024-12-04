@@ -1,55 +1,85 @@
-document.getElementById('resetPasswordForm').addEventListener('submit', function (event) {
+document.getElementById('resetPasswordForm').addEventListener('submit', async function (event) {
     event.preventDefault();
 
-    const email = document.getElementById('email').value.trim();
-    const newPassword = document.getElementById('newPassword').value;
-    const confirmNewPassword = document.getElementById('confirmNewPassword').value;
-
+    const currentPassword = document.getElementById('currentPassword');
+    const newPassword = document.getElementById('newPassword');
+    const confirmNewPassword = document.getElementById('confirmNewPassword');
+    const currentPasswordValue = currentPassword.value.trim();
+    const newPasswordValue = newPassword.value.trim();
+    const confirmNewPasswordValue = confirmNewPassword.value.trim();
+    const currentPasswordError = document.getElementById('currentPasswordError');
+    const newPasswordError = document.getElementById('newPasswordError');
+    const confirmNewPasswordError = document.getElementById('confirmNewPasswordError');
     let isValid = true;
 
-    document.getElementById('emailError').textContent = '';
-    document.getElementById('newPasswordError').textContent = '';
-    document.getElementById('confirmNewPasswordError').textContent = '';
-    document.getElementById('successMessage').style.display = 'none';
+    currentPasswordError.textContent = '';
+    newPasswordError.textContent = '';
+    confirmNewPasswordError.textContent = '';
+    successMessage.style.display = 'none';
 
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-        document.getElementById('emailError').textContent = gettext('Please enter a valid email address.');
+    if (!currentPasswordValue) {
+        document.getElementById('currentPasswordError').textContent = 'Please enter your current password.';
         isValid = false;
     }
 
-    if (newPassword.length < 6) {
-        document.getElementById('newPasswordError').textContent = gettext('Password must be at least 6 characters long.');
+    if (newPasswordValue.length < 6) {
+        newPasswordError.textContent = 'Password must be at least 6 characters long.';
         isValid = false;
     }
 
-    if (newPassword !== confirmNewPassword) {
-        document.getElementById('confirmNewPasswordError').textContent = gettext('Passwords do not match.');
+    if (newPasswordValue !== confirmNewPasswordValue) {
+        confirmNewPasswordError.textContent = 'Passwords do not match.';
         isValid = false;
     }
+
+    const token = await getAccessToken();
 
     if (isValid) {
-        fetch('/api/reset-password', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email: email,
-                newPassword: newPassword,
-            }),
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert(gettext('Password reset successful.'));
+        try {
+            const response = await fetch('/api/reset-password/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({
+                    old_password: currentPasswordValue,
+                    new_password: newPasswordValue,
+                }),
+            });
+            const data = await response.json();
+            if (response.ok) {
+                showToast('success', 'Password reset successful.');
             } else {
-                alert(gettext('Password reset failed: ') + data.message);
+                showToast('error', data.error);
             }
-        })
-        .catch(error => {
-            console.error(gettext('Password reset error:'), error);
-        }).finally(() => {
-
-        });
+        } catch (error) {
+            console.error('Password reset error:', error);
+        }
     }
 });
+
+{
+    fetchIcons('password', 'currentPasswordToggle');
+    fetchIcons('password', 'newPasswordToggle');
+    fetchIcons('password', 'confirmNewPasswordToggle');
+
+    function fetchIcons(passType = "password", id) {
+        const toggleButton = document.getElementById(id);
+        
+        const svgPath = passType === "password" ? "/static/images/eye.svg" : "/static/images/eye-slash.svg";
+        
+        fetch(svgPath)
+            .then(response => response.text())
+            .then(data => {
+                toggleButton.innerHTML = data;
+            })
+            .catch(error => console.error('Simge yüklenirken hata:', error));
+    }
+
+    function togglePassword_reset(id) {
+        const passwordField = document.getElementById(id);
+        passwordField.type = passwordField.type === "password" ? "text" : "password";
+        fetchIcons(passwordField.type, id + 'Toggle');
+    }
+}
