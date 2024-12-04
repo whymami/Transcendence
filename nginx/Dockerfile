@@ -4,9 +4,10 @@ USER root
 
 # ModSecurity konfigürasyon dosyasını kopyala
 COPY modsecurity.conf /etc/nginx/templates/modsecurity.d/modsecurity.conf.template
-RUN touch /var/log/modsec_audit.log
-RUN chmod 777 /var/log/modsec_audit.log
-RUN chown nginx:nginx /var/log/modsec_audit.log
+RUN mkdir /var/log/modsec
+RUN touch /var/log/modsec/modsec_audit.log
+RUN chmod 777 /var/log/modsec/modsec_audit.log
+RUN chown nginx:nginx /var/log/modsec/modsec_audit.log
 
 # RUN rm -rf /etc/modsecurity.d/modsecurity.conf
 # RUN mv /etc/nginx/templates/conf.d/modsecurity.conf /etc/modsecurity.d/modsecurity.conf
