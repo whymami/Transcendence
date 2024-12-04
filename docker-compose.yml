@@ -74,7 +74,8 @@ services:
     environment:
       - SPLUNK_START_ARGS=--accept-license
       - SPLUNK_SERVER=45.9.30.21:8088  # Splunk'ın HTTP Event Collector (HEC) adresi
-      - SPLUNK_TOKEN=af30f512-baba-43d9-867d-3d5b27ed33e1  # HEC için belirlenen token
+      - SPLUNK_TOKEN=af30f512-baba-43d9-867d-3d5b27ed33e1  
+      # HEC için belirlenen token
       - SPLUNK_PASSWORD=2537131Marufg.  # Splunk yönetici şifresi
     volumes:
       - ./splunk-config:/opt/splunkforwarder/etc/system/local  # Splunk yapılandırma dosyalarının bağlı olduğu dizin
