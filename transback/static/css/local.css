@@ -73,6 +73,12 @@
   background-color: var(--secondary-color);
 }
 
+.button-group {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
 @media screen and (max-width: 780px) {
   .cards-container {
     display: flex;
@@ -96,6 +102,7 @@
     width: 100%;
     max-width: 80%;
   }
+
   .card:nth-child(3) {
     width: 100%;
     max-width: 80%;

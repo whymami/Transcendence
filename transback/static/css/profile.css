@@ -1,6 +1,6 @@
 .profile-card {
     position: relative;
-    width: 400px;
+    width: 500px;
     padding: 30px;
     background-color: var(--background-color);
     border-radius: 8px;
@@ -21,6 +21,11 @@
     font-size: 1.8em;
     margin-bottom: 5px;
     color: white;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+    width: 90%;
 }
 
 .profile-card .status {

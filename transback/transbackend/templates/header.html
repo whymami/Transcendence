@@ -54,10 +54,10 @@
     <ul>
       <li><a href="/" class="nav-link">{% trans "Home" %}</a></li>
       {% if user.is_authenticated %}
-      <li><a href="/settings" class="nav-link">{% trans "Settings" %}</a></li>
-      <li><a href="/" class="logout">{% trans "Logout" %}</a></li>
+        <li><a href="/profile" class="nav-link">{{ user.username }}</a></li>
+        <li><a href="/" class="logout">{% trans "Logout" %}</a></li>
       {% else %}
-      <li><a href="/login" class="nav-link">{% trans "Login" %}</a></li>
+        <li><a href="/login" class="nav-link">{% trans "Login" %}</a></li>
       {% endif %}
     </ul>
     <div class="language-select-container">

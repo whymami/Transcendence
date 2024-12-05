@@ -127,10 +127,6 @@
         display: none;
     }
 
-    .logout {
-        display: none;
-    }
-
     .hamburger {
         display: flex;
     }

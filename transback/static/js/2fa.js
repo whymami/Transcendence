@@ -45,8 +45,7 @@ async function verify2FA() {
 
             showToast('success', data.message);
 
-            document.body.removeChild(document.getElementsByTagName('header')[0]);
-            pullHeader();
+            pullHeader(true);
             history.pushState({}, "", "/");
             urlLocationHandler();
         } else {

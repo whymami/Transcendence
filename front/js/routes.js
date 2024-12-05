@@ -258,13 +258,10 @@ const urlLocationHandler = async () => {
 };
 
 async function pullHeader(repull = false) {
-  let header = document.getElementsByTagName('header').item(0);
-  if (header && repull) {
-    document.body.removeChild(header);
-  }
-  // console.log(header);
-  header = document.getElementsByTagName('header').item(0);
-  if (header) {
+  const documentHeader = document.getElementById('header');
+
+  const childNodesForHeader = document.getElementsByTagName('header').item(0).childNodes;
+  if (childNodesForHeader.length > 0 && !repull) {
     return;
   }
 
@@ -279,17 +276,19 @@ async function pullHeader(repull = false) {
       }
     }
   )
-    .then(response => response.text())
-    .then(data => {
+    .then(async response => {
+      const data = await response.text();
       const parsedHtml = new DOMParser().parseFromString(data, 'text/html');
       const header = parsedHtml.querySelector('header');
-      document.body.insertAdjacentHTML('afterbegin', header.outerHTML);
+      documentHeader.innerHTML = header?.innerHTML;
       document.head.appendChild(parsedHtml.head.querySelector('link[rel="stylesheet"]'));
       parsedHtml.head.querySelectorAll('script').forEach(script => {
         const created = createScript(script)
         if (created)
           document.head.appendChild(created);
       });
+      console.log("header", header?.innerHTML);
+
 
     }).catch(error => {
       console.error('Error:', error);

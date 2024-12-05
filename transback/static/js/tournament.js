@@ -5,7 +5,7 @@
     const tournament_ball = document.getElementById('tournament_ball');
     const tournament_scoreDisplay = document.getElementById('tournament_score');
     const tournament_startMessage = document.getElementById('tournament_startMessage');
-    const tournament_numPlayersInput = document.getElementById('tournament_numPlayers');
+    let tournament_numPlayersInput = 0;
     const tournament_playerNamesDiv = document.getElementById('tournament_nameInputs');
     const tournament_tournamentSetup = document.getElementById('tournament_tournamentSetup');
     const tournament_playerNamesSection = document.getElementById('tournament_playerNames');
@@ -42,15 +42,15 @@
         tournament_keysPressed[e.key] = false;
     });
 
-    function tournament_startTournament() {
-        const numPlayers = parseInt(tournament_numPlayersInput.value);
+    function tournament_startTournament(numPlayers) {
         if (numPlayers === 4 || numPlayers === 8) {
+            tournament_numPlayersInput = numPlayers;
             tournament_tournamentSetup.style.display = 'none';
             tournament_playerNamesSection.style.display = 'block';
             tournament_createPlayerInputs(numPlayers);
-            tournament_showToast('info', 'Please enter the names of the players.');
+            showToast('info', 'Please enter the names of the players.');
         } else {
-            tournament_showToast('warning', 'Please enter a valid number of players (4 or 8).');
+            showToast('warning', 'Please enter a valid number of players (4 or 8).');
         }
     }
 
@@ -66,18 +66,19 @@
 
     function tournament_startGame() {
         tournament_players = [];
-        document.querySelectorAll('#nameInputs input').forEach((input) => {
+        document.querySelectorAll('#tournament_nameInputs input').forEach((input) => {
             const name = input.value.trim();
             if (name) tournament_players.push(name);
         });
 
-        if (tournament_players.length === parseInt(tournament_numPlayersInput.value)) {
+
+        if (tournament_players.length === tournament_numPlayersInput) {
             tournament_playerNamesSection.style.display = 'none';
-            tournament_roundInfo.style.display = 'block';
+            tournament_roundInfo.style.display = 'flex';
             tournament_matches = tournament_createMatches(tournament_players);
             tournament_startNextMatch();
         } else {
-            tournament_showToast('error', 'Please enter all player names.');
+            showToast('error', 'Please enter all player names.');
         }
     }
 
@@ -208,12 +209,12 @@
         const winner = tournament_scoreLeft > tournament_scoreRight ? currentMatch[0] : currentMatch[1];
         tournament_matches[tournament_currentMatchIndex] = [winner];
         tournament_currentMatchIndex++;
-        tournament_showToast('success', `${winner} wins the match!`);
+        showToast('success', `${winner} wins the match!`);
         tournament_startNextMatch();
     }
 
     function tournament_showWinner(winner) {
-        tournament_showToast('success', `The tournament winner is ${winner}!`);
+        showToast('success', `The tournament winner is ${winner}!`);
     }
 
     function tournament_gameLoop() {
@@ -243,7 +244,7 @@
         tournament_currentMatchIndex = 0;
         tournament_matches = [];
         tournament_players = [];
-        tournament_showToast('info', "Tournament has been restarted. Reload the page or re-enter player names to start fresh.");
+        showToast('info', "Tournament has been restarted. Reload the page or re-enter player names to start fresh.");
         location.reload();
     }
 

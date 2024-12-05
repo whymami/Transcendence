@@ -72,7 +72,7 @@ class ProfileView(APIView):
 
     def get(self, request):
         username = request.query_params.get('username')
-        if not username or username == "":
+        if not username or username == "" or username == request.user.username:
             user = request.user
             is_self = True
 
