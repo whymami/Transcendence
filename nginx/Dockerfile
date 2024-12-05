@@ -2,6 +2,13 @@ FROM owasp/modsecurity-crs:4.9.0-nginx-202412020312
 
 USER root
 
+# Add SSL certificate generation
+RUN mkdir -p /etc/nginx/ssl
+RUN openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+    -keyout /etc/nginx/ssl/nginx.key \
+    -out /etc/nginx/ssl/nginx.crt \
+    -subj "/C=TR/ST=State/L=City/O=Organization/CN=localhost"
+
 # ModSecurity konfigürasyon dosyasını kopyala
 COPY modsecurity.conf /etc/nginx/templates/modsecurity.d/modsecurity.conf.template
 RUN mkdir /var/log/modsec

@@ -16,5 +16,6 @@ echo "Collecting static files"
 python manage.py collectstatic --noinput
 
 echo "Starting Django development server"
-daphne -b 0.0.0.0 -p 8000 transback.asgi:application
+daphne -e ssl:443:privateKey=/etc/nginx/ssl/nginx.key:certKey=/etc/nginx/ssl/nginx.crt -b 0.0.0.0 -p 8000 transback.asgi:application
+
 # python manage.py runserver 0.0.0.0:8000

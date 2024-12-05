@@ -20,7 +20,7 @@ services:
       - ./transback/profile_pictures:/app/profile_pictures  # Django profil resimleri
       - ./transback/transbackend/templates:/app/templates  # Django template dosyaları
       - ./transback/locale:/app/locale  # Django çeviri dosyaları
-      
+      - ssl-certs:/etc/nginx/ssl/
     ports:
       - "8000:8000"
     depends_on:
@@ -37,22 +37,24 @@ services:
       - ./transback/static:/static  # Django uygulamasının statik dosyaları
       - ./transback/profile_pictures:/profile_pictures  # Django profil resimleri
       - ./nginx-logs/modsec:/var/log/modsec # Dizin montajı
+      - ssl-certs:/etc/nginx/ssl/  # Sertifikaları paylaşma
     environment:
       - BACKEND=http://web:8000  # Backend servisine bağlantı adresi
       - VAULT_ADDR=http://vault:8201  # Vault sunucusuna bağlantı adresi
       - VAULT_TOKEN_FILE=/vault/token/root_token.txt  # Vault kimlik doğrulama token dosyası
     ports:
-      - "80:80"  # Nginx'in 80 numaralı portunu host makinada 80 numaralı porta yönlendirir
+      - "80:80"
+      - "443:443"
     depends_on:
-      - web  # Nginx, web servisi başlatılmadan önce başlatılmamalıdır
-      - vault  # Nginx, Vault servisi başlatılmadan önce başlatılmamalıdır
+      - web
+      - vault
     networks:
-      - app-network  # Nginx'in bağlanacağı ağ
+      - app-network
 
 
   vault:
-    build: 
-        context: ./vault
+    build:
+      context: ./vault
     cap_add:
       - IPC_LOCK
     volumes:
@@ -92,3 +94,4 @@ networks:
 volumes:
   postgres_data:
   shared-data:
+  ssl-certs:
