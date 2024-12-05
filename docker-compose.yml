@@ -68,21 +68,21 @@ services:
       restart: on-failure
 
 
-  splunk-forwarder:
-    image: splunk/universalforwarder:latest
-    container_name: splunk_forwarder
-    environment:
-      - SPLUNK_START_ARGS=--accept-license
-      - SPLUNK_SERVER=your-splunk-server:8088  # Splunk'ın HTTP Event Collector (HEC) adresi
-      - SPLUNK_TOKEN=your-hec-token  # HEC için belirlenen token
-      - SPLUNK_PASSWORD=2537131Marufg.  # Splunk yönetici şifresi
-    volumes:
-      - ./splunk-config:/opt/splunkforwarder/etc/system/local  # Splunk yapılandırma dosyalarının bağlı olduğu dizin
-      - ./nginx-logs/modsec:/var/log/modsec # Dizin montajı
+  # splunk-forwarder:
+  #   image: splunk/universalforwarder:latest
+  #   container_name: splunk_forwarder
+  #   environment:
+  #     - SPLUNK_START_ARGS=--accept-license
+  #     - SPLUNK_SERVER=your-splunk-server:8088  # Splunk'ın HTTP Event Collector (HEC) adresi
+  #     - SPLUNK_TOKEN=your-hec-token  # HEC için belirlenen token
+  #     - SPLUNK_PASSWORD=2537131Marufg.  # Splunk yönetici şifresi
+  #   volumes:
+  #     - ./splunk-config:/opt/splunkforwarder/etc/system/local  # Splunk yapılandırma dosyalarının bağlı olduğu dizin
+  #     - ./nginx-logs/modsec:/var/log/modsec # Dizin montajı
 
-    networks:
-      - app-network
-    restart: always
+  #   networks:
+  #     - app-network
+  #   restart: always
 
 networks:
   app-network:

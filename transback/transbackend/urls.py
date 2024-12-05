@@ -3,7 +3,7 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView,TokenObtainPairView
 from django.views.i18n import JavaScriptCatalog
 from .views.auth import RegisterView, LoginView, ResetPasswordView
-from .views.template_views import HomeView, HeaderView, GameView, UserSettingsView, ProfileView, UserListView, LocalView, AiGameView, TwoPlayerGameView, TournamentView
+from .views.template_views import HomeView, HeaderView, GameView, UserSettingsView, ProfileView, UserListView, LocalView, AiGameView, TwoPlayerGameView, TournamentView, FourPlayerGameView
 from .views.verify import VerifyLoginView, VerifyAccountView, ReSendVerifyCodeView
 from .views.utils import NotFoundView
 from .views.friend_views import FriendListView, FriendRequestView, FriendRequestResponseView
@@ -20,6 +20,7 @@ urlpatterns = [
     path('api/game/online/', GameView.as_view(), name='game'),
     path('api/game/ai/', AiGameView.as_view(), name='ai_game'),
     path('api/game/two-player/', TwoPlayerGameView.as_view(), name='two_player_game'),
+    path('api/game/four-player/', FourPlayerGameView.as_view(), name='four_player_game'),
     path('api/game/tournament/', TournamentView.as_view(), name='tournament'),
     path('api/reset-password/', ResetPasswordView.as_view(), name='reset_password'),
     path('api/verify-login/', VerifyLoginView.as_view(), name='verify_code'),

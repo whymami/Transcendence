@@ -213,6 +213,13 @@ const urlLocationHandler = async () => {
     const parsedHtml = new DOMParser().parseFromString(html, "text/html");
     document.title = parsedHtml.title;
     parsedHtml.head.querySelector('title').remove();
+    const links = document.head.querySelectorAll('link[rel="stylesheet"]')
+    links.forEach(link => {
+      const pathname = new URL(link.href, window.location.origin).pathname;
+      if (pathname.startsWith('/static/') && pathname !== '/static/css/header.css') {
+        link.remove();
+      }
+    });
     document
       .querySelector('meta[name="description"]')
       .setAttribute("content", parsedHtml.description);

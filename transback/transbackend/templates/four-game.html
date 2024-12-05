@@ -1,0 +1,16 @@
+{% load static %} {% load i18n %}
+
+<head>
+  <title>Pong Oyunu</title>
+  <link rel="stylesheet" href="{% static 'css/game.css' %}" />
+</head>
+<body>
+  <div class="game-container">
+    <canvas id="pong" width="800" height="400"></canvas>
+    <div class="scoreboard">
+      <div class="score" id="team1-score">0</div>
+      <div class="score" id="team2-score">0</div>
+    </div>
+  </div>
+  <script src="{% static 'js/four-game.js' %}" data-static="true"></script>
+</body>
