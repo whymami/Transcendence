@@ -83,9 +83,9 @@ services:
       - ./splunk-config:/opt/splunkforwarder/etc/system/local  # Splunk yapılandırma dosyalarının bağlı olduğu dizin
       - ./nginx-logs/modsec:/var/log/modsec # Dizin montajı
 
-    networks:
-      - app-network
-    restart: always
+  #   networks:
+  #     - app-network
+  #   restart: always
 
 networks:
   app-network:

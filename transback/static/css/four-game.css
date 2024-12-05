@@ -1,0 +1,27 @@
+.game-container {
+    position: relative;
+}
+
+#pong {
+    width: 800px;
+    height: 400px;
+    background-color: #1E1E1E;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+.scoreboard {
+    position: absolute;
+    top: 10px;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.score {
+    font-size: 30px;
+    font-weight: bold;
+    color: #fff;
+}

@@ -50,6 +50,14 @@ class TwoPlayerGameView(APIView):
         user = request.user
         return TemplateResponse(request, 'two-game.html', {"user": user})
     
+class FourPlayerGameView(APIView):
+    permission_classes = [IsAuthenticated]
+    authentication_classes = [JWTAuthentication]
+
+    def get(self, request):
+        user = request.user
+        return TemplateResponse(request, 'four-game.html', {"user": user})
+
 class TournamentView(APIView):
     permission_classes = [IsAuthenticated]
     authentication_classes = [JWTAuthentication]
