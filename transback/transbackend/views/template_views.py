@@ -178,9 +178,10 @@ class UserSettingsView(APIView):
                 user.profile_picture = data.get('profile_picture')
 
             if email_changed:
-                # Don't update email yet, just send verification code
                 user.set_verification_code()
                 UserService.handle_verification_email(user, new_email)
+                user.new_email = new_email
+                user.save()
                 return JsonResponse({
                     "message": "Please check your new email for verification code before changes take effect.",
                     "requires_verification": True,

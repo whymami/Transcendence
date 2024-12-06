@@ -34,9 +34,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     is_staff = models.BooleanField(default=False)
     verification_code = models.IntegerField(blank=True, null=True)
     code_expiration = models.DateTimeField(blank=True, null=True)
+    new_email = models.EmailField(max_length=255, blank=True, null=True)
     is_verified = models.BooleanField(default=False)
     is_online = models.BooleanField(default=False)
-    games_played = models.PositiveIntegerField(default=0)  # Kaç maç oynadı
+    games_played = models.PositiveIntegerField(default=0)
     games_won = models.PositiveIntegerField(default=0)
     friends = models.ManyToManyField('self', through='Friendship', symmetrical=False)
 
@@ -66,7 +67,6 @@ class Game(models.Model):
     end_time = models.DateTimeField(blank=True, null=True)
 
     def save(self, *args, **kwargs):
-        # İstatistikler güncellenecek
         if self.player1_score > self.player2_score:
             self.winner = self.player1
             self.loser = self.player2
@@ -74,15 +74,12 @@ class Game(models.Model):
             self.winner = self.player2
             self.loser = self.player1
 
-        # Her iki oyuncu için maç sayısını artır
         self.player1.games_played += 1
         self.player2.games_played += 1
 
-        # Kazananın galibiyet sayısını artır
         if self.winner:
             self.winner.games_won += 1
 
-        # Oyuncuları kaydet
         self.player1.save()
         self.player2.save()
 

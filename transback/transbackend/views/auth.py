@@ -57,7 +57,6 @@ class LoginView(APIView):
                     message="Your account is not verified. A verification code has been sent to your email."
                 )
 
-            # User is verified, send verification code for 2FA
             user.set_verification_code()
             UserService.handle_verification_email(user)
             return json_response(message="Verification code sent to your email.")
@@ -77,13 +76,11 @@ class ResetPasswordView(APIView):
 
     def post(self, request):
         try:
-            # Parse request body as JSON if content-type is application/json
             data = request.data
             print("data", data)
             old_password = data.get('old_password')
             new_password = data.get('new_password')
 
-            # Validate required fields
             if old_password is None:
                 return json_response(error={"old_password": "This field is required."}, status=400)
             if new_password is None:
@@ -91,11 +88,9 @@ class ResetPasswordView(APIView):
 
             user = request.user
 
-            # Verify old password
             if not user.check_password(old_password):
                 return json_response(error="Current password is incorrect", status=400)
 
-            # Set new password
             user.set_password(new_password)
             user.save()
 
