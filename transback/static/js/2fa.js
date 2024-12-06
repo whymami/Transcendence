@@ -20,6 +20,8 @@ async function verify2FA() {
         codeInput.focus();
     }
 
+    const lang = await getCookie('lang') || 'en-US';
+
     try {
         codeInput.disabled = true;
         verifyButton.disabled = true;
@@ -28,6 +30,7 @@ async function verify2FA() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Accept-Language": lang,
             },
             body: JSON.stringify({
                 username: username,
@@ -64,11 +67,13 @@ async function verify2FA() {
 const twoFa_resendLink = document.getElementById("resend-link");
 twoFa_resendLink.addEventListener("click", async () => {
     const username = localStorage.getItem("username");
+    const lang = await getCookie('lang') || 'en-US';
     try {
         const response = await fetch("/api/resend-verify-code/", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
+                "Accept-Language": lang,
             },
             body: JSON.stringify({
                 username: username,

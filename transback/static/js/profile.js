@@ -1,11 +1,13 @@
 async function sendFriendRequest(username) {
     token = await getAccessToken();
+    const lang = await getCookie('lang') || 'en-US';
     try {
         let response = await fetch('/api/friends/request/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                "Accept-Language": lang,
             },
             body: JSON.stringify({
                 username: username
@@ -36,6 +38,7 @@ async function sendFriend(username, status) {
         return sendFriendRequest(username);
     else
         return;
+    const lang = await getCookie('lang') || 'en-US';
 
     token = await getAccessToken();
     try {
@@ -43,7 +46,8 @@ async function sendFriend(username, status) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                "Accept-Language": lang,
             },
             body: JSON.stringify({
                 username: username,

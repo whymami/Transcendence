@@ -33,7 +33,7 @@ document.getElementById('resetPasswordForm').addEventListener('submit', async fu
     }
 
     const token = await getAccessToken();
-
+    const lang = await getCookie('lang') || 'en-US';
     if (isValid) {
         try {
             const response = await fetch('/api/reset-password/', {
@@ -41,6 +41,7 @@ document.getElementById('resetPasswordForm').addEventListener('submit', async fu
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`,
+                    "Accept-Language": lang,
                 },
                 body: JSON.stringify({
                     old_password: currentPasswordValue,

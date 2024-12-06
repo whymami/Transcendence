@@ -54,6 +54,11 @@ async function register() {
         isValid = false;
     }
 
+    if (username.length > 10) {
+        usernameError.textContent = gettext("Username must be less than 10 characters.");
+        isValid = false;
+    }
+
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
         emailError.textContent = gettext("Please enter a valid email address.");
@@ -71,6 +76,7 @@ async function register() {
     }
 
     if (!isValid) return;
+    const lang = await getCookie('lang') || 'en-US';
 
     try {
         // **Loading Durumuna Geçiş**
@@ -80,7 +86,9 @@ async function register() {
 
         const response = await fetch('/api/register/', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json', "Accept-Language": lang,
+            },
             body: JSON.stringify({ username, email, password })
         });
 

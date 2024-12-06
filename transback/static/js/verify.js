@@ -28,8 +28,7 @@
             showToast("error", gettext("Invalid verify code"));
             codeInput.focus();
         }
-        console.log(email_verify);
-        console.log(verify_username);
+        const lang = await getCookie('lang') || 'en-US';
         try {
             btn.textContent = gettext("Verifying...");
             btn.disabled = true;
@@ -38,6 +37,7 @@
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "Accept-Language": lang,
                 },
                 body: JSON.stringify({
                     username: verify_username,
@@ -75,11 +75,14 @@
 
     const verify_resendLink = document.getElementById("resend-link");
     verify_resendLink.addEventListener("click", async () => {
+        const lang = await getCookie('lang') || 'en-US';
+
         try {
             const response = await fetch("/api/resend-verify-code/", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "Accept-Language": lang,
                 },
                 body: JSON.stringify({
                     username: verify_username,
