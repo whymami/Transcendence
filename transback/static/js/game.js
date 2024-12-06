@@ -4,7 +4,7 @@
     function connectToGameRoom(room_id) {
         const token = getCookie("access_token"); // Token'ı burada al
         console.log(room_id);
-        socket = new WebSocket(`ws://${window.location.hostname}:8000/ws/game/${room_id}/?token=${token}`);
+        socket = new WebSocket(`wss://${window.location.hostname}/ws/game/${room_id}/?token=${token}`);
         initGame();
     }
 
@@ -20,7 +20,7 @@
 
         // Connect to the matchmaking WebSocket
         const matchmakingSocket = new WebSocket(
-            `ws://${window.location.hostname}:8000/ws/matchmaking/?token=${token}`
+            `wss://${window.location.hostname}/ws/matchmaking/?token=${token}`
         );
 
         matchmakingSocket.onmessage = function (event) {

@@ -4,11 +4,12 @@ let username;
 let oldUsername;
 
 async function connectWebSocket() {
-  const token = await getAccessToken(); // Assume a function to get the token
+  const token = await getAccessToken();
 
   if (!token) return;
 
-  statusSocket = new WebSocket(`ws://${window.location.host}:8000/ws/online-status/?token=${token}`);
+  const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+  statusSocket = new WebSocket(`${wsProtocol}//${window.location.host}/ws/online-status/?token=${token}`);
 
   statusSocket.onopen = function () {
     console.log("WebSocket connection opened.");
