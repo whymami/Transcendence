@@ -10,11 +10,7 @@ import jwt
 from urllib.parse import parse_qs
 from django.utils.timezone import now
 
-# Kullanıcı doğrulama fonksiyonu
 async def get_user_from_token(query_string: str):
-    """
-    Token'ı query_string'den alır, doğrular ve kullanıcıyı döner.
-    """
     token = parse_qs(query_string).get('token', [None])[0]
     
     if not token:
@@ -60,12 +56,10 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.player_number = PongConsumer.players
             if self.player_number == 1:
                 PongConsumer.game_state["player1_name"] = self.user.username
-                print(f"Player 1: {self.user.username}")
             elif self.player_number == 2:
                 PongConsumer.game_state["player2_name"] = self.user.username
-                print(f"Player 2: {self.user.username}")
         else:
-            self.player_number = 0  # Spectator
+            self.player_number = 0
 
         await self.channel_layer.group_add(
             "game_room",
@@ -89,7 +83,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             PongConsumer.players -= 1
 
             if PongConsumer.players == 0 and not PongConsumer.game_state["winner"]:
-                # Eğer oyun kazanan belirlenmeden sona ererse veritabanına kaydet
                 player1_name = PongConsumer.game_state.get("player1_name", "Player 1")
                 player2_name = PongConsumer.game_state.get("player2_name", "Player 2")
                 player1_score = PongConsumer.game_state["score"]["player1"]
@@ -100,13 +93,11 @@ class PongConsumer(AsyncWebsocketConsumer):
                     player1_user = await sync_to_async(User.objects.get)(username=player1_name)
                 except User.DoesNotExist:
                     player1_user = None
-                    print(f"User with username '{player1_name}' not found.")
 
                 try:
                     player2_user = await sync_to_async(User.objects.get)(username=player2_name)
                 except User.DoesNotExist:
                     player2_user = None
-                    print(f"User with username '{player2_name}' not found.")
 
                 if player1_user and player2_user:
                     await sync_to_async(Game.objects.create)(
@@ -117,7 +108,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                         end_time=now()
                     )
 
-            # Kullanıcıyı gruptan çıkar
             await self.channel_layer.group_discard(
                 "game_room",
                 self.channel_name,
@@ -150,7 +140,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                     }
                 )
 
-                # Oyunun sonucunu veritabanına kaydet
                 player1_name = PongConsumer.game_state.get("player1_name", "Player 1")
                 player2_name = PongConsumer.game_state.get("player2_name", "Player 2")
                 player1_score = PongConsumer.game_state["score"]["player1"]
@@ -176,13 +165,11 @@ class PongConsumer(AsyncWebsocketConsumer):
                         end_time=now()
                     )
 
-                # Tüm oyuncuları ve izleyicileri disconnect et
                 await self.channel_layer.group_send(
                     "game_room",
                     {"type": "disconnect_all"}
                 )
 
-                # Oyun durumunu sıfırla
                 PongConsumer.game_state = {
                     "ball": {"x": 50, "y": 50, "dx": random.choice([-1, 1]) * 2, "dy": random.choice([-1, 1]) * 2},
                     "paddle1": {"y": 50},
@@ -201,7 +188,7 @@ class PongConsumer(AsyncWebsocketConsumer):
                     "game_state": PongConsumer.game_state,
                 },
             )
-            await asyncio.sleep(0.03)  # 30 FPS
+            await asyncio.sleep(0.03)
 
     async def disconnect_all(self, event):
         await self.channel_layer.group_discard("game_room", self.channel_name)
@@ -210,33 +197,26 @@ class PongConsumer(AsyncWebsocketConsumer):
     def update_game_state(self):
         ball = PongConsumer.game_state["ball"]
 
-        # Topun mevcut konumunu güncelle
         ball["x"] += ball["dx"]
         ball["y"] += ball["dy"]
 
-        # Yön değişikliği (duvarlara çarpma)
-        if ball["y"] <= 0 or ball["y"] >= 100:  # Üst ve alt duvarlar
+        if ball["y"] <= 0 or ball["y"] >= 100:
             ball["dy"] *= -1
 
-        # Sol raket (paddle1) ile çarpışma
         if ball["x"] <= 5:
             paddle1_y = PongConsumer.game_state["paddle1"]["y"]
-            if paddle1_y - 15 <= ball["y"] <= paddle1_y + 15:  # Çarpışma aralığı
-                # Çarpışma noktasına göre açıyı hesapla
+            if paddle1_y - 15 <= ball["y"] <= paddle1_y + 15:
                 offset = ball["y"] - paddle1_y
-                ball["dx"] = abs(ball["dx"])  # Sağ tarafa yönlendirme
-                ball["dy"] = offset / 5  # Çarpışma noktasına göre yön
+                ball["dx"] = abs(ball["dx"])
+                ball["dy"] = offset / 5
 
-        # Sağ raket (paddle2) ile çarpışma
         elif ball["x"] >= 95:
             paddle2_y = PongConsumer.game_state["paddle2"]["y"]
-            if paddle2_y - 15 <= ball["y"] <= paddle2_y + 15:  # Çarpışma aralığı
-                # Çarpışma noktasına göre açıyı hesapla
+            if paddle2_y - 15 <= ball["y"] <= paddle2_y + 15:
                 offset = ball["y"] - paddle2_y
-                ball["dx"] = -abs(ball["dx"])  # Sol tarafa yönlendirme
-                ball["dy"] = offset / 5  # Çarpışma noktasına göre yön
+                ball["dx"] = -abs(ball["dx"])
+                ball["dy"] = offset / 5
 
-        # Skor durumu (top kaçarsa)
         if ball["x"] <= 0:
             PongConsumer.game_state["score"]["player2"] += 1
             self.reset_ball()
@@ -244,7 +224,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             PongConsumer.game_state["score"]["player1"] += 1
             self.reset_ball()
 
-        # Oyunun bitip bitmediğini kontrol et
         if PongConsumer.game_state["score"]["player1"] >= 10:
             PongConsumer.game_state["winner"] = PongConsumer.game_state["player1_name"]
         elif PongConsumer.game_state["score"]["player2"] >= 10:
@@ -255,7 +234,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             "x": 50,
             "y": random.uniform(30, 70),
             "dx": random.choice([-1, 1]) * 2,
-            "dy": random.uniform(-1, 1)  # Rasgele bir dikey hız
+            "dy": random.uniform(-1, 1)
         }
 
     async def update_game(self, event):
@@ -314,9 +293,7 @@ class MatchmakingConsumer(AsyncWebsocketConsumer):
         await self.accept()
         self.player_id = self.user.username
         self.room_name = None
-        # Oyuncunun kanal ismini sakla
         self.player_channels[self.player_id] = self.channel_name
-        print(f"Player {self.player_id} connected to matchmaking")
 
     async def disconnect(self, close_code):
         if self.player_id in self.player_channels:
@@ -330,32 +307,23 @@ class MatchmakingConsumer(AsyncWebsocketConsumer):
 
     async def receive(self, text_data):
         data = json.loads(text_data)
-        print(f"Received data from {self.player_id}: {data}")
         if data.get('action') == 'join_game':
             await self.join_game()
 
     async def join_game(self):
-        print(f"Player {self.player_id} is joining matchmaking queue")
         if self.player_id not in self.waiting_players:
             self.waiting_players.append(self.player_id)
         
-        print(f"Current waiting players: {self.waiting_players}")
         if len(self.waiting_players) >= 2:
-            # İlk iki oyuncuyu al
             player1_id = self.waiting_players[0]
             player2_id = self.waiting_players[1]
             
-            # Oda oluştur
             self.room_counter += 1
             room_id = str(self.room_counter)
             self.rooms[room_id] = [player1_id, player2_id]
             
-            # Oyuncuları kuyruktan çıkar
             self.waiting_players = self.waiting_players[2:]
             
-            print(f"Created room {room_id} for players: {player1_id} and {player2_id}")
-            
-            # Her iki oyuncuya da oda bilgisini gönder
             for player_id in [player1_id, player2_id]:
                 if player_id in self.player_channels:
                     channel_name = self.player_channels[player_id]
@@ -368,7 +336,6 @@ class MatchmakingConsumer(AsyncWebsocketConsumer):
                     )
 
     async def game_start(self, event):
-        print(f"Sending game start message to {self.player_id} for room {event['room_id']}")
         await self.send(text_data=json.dumps({
             "message": "Match found!",
             "room_id": event['room_id']
