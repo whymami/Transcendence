@@ -57,30 +57,30 @@ class VerifyAccountView(APIView):
             data = json.loads(request.body)
             username = data.get('username')
             verification_code = data.get('verification_code')
-            new_email = data.get('new_email')
 
             try:
                 user = User.objects.get(username=username)
-                if not new_email:
-                    UserService.verify_account(user, verification_code)
+                requestUser = request.user
 
-                if new_email and request.user != user:
+                if not requestUser.is_authenticated:
+                    UserService.verify_account(user, verification_code)
+                    return JsonResponse({
+                        "message": _("Account verified successfully!"),
+                    }, status=200)
+
+                if requestUser.is_authenticated and requestUser != user:
                     return JsonResponse({"error": _("Unauthorized access")}, status=403)
 
-                if new_email:
-                    if request.user.new_email == new_email:
-                        UserService.verify_account(user, verification_code)
-                        user.email = new_email
-                        user.new_email = None
-                        user.save()
+                if requestUser.is_authenticated and requestUser == user:
+                        UserService.verify_account(requestUser, verification_code)
+
+                        requestUser.email = requestUser.new_email
+                        requestUser.new_email = None
+                        requestUser.save()
                         return JsonResponse({
                             "message": _("Email verified successfully!"),
                         }, status=200)
-                    else:
-                        return JsonResponse({"error": _("Invalid email")}, status=400)
-        
-                return JsonResponse({"message": _("Email verified successfully!")}, status=200)
-
+    
             except User.DoesNotExist:
                 return JsonResponse({"error": _("User not found.")}, status=404)
             except ValueError as e:
