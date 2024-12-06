@@ -287,8 +287,6 @@ async function pullHeader(repull = false) {
         if (created)
           document.head.appendChild(created);
       });
-      console.log("header", header?.innerHTML);
-
 
     }).catch(error => {
       console.error('Error:', error);
@@ -328,7 +326,8 @@ async function refreshAccessToken() {
 
     if (response.ok) {
       const data = await response.json();
-      setCookie('access_token', data.access, 1);
+      setCookie('access_token', data.access, 30);
+      setCookie('refresh_token', refreshToken, 1440);
       const accessToken = await data.access;
       return accessToken;
     } else {

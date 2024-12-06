@@ -40,8 +40,8 @@ async function verify2FA() {
         if (response.ok) {
             localStorage.removeItem("username")
 
-            setCookie('access_token', data.access, 1);
-            setCookie('refresh_token', data.refresh, 2);
+            setCookie('access_token', data.access, 30);
+            setCookie('refresh_token', data.refresh, 1440);
 
             showToast('success', data.message);
 

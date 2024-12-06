@@ -48,9 +48,9 @@
             tournament_tournamentSetup.style.display = 'none';
             tournament_playerNamesSection.style.display = 'block';
             tournament_createPlayerInputs(numPlayers);
-            showToast('info', 'Please enter the names of the players.');
+            showToast('info', gettext('Please enter player names.'));
         } else {
-            showToast('warning', 'Please enter a valid number of players (4 or 8).');
+            showToast('warning', gettext('Please enter a valid number of players (4 or 8).'));
         }
     }
 
@@ -58,7 +58,7 @@
         tournament_playerNamesDiv.innerHTML = '';
         for (let i = 0; i < numPlayers; i++) {
             const input = document.createElement('input');
-            input.placeholder = `Player ${i + 1}`;
+            input.placeholder = gettext('Player') + ` ${i + 1}`;
             input.id = `player${i}`;
             tournament_playerNamesDiv.appendChild(input);
         }
@@ -66,11 +66,25 @@
 
     function tournament_startGame() {
         tournament_players = [];
+        const usedNames = new Set();
+        let duplicateName = false;
+
         document.querySelectorAll('#tournament_nameInputs input').forEach((input) => {
             const name = input.value.trim();
-            if (name) tournament_players.push(name);
+            if (name) {
+                if (usedNames.has(name)) {
+                    duplicateName = true;
+                    return;
+                }
+                usedNames.add(name);
+                tournament_players.push(name);
+            }
         });
 
+        if (duplicateName) {
+            showToast('error', gettext('Each player name must be unique.'));
+            return;
+        }
 
         if (tournament_players.length === tournament_numPlayersInput) {
             tournament_playerNamesSection.style.display = 'none';
@@ -78,7 +92,7 @@
             tournament_matches = tournament_createMatches(tournament_players);
             tournament_startNextMatch();
         } else {
-            showToast('error', 'Please enter all player names.');
+            showToast('error', gettext('Please enter all player names.'));
         }
     }
 
@@ -109,7 +123,7 @@
     }
 
     function tournament_showMatchInfo(match) {
-        tournament_matchupList.innerHTML = `<div>Match: ${match[0]} vs ${match[1]}</div>`;
+        tournament_matchupList.innerHTML = `<div>${gettext('Match')}: ${match[0]} vs ${match[1]}</div>`;
     }
 
     function tournament_resetGame() {
@@ -209,12 +223,12 @@
         const winner = tournament_scoreLeft > tournament_scoreRight ? currentMatch[0] : currentMatch[1];
         tournament_matches[tournament_currentMatchIndex] = [winner];
         tournament_currentMatchIndex++;
-        showToast('success', `${winner} wins the match!`);
+        showToast('success', gettext(`${winner} won the match!`));
         tournament_startNextMatch();
     }
 
     function tournament_showWinner(winner) {
-        showToast('success', `The tournament winner is ${winner}!`);
+        showToast('success', gettext(`Tournament winner: ${winner}!`));
     }
 
     function tournament_gameLoop() {
@@ -244,7 +258,7 @@
         tournament_currentMatchIndex = 0;
         tournament_matches = [];
         tournament_players = [];
-        showToast('info', "Tournament has been restarted. Reload the page or re-enter player names to start fresh.");
+        showToast('info', gettext("Tournament restarted. Refresh the page or re-enter player names to start a new tournament."));
         location.reload();
     }
 

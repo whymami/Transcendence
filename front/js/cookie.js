@@ -1,9 +1,9 @@
-function setCookie(name, value, days) {
+function setCookie(name, value, minutes) {
     let expires = "";
-    // console.log('Cookie set:', name, value, days)
-    if (days) {
+    
+    if (minutes) {
         const date = new Date();
-        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        date.setTime(date.getTime() + (minutes * 60 * 1000));
         expires = "; expires=" + date.toUTCString();
     }
     document.cookie = name + "=" + (value || "") + expires + "; path=/";

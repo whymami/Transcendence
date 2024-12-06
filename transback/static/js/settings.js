@@ -77,8 +77,11 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
             saveBtn.disabled = true;
             saveBtn.textContent = gettext("Saving...");
 
+            let emailChanged = false;
             if (email === oldEmail) {
                 email = "";
+            } else {
+                emailChanged = true;
             }
 
             if (username === oldUsername) {
@@ -109,6 +112,18 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
             if (response.ok) {
                 console.log(gettext("Profile updated successfully:"), result);
                 showToast("success", gettext("Settings saved successfully!"));
+                if (emailChanged) {
+                    let query = new URLSearchParams();
+                    if (username) {
+                        query.set("username", username);
+                    } else {
+                        query.set("username", oldUsername);
+                    }
+                    if (email) {
+                        query.set("email", result.email);
+                    }
+                    history.pushState({}, "", "/verify?" + query.toString());
+                }
                 urlLocationHandler();
             } else {
                 console.error(gettext("Error:"), result);
