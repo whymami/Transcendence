@@ -51,15 +51,17 @@ class PongConsumer(AsyncWebsocketConsumer):
             await self.close()
             return
 
-        if PongConsumer.players < 2:
-            PongConsumer.players += 1
-            self.player_number = PongConsumer.players
-            if self.player_number == 1:
-                PongConsumer.game_state["player1_name"] = self.user.username
-            elif self.player_number == 2:
-                PongConsumer.game_state["player2_name"] = self.user.username
-        else:
-            self.player_number = 0
+        # If there are already 2 players, reject the connection
+        if PongConsumer.players >= 2:
+            await self.close()
+            return
+
+        PongConsumer.players += 1
+        self.player_number = PongConsumer.players
+        if self.player_number == 1:
+            PongConsumer.game_state["player1_name"] = self.user.username
+        elif self.player_number == 2:
+            PongConsumer.game_state["player2_name"] = self.user.username
 
         await self.channel_layer.group_add(
             "game_room",
@@ -67,9 +69,7 @@ class PongConsumer(AsyncWebsocketConsumer):
         )
         await self.accept()
   
-        if self.player_number == 0:
-            await self.send(text_data=json.dumps({"status": "spectator", "message": "Oyunu izliyorsunuz."}))
-        elif PongConsumer.players == 1:
+        if PongConsumer.players == 1:
             await self.send(text_data=json.dumps({"status": "waiting", "message": "Diğer oyuncu bekleniyor..."}))
         elif PongConsumer.players == 2:
             await self.channel_layer.group_send(
@@ -114,9 +114,6 @@ class PongConsumer(AsyncWebsocketConsumer):
             )
 
     async def receive(self, text_data):
-        if self.player_number == 0:
-            return
-
         data = json.loads(text_data)
         paddle_movement = data.get("paddle_movement", 0)
 
@@ -285,7 +282,7 @@ class MatchmakingConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         query_string = self.scope.get('query_string', b'').decode('utf-8')
         self.user = await get_user_from_token(query_string)
-
+        print("User:", self.user)
         if not self.user:
             await self.close()
             return

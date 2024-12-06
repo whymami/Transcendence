@@ -3,6 +3,7 @@
 
     function connectToGameRoom(room_id) {
         const token = getCookie("access_token"); // Token'ı burada al
+        console.log("Token: ", token);
         console.log(room_id);
         socket = new WebSocket(`wss://${window.location.hostname}/ws/game/${room_id}/?token=${token}`);
         initGame();
@@ -10,6 +11,7 @@
 
     function startMatchmaking() {
         const token = getCookie("access_token");
+        console.log("Token: ", token);
         if (!token) {
             console.error(
                 "Access token not found in cookies. Make sure you are authenticated."
@@ -34,6 +36,7 @@
 
         // Send a request to join a game
         matchmakingSocket.onopen = () => {
+            console.log("Token: ", token);
             matchmakingSocket.send(JSON.stringify({ action: "join_game" }));
             console.log("Sent join game request");
         };
