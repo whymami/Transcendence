@@ -72,7 +72,7 @@ class PongConsumer(AsyncWebsocketConsumer):
             self.channel_name,
         )
         await self.accept()
-
+  
         if self.player_number == 0:
             await self.send(text_data=json.dumps({"status": "spectator", "message": "Oyunu izliyorsunuz."}))
         elif PongConsumer.players == 1:
@@ -122,8 +122,6 @@ class PongConsumer(AsyncWebsocketConsumer):
                 "game_room",
                 self.channel_name,
             )
-
-
 
     async def receive(self, text_data):
         if self.player_number == 0:
@@ -300,10 +298,10 @@ class OnlineStatusConsumer(AsyncWebsocketConsumer):
             }))
 
 class MatchmakingConsumer(AsyncWebsocketConsumer):
-    waiting_players = []  # Queue of players waiting for a match
-    rooms = {}  # Dictionary to store active game rooms
-    room_counter = 0  # Counter to generate unique integer room IDs
-    player_channels = {}  # Kanal isimlerini saklamak için yeni sözlük
+    waiting_players = []
+    rooms = {}
+    room_counter = 0
+    player_channels = {}
 
     async def connect(self):
         query_string = self.scope.get('query_string', b'').decode('utf-8')
@@ -370,9 +368,6 @@ class MatchmakingConsumer(AsyncWebsocketConsumer):
                     )
 
     async def game_start(self, event):
-        """
-        Bu metod, channel_layer üzerinden gelen mesajları işler
-        """
         print(f"Sending game start message to {self.player_id} for room {event['room_id']}")
         await self.send(text_data=json.dumps({
             "message": "Match found!",
