@@ -38,8 +38,6 @@ class FriendRequestView(APIView):
         receiver_username = request.data.get('username')
         try:
             receiver = User.objects.get(username=receiver_username)
-            
-            # Check existing friendship status
             existing_friendship = Friendship.objects.filter(
                 (Q(sender=request.user, receiver=receiver) | 
                  Q(sender=receiver, receiver=request.user))
@@ -51,7 +49,6 @@ class FriendRequestView(APIView):
                 elif existing_friendship.status == Friendship.PENDING:
                     return JsonResponse({"error": "A friend request is already pending"}, status=400)
                 elif existing_friendship.status == Friendship.REJECTED:
-                    # If rejected, allow new request by deleting old one
                     existing_friendship.delete()
                 
             Friendship.objects.create(
@@ -69,7 +66,7 @@ class FriendRequestResponseView(APIView):
 
     def post(self, request):
         username = request.data.get('username')
-        action = request.data.get('action')  # 'accept' or 'reject' or 'remove'
+        action = request.data.get('action')
         
         try:
             target_user = User.objects.get(username=username)
