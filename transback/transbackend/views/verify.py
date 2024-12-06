@@ -11,6 +11,7 @@ from transbackend.models import User
 from django.core.mail import BadHeaderError, EmailMultiAlternatives
 from django.template.loader import render_to_string
 from transbackend.services.user_service import UserService
+from django.utils.translation import gettext as _
 
 class VerifyLoginView(APIView):
     permission_classes = [IsAnonymousUser]
@@ -31,18 +32,18 @@ class VerifyLoginView(APIView):
                 
                 refresh = RefreshToken.for_user(user)
                 return JsonResponse({
-                    "message": "Login successful!",
+                    "message": _("Login successful!"),
                     "access": str(refresh.access_token),
                     "refresh": str(refresh),
                 }, status=200)
 
             except User.DoesNotExist:
-                return JsonResponse({"error": "User not found."}, status=404)
+                return JsonResponse({"error": _("User not found.")}, status=404)
             except ValueError as e:
                 return JsonResponse({"error": str(e)}, status=400)
 
         except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON data."}, status=400)
+            return JsonResponse({"error": _("Invalid JSON data.")}, status=400)
 
 class VerifyAccountView(APIView):
     permission_classes = [AllowAny]
@@ -64,7 +65,7 @@ class VerifyAccountView(APIView):
                     UserService.verify_account(user, verification_code)
 
                 if new_email and request.user != user:
-                    return JsonResponse({"error": "Unauthorized access"}, status=403)
+                    return JsonResponse({"error": _("Unauthorized access")}, status=403)
 
                 if new_email:
                     if request.user.new_email == new_email:
@@ -73,20 +74,20 @@ class VerifyAccountView(APIView):
                         user.new_email = None
                         user.save()
                         return JsonResponse({
-                            "message": "Email verified successfully!",
+                            "message": _("Email verified successfully!"),
                         }, status=200)
                     else:
-                        return JsonResponse({"error": "Invalid email"}, status=400)
+                        return JsonResponse({"error": _("Invalid email")}, status=400)
         
-                return JsonResponse({"message": "Email verified successfully!"}, status=200)
+                return JsonResponse({"message": _("Email verified successfully!")}, status=200)
 
             except User.DoesNotExist:
-                return JsonResponse({"error": "User not found."}, status=404)
+                return JsonResponse({"error": _("User not found.")}, status=404)
             except ValueError as e:
                 return JsonResponse({"error": str(e)}, status=400)
 
         except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON data."}, status=400)
+            return JsonResponse({"error": _("Invalid JSON data.")}, status=400)
 
 class ReSendVerifyCodeView(APIView):
     permission_classes = [IsAnonymousUser]
@@ -100,12 +101,12 @@ class ReSendVerifyCodeView(APIView):
             try:
                 user = User.objects.get(username=username)
                 UserService.resend_verification_code(user)
-                return JsonResponse({"message": "A verification code has been sent to your email."}, status=200)
+                return JsonResponse({"message": _("A verification code has been sent to your email.")}, status=200)
 
             except User.DoesNotExist:
-                return JsonResponse({"error": "User not found."}, status=404)
+                return JsonResponse({"error": _("User not found.")}, status=404)
             except Exception as e:
                 return JsonResponse({"error": str(e)}, status=500)
 
         except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON data."}, status=400)
+            return JsonResponse({"error": _("Invalid JSON data.")}, status=400)
