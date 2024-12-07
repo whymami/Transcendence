@@ -36,7 +36,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     code_expiration = models.DateTimeField(blank=True, null=True)
     new_email = models.EmailField(max_length=255, blank=True, null=True)
     is_verified = models.BooleanField(default=False)
-    is_online = models.BooleanField(default=False)
     games_played = models.PositiveIntegerField(default=0)
     games_won = models.PositiveIntegerField(default=0)
     friends = models.ManyToManyField('self', through='Friendship', symmetrical=False)

@@ -5,8 +5,8 @@ from transbackend.services.user_service import UserService
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'username', 'email', 'is_verified', 'games_played', 'games_won', 'is_online']
-        read_only_fields = ['is_verified', 'games_played', 'games_won', 'is_online']
+        fields = ['id', 'username', 'email', 'is_verified', 'games_played', 'games_won']
+        read_only_fields = ['is_verified', 'games_played', 'games_won']
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)

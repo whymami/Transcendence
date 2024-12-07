@@ -204,7 +204,6 @@ class UserListView(APIView):
         try:
             users = User.objects.all().values(
                 'username',
-                'is_online',
                 'profile_picture'
             )
             return TemplateResponse(request, 'users.html', {"users": users})
