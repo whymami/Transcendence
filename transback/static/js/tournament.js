@@ -173,6 +173,9 @@
         if (tournament_ballPosition.y <= 0 || tournament_ballPosition.y >= tournament_canvas.offsetHeight - tournament_ball.offsetHeight) {
             tournament_ballSpeed.y = -tournament_ballSpeed.y;
         }
+    
+        let ballHitPaddle = false;
+    
         if (
             tournament_ballPosition.x <= tournament_paddleLeft.offsetLeft + tournament_paddleLeft.offsetWidth &&
             tournament_ballPosition.x + tournament_ball.offsetWidth >= tournament_paddleLeft.offsetLeft &&
@@ -180,6 +183,7 @@
             tournament_ballPosition.y <= tournament_paddleLeftY + tournament_paddleHeight
         ) {
             tournament_ballSpeed.x = Math.abs(tournament_ballSpeed.x);
+            ballHitPaddle = true;
         }
 
         if (
@@ -189,11 +193,23 @@
             tournament_ballPosition.y <= tournament_paddleRightY + tournament_paddleHeight
         ) {
             tournament_ballSpeed.x = -Math.abs(tournament_ballSpeed.x);
+            ballHitPaddle = true;
         }
+
+        if (ballHitPaddle) {
+            const randomAngle = (Math.random() - 0.5) * Math.PI / 12;
+            const speed = Math.hypot(tournament_ballSpeed.x, tournament_ballSpeed.y);
+    
+            const angle = Math.atan2(tournament_ballSpeed.y, tournament_ballSpeed.x) + randomAngle;
+            tournament_ballSpeed.x = Math.cos(angle) * speed;
+            tournament_ballSpeed.y = Math.sin(angle) * speed;
+        }
+    
         if (tournament_ballPosition.x < 0) {
             tournament_scoreRight++;
             tournament_checkGameEnd();
-        } else if (tournament_ballPosition.x > tournament_canvas.offsetWidth) {
+        }
+        else if (tournament_ballPosition.x > tournament_canvas.offsetWidth) {
             tournament_scoreLeft++;
             tournament_checkGameEnd();
         }
@@ -263,6 +279,10 @@
     }
 
     function tournament_restartGame() {
+        if (tournament_currentMatchIndex >= tournament_matches.length) {
+            return;
+        }
+
         tournament_resetGame();
         tournament_startMessage.style.display = 'none';
         tournament_gameRunning = true;
