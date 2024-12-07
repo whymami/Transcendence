@@ -24,18 +24,14 @@
     let ai_gameRunning = false;
 
     document.addEventListener('keydown', (event) => {
-        if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') {
-            ai_keysPressed[event.key] = true;
-        }
+        ai_keysPressed[event.key] = true;
         if (event.key === ' ' && !ai_gameRunning) {
             ai_restartGame();
         }
     });
 
     document.addEventListener('keyup', (event) => {
-        if (event.key !== 'ArrowUp' && event.key !== 'ArrowDown') {
-            ai_keysPressed[event.key] = false;
-        }
+        ai_keysPressed[event.key] = false;
     });
 
     function ai_restartGame() {
@@ -52,6 +48,7 @@
         ai_resetBall();
         ai_gameRunning = true;
         ai_gameLoop();
+        setInterval(ai_updateAI, 1000);
     }
 
     function ai_resetBall() {
@@ -71,78 +68,72 @@
         ai_paddleLeft.style.top = ai_paddleLeftY + 'px';
     }
 
+    function ai_simulateKeyPress(key) {
+        ai_keysPressed[key] = true;
+        setTimeout(() => (ai_keysPressed[key] = false), 100);
+    }
+
     function ai_updateAI() {
-        // Ok tuşları ile kontrol
-        if (ai_keysPressed['ArrowUp'] && ai_paddleRightY > 0) {
-            ai_paddleRightY -= ai_paddleSpeed;
+        let ai_predictedBallY = ai_ballPosition.y + ai_ballSpeed.y * 
+            (ai_canvas.offsetWidth - ai_ballPosition.x) / Math.abs(ai_ballSpeed.x);
+        ai_predictedBallY = Math.max(0, Math.min(ai_canvas.offsetHeight - ai_paddleHeight, ai_predictedBallY));
+
+        const ai_paddleCenter = ai_paddleRightY + ai_paddleHeight / 2;
+        if (ai_paddleCenter < ai_predictedBallY) {
+            ai_simulateKeyPress('ArrowDown');
+        } else if (ai_paddleCenter > ai_predictedBallY) {
+            ai_simulateKeyPress('ArrowUp');
         }
-        if (ai_keysPressed['ArrowDown'] && ai_paddleRightY < ai_canvas.offsetHeight - ai_paddleHeight) {
-            ai_paddleRightY += ai_paddleSpeed;
-        }
-
-        // Her 1 saniyede bir yapay zeka tahmini ve yumuşak hareket
-        const currentTime = Date.now();
-        if (!this.lastUpdateTime || currentTime - this.lastUpdateTime >= 1000) {
-            let ai_predictedBallY = ai_ballPosition.y + ai_ballSpeed.y * (ai_canvas.offsetWidth - ai_ballPosition.x) / Math.abs(ai_ballSpeed.x);
-            ai_predictedBallY = Math.max(0, Math.min(ai_canvas.offsetHeight - ai_paddleHeight, ai_predictedBallY));
-
-            const ai_paddleCenter = ai_paddleRightY + ai_paddleHeight / 2;
-            const ai_deadZone = 10;
-            const ai_smoothSpeed = 0.1; // Yumuşak hareket için hız faktörü
-
-            if (Math.abs(ai_paddleCenter - ai_predictedBallY) > ai_deadZone) {
-                const ai_distance = ai_predictedBallY - ai_paddleCenter;
-                ai_paddleRightY += ai_distance * ai_smoothSpeed;
-            }
-
-            this.lastUpdateTime = currentTime;
-        }
-
-        ai_paddleRightY = Math.max(0, Math.min(ai_canvas.offsetHeight - ai_paddleHeight, ai_paddleRightY));
-        ai_paddleRight.style.top = ai_paddleRightY + 'px';
     }
 
     function ai_moveBall() {
         ai_ballPosition.x += ai_ballSpeed.x;
         ai_ballPosition.y += ai_ballSpeed.y;
-
+    
         if (ai_ballPosition.y <= 0 || ai_ballPosition.y >= ai_canvas.offsetHeight - ai_ball.offsetHeight) {
             ai_ballSpeed.y = -ai_ballSpeed.y;
         }
-
+    
         let ai_ballHit = false;
-
+    
         if (
             ai_ballPosition.x <= ai_paddleLeft.offsetLeft + ai_paddleLeft.offsetWidth &&
             ai_ballPosition.y + ai_ball.offsetHeight >= ai_paddleLeftY &&
             ai_ballPosition.y <= ai_paddleLeftY + ai_paddleHeight
         ) {
-            ai_ballSpeed.x = -ai_ballSpeed.x;
+            ai_ballSpeed.x = Math.abs(ai_ballSpeed.x);
             ai_ballPosition.x = ai_paddleLeft.offsetLeft + ai_paddleLeft.offsetWidth;
             ai_ballHit = true;
         }
-
+    
         if (
             ai_ballPosition.x + ai_ball.offsetWidth >= ai_paddleRight.offsetLeft &&
             ai_ballPosition.y + ai_ball.offsetHeight >= ai_paddleRightY &&
             ai_ballPosition.y <= ai_paddleRightY + ai_paddleHeight
         ) {
-            ai_ballSpeed.x = -ai_ballSpeed.x;
+            ai_ballSpeed.x = -Math.abs(ai_ballSpeed.x);
             ai_ballPosition.x = ai_paddleRight.offsetLeft - ai_ball.offsetWidth;
             ai_ballHit = true;
         }
-
+    
         if (ai_ballHit) {
+            const randomAngle = (Math.random() - 0.5) * Math.PI / 12;
+            const speed = Math.hypot(ai_ballSpeed.x, ai_ballSpeed.y);
+    
+            const angle = Math.atan2(ai_ballSpeed.y, ai_ballSpeed.x) + randomAngle;
+            ai_ballSpeed.x = Math.cos(angle) * speed;
+            ai_ballSpeed.y = Math.sin(angle) * speed;
+    
             ai_collisionCount++;
             if (ai_collisionCount % 5 === 0) {
                 ai_ballSpeed.x += ai_ballSpeed.x > 0 ? ai_ballSpeedIncrement : -ai_ballSpeedIncrement;
                 ai_ballSpeed.y += ai_ballSpeed.y > 0 ? ai_ballSpeedIncrement : -ai_ballSpeedIncrement;
             }
         }
-
+    
         ai_ballSpeed.x = Math.max(-ai_maxBallSpeed, Math.min(ai_maxBallSpeed, ai_ballSpeed.x));
         ai_ballSpeed.y = Math.max(-ai_maxBallSpeed, Math.min(ai_maxBallSpeed, ai_ballSpeed.y));
-
+    
         if (ai_ballPosition.x < 0) {
             ai_scoreRight++;
             ai_resetBall();
@@ -150,12 +141,13 @@
             ai_scoreLeft++;
             ai_resetBall();
         }
-
+    
         ai_ball.style.left = ai_ballPosition.x + 'px';
         ai_ball.style.top = ai_ballPosition.y + 'px';
-
+    
         ai_updateScore();
     }
+    
 
     function ai_updateScore() {
         ai_scoreDisplay.textContent = `${ai_scoreLeft} : ${ai_scoreRight}`;
@@ -174,7 +166,6 @@
     function ai_gameLoop() {
         if (ai_gameRunning) {
             ai_movePaddles();
-            ai_updateAI();
             ai_moveBall();
             requestAnimationFrame(ai_gameLoop);
         }

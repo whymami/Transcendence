@@ -78,13 +78,12 @@
     function two_moveBall() {
         two_ballPosition.x += two_ballSpeed.x;
         two_ballPosition.y += two_ballSpeed.y;
-
+    
         if (two_ballPosition.y <= 0 || two_ballPosition.y >= two_canvas.offsetHeight - two_ball.offsetHeight) {
             two_ballSpeed.y = -two_ballSpeed.y;
         }
-
+    
         let two_ballHit = false;
-
         if (
             two_ballPosition.x <= two_paddleLeft.offsetLeft + two_paddleLeft.offsetWidth &&
             two_ballPosition.y + two_ball.offsetHeight >= two_paddleLeftY &&
@@ -94,7 +93,7 @@
             two_ballPosition.x = two_paddleLeft.offsetLeft + two_paddleLeft.offsetWidth;
             two_ballHit = true;
         }
-
+    
         if (
             two_ballPosition.x + two_ball.offsetWidth >= two_paddleRight.offsetLeft &&
             two_ballPosition.y + two_ball.offsetHeight >= two_paddleRightY &&
@@ -104,31 +103,31 @@
             two_ballPosition.x = two_paddleRight.offsetLeft - two_ball.offsetWidth;
             two_ballHit = true;
         }
-
+    
         if (two_ballHit) {
-            two_collisionCount++;
-            if (two_collisionCount % 5 === 0) {
-                two_ballSpeed.x += two_ballSpeed.x > 0 ? two_ballSpeedIncrement : -two_ballSpeedIncrement;
-                two_ballSpeed.y += two_ballSpeed.y > 0 ? two_ballSpeedIncrement : -two_ballSpeedIncrement;
-            }
+            const randomAngle = (Math.random() - 0.5) * Math.PI / 6;
+            const speed = Math.hypot(two_ballSpeed.x, two_ballSpeed.y);
+
+            const angle = Math.atan2(two_ballSpeed.y, two_ballSpeed.x) + randomAngle;
+            two_ballSpeed.x = Math.cos(angle) * speed;
+            two_ballSpeed.y = Math.sin(angle) * speed;
         }
-
-        two_ballSpeed.x = Math.max(-two_maxBallSpeed, Math.min(two_maxBallSpeed, two_ballSpeed.x));
-        two_ballSpeed.y = Math.max(-two_maxBallSpeed, Math.min(two_maxBallSpeed, two_ballSpeed.y));
-
+    
         if (two_ballPosition.x < 0) {
             two_scoreRight++;
             two_resetBall();
-        } else if (two_ballPosition.x > two_canvas.offsetWidth) {
+        }
+        else if (two_ballPosition.x > two_canvas.offsetWidth) {
             two_scoreLeft++;
             two_resetBall();
         }
 
         two_ball.style.left = two_ballPosition.x + 'px';
         two_ball.style.top = two_ballPosition.y + 'px';
-
+    
         two_updateScore();
     }
+    
 
     function two_updateScore() {
         two_scoreDisplay.textContent = `${two_scoreLeft} : ${two_scoreRight}`;

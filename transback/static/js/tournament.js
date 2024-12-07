@@ -169,7 +169,7 @@
     function tournament_moveBall() {
         tournament_ballPosition.x += tournament_ballSpeed.x;
         tournament_ballPosition.y += tournament_ballSpeed.y;
-
+    
         if (tournament_ballPosition.y <= 0 || tournament_ballPosition.y >= tournament_canvas.offsetHeight - tournament_ball.offsetHeight) {
             tournament_ballSpeed.y = -tournament_ballSpeed.y;
         }
@@ -185,7 +185,7 @@
             tournament_ballSpeed.x = Math.abs(tournament_ballSpeed.x);
             ballHitPaddle = true;
         }
-
+    
         if (
             tournament_ballPosition.x + tournament_ball.offsetWidth >= tournament_paddleRight.offsetLeft &&
             tournament_ballPosition.x <= tournament_paddleRight.offsetLeft + tournament_paddleRight.offsetWidth &&
@@ -213,13 +213,13 @@
             tournament_scoreLeft++;
             tournament_checkGameEnd();
         }
-
+    
         tournament_ball.style.left = tournament_ballPosition.x + 'px';
         tournament_ball.style.top = tournament_ballPosition.y + 'px';
-
+    
         tournament_updateScore();
     }
-
+    
     function tournament_checkGameEnd() {
         if (tournament_scoreLeft === 5 || tournament_scoreRight === 5) {
             tournament_endMatch();
@@ -275,7 +275,8 @@
         tournament_matches = [];
         tournament_players = [];
         showToast('info', gettext("Tournament restarted. Refresh the page or re-enter player names to start a new tournament."));
-        location.reload();
+        history.pushState({}, "", "/tournament");
+        urlLocationHandler();
     }
 
     function tournament_restartGame() {

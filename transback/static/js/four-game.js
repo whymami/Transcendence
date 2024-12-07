@@ -50,7 +50,7 @@
     function drawPaddle(x, y) {
         ctx.fillStyle = "#FFF";
         ctx.beginPath();
-        ctx.rect(x, y, paddleWidth, paddleHeight);
+        ctx.roundRect(x, y, paddleWidth, paddleHeight, 5);
         ctx.closePath();
         ctx.fill();
     }
