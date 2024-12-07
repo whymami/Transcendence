@@ -1,6 +1,7 @@
 from transbackend.models import User
 from transbackend.utils.email_utils import send_verification_email
 from django.utils.timezone import now
+from django.utils.translation import gettext as _
 
 class UserService:
     @staticmethod
@@ -31,22 +32,22 @@ class UserService:
     @staticmethod
     def verify_login(user, verification_code):
         if verification_code is None:
-            raise ValueError("Verification code is required.")
+            raise ValueError(_("Verification code is required."))
             
         try:
             verification_code = int(verification_code)
             if len(str(verification_code)) != 6:
-                raise ValueError("Verification code must be 6 digits.")
+                raise ValueError(_("Verification code must be 6 digits."))
         except ValueError as e:
             if "must be 6 digits" in str(e):
                 raise e
-            raise ValueError("Invalid verification code format.")
+            raise ValueError(_("Invalid verification code format."))
 
         if user.verification_code != verification_code:
-            raise ValueError("Invalid verification code.")
+            raise ValueError(_("Invalid verification code."))
 
         if user.code_expiration <= now():
-            raise ValueError("Verification code has expired.")
+            raise ValueError(_("Verification code has expired."))
 
         user.verification_code = None
         user.code_expiration = None
@@ -58,19 +59,19 @@ class UserService:
     @staticmethod
     def verify_account(user, verification_code):
         if user.verification_code is None or verification_code is None:
-            raise ValueError("Verification code is missing.")
+            raise ValueError(_("Verification code is missing."))
 
         try:
             verification_code = int(verification_code)
             if len(str(verification_code)) != 6:
-                raise ValueError("Verification code must be 6 digits.")
+                raise ValueError(_("Verification code must be 6 digits."))
         except ValueError as e:
             if "must be 6 digits" in str(e):
                 raise e
-            raise ValueError("Invalid verification code format.")
+            raise ValueError(_("Invalid verification code format."))
 
         if user.verification_code != verification_code or user.code_expiration <= now():
-            raise ValueError("Invalid or expired verification code.")
+            raise ValueError(_("Invalid or expired verification code."))
 
         user.is_verified = True
         user.verification_code = None
