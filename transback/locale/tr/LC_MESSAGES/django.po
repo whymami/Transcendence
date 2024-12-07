@@ -461,5 +461,56 @@ msgstr "Lütfen e-postanıza gönderilen kodu girin"
 msgid "Verification Code"
 msgstr "Doğrulama Kodu"
 
+msgid "Login successful!"
+msgstr "Giriş başarılı!"
+
+msgid "Invalid username or password"
+msgstr "Kullanıcı adı veya şifre hatalı"
+
+msgid "User not found."
+msgstr "Kullanıcı bulunamadı."
+
+msgid "Invalid JSON data."
+msgstr "Geçersiz JSON verisi."
+
+msgid "Account verified successfully!"
+msgstr "Hesap başarıyla doğrulandı!"
+
+msgid "Unauthorized access"
+msgstr "Yetkisiz erişim"
+
+msgid "Email verified successfully!"
+msgstr "E-posta başarıyla doğrulandı!"
+
+msgid "A verification code has been sent to your email."
+msgstr "Doğrulama kodu e-posta adresinize gönderildi."
+
+msgid "Registration successful! A verification code has been sent to your email."
+msgstr "Kayıt başarılı! E-posta adresinize bir doğrulama kodu gönderildi."
+
+msgid "Your account is not verified. A verification code has been sent to your email."
+msgstr "Hesabınız doğrulanmadı. E-posta adresinize bir doğrulama kodu gönderildi."
+
+msgid "Verification code sent to your email."
+msgstr "Doğrulama kodu e-posta adresinize gönderildi."
+
+msgid "An unexpected error occurred."
+msgstr "Beklenmeyen bir hata oluştu."
+
+msgid "This field is required."
+msgstr "Bu alan zorunludur."
+
+msgid "Current password is incorrect"
+msgstr "Mevcut şifre yanlış"
+
+msgid "Password updated successfully"
+msgstr "Şifre başarıyla güncellendi"
+
+msgid "Invalid JSON format"
+msgstr "Geçersiz JSON formatı"
+
+msgid "An error occurred while resetting password"
+msgstr "Şifre sıfırlanırken bir hata oluştu"
+
 #~ msgid "Go to Login"
 #~ msgstr "Giriş'e git"

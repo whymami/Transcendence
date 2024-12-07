@@ -452,3 +452,51 @@ msgstr "Veuillez entrer le code envoyé à votre email"
 #: transback/transbackend/templates/verify.html:13
 msgid "Verification Code"
 msgstr "Code de vérification"
+
+msgid "Login successful!"
+msgstr "Connexion réussie !"
+
+msgid "User not found."
+msgstr "Utilisateur non trouvé."
+
+msgid "Invalid JSON data."
+msgstr "Données JSON invalides."
+
+msgid "Account verified successfully!"
+msgstr "Compte vérifié avec succès !"
+
+msgid "Unauthorized access"
+msgstr "Accès non autorisé"
+
+msgid "Email verified successfully!"
+msgstr "E-mail vérifié avec succès !"
+
+msgid "A verification code has been sent to your email."
+msgstr "Un code de vérification a été envoyé à votre e-mail."
+
+msgid "Registration successful! A verification code has been sent to your email."
+msgstr "Inscription réussie ! Un code de vérification a été envoyé à votre e-mail."
+
+msgid "Your account is not verified. A verification code has been sent to your email."
+msgstr "Votre compte n'est pas vérifié. Un code de vérification a été envoyé à votre e-mail."
+
+msgid "Verification code sent to your email."
+msgstr "Code de vérification envoyé à votre e-mail."
+
+msgid "An unexpected error occurred."
+msgstr "Une erreur inattendue s'est produite."
+
+msgid "This field is required."
+msgstr "Ce champ est obligatoire."
+
+msgid "Current password is incorrect"
+msgstr "Le mot de passe actuel est incorrect"
+
+msgid "Password updated successfully"
+msgstr "Mot de passe mis à jour avec succès"
+
+msgid "Invalid JSON format"
+msgstr "Format JSON invalide"
+
+msgid "An error occurred while resetting password"
+msgstr "Une erreur s'est produite lors de la réinitialisation du mot de passe"

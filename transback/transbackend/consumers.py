@@ -308,17 +308,20 @@ class MatchmakingConsumer(AsyncWebsocketConsumer):
             await self.join_game()
 
     async def join_game(self):
+        print("Waiting players:", self.waiting_players)
+        print("Player id:", self.player_id)
+        print("Player channels:", self.player_channels)
         if self.player_id not in self.waiting_players:
             self.waiting_players.append(self.player_id)
         
-        if len(self.waiting_players) >= 2:
+        if len(self.waiting_players) == 2:
             player1_id = self.waiting_players[0]
             player2_id = self.waiting_players[1]
             
             self.room_counter += 1
             room_id = str(self.room_counter)
             self.rooms[room_id] = [player1_id, player2_id]
-            
+            print("Rooms:", self.rooms)
             self.waiting_players = self.waiting_players[2:]
             
             for player_id in [player1_id, player2_id]:
