@@ -10,7 +10,13 @@
     window.gameSocket = null;
 
     function connectToGameRoom(room_id) {
-      const token = getCookie("access_token"); // Token'ı burada al
+      const token = getCookie("access_token");
+      if (!token) {
+        console.error(
+          "Access token not found in cookies. Make sure you are authenticated."
+        );
+        alert("Authentication token is missing. Please log in.");
+      }
       console.log(room_id);
       window.gameSocket = new WebSocket(
         `wss://${window.location.hostname}/ws/game/${room_id}/?token=${token}`
@@ -53,18 +59,6 @@
     function initGame() {
       const canvas = document.getElementById("gameCanvas");
       const ctx = canvas.getContext("2d");
-
-      // Call startMatchmaking to initiate the process
-      // Retrieve the token from cookies
-      const token = getCookie("access_token");
-      if (!token) {
-        console.error(
-          "Access token not found in cookies. Make sure you are authenticated."
-        );
-        alert("Authentication token is missing. Please log in.");
-      }
-
-      // WebSocket connection to the game server
 
       let gameState = null;
       let paddleMovement = 0; // Movement control variable

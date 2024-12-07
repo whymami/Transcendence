@@ -66,7 +66,6 @@ async function login() {
     loginBtn.disabled = true;
     passwordInput.disabled = true;
     usernameInput.disabled = true;
-    lang = getCookie('lang');
     const response = await fetch('/api/login/', {
       method: 'POST',
       headers: {
