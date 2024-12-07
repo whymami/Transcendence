@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   db:
     image: postgres
@@ -10,6 +12,9 @@ services:
       - app-network
     ports:
       - "5432:5432"
+    environment:
+      - VAULT_ADDR=http://vault:8300
+      - VAULT_TOKEN_FILE=/vault/token/root_token.txt
 
   web:
     build: ./transback
@@ -20,6 +25,7 @@ services:
       - ./transback/profile_pictures:/app/profile_pictures  # Django profil resimleri
       - ./transback/transbackend/templates:/app/templates  # Django template dosyaları
       - ./transback/locale:/app/locale  # Django çeviri dosyaları
+      - shared-data:/vault/token/
       - ssl-certs:/etc/nginx/ssl/
     ports:
       - "8000:8000"
@@ -28,7 +34,10 @@ services:
       - vault
     networks:
       - app-network
-    
+    environment:
+      - VAULT_ADDR=http://vault:8300
+      - VAULT_TOKEN_FILE=/vault/token/root_token.txt
+
   nginx:
     build:
       context: ./nginx  # Dockerfile kullanılarak imaj oluşturulacak
@@ -38,10 +47,7 @@ services:
       - ./transback/profile_pictures:/profile_pictures  # Django profil resimleri
       - ./nginx-logs/modsec:/var/log/modsec # Dizin montajı
       - ssl-certs:/etc/nginx/ssl/  # Sertifikaları paylaşma
-    environment:
-      - BACKEND=http://web:8000  # Backend servisine bağlantı adresi
-      - VAULT_ADDR=http://vault:8201  # Vault sunucusuna bağlantı adresi
-      - VAULT_TOKEN_FILE=/vault/token/root_token.txt  # Vault kimlik doğrulama token dosyası
+      - shared-data:/vault/token/
     ports:
       - "80:80"
       - "443:443"
@@ -50,7 +56,10 @@ services:
       - vault
     networks:
       - app-network
-
+    environment:
+      - BACKEND=http://web:8000  # Backend servisine bağlantı adresi
+      - VAULT_ADDR=http://vault:8300
+      - VAULT_TOKEN_FILE=/vault/token/root_token.txt
 
   vault:
     build:
@@ -68,24 +77,6 @@ services:
     environment:
       VAULT_ADDR: http://localhost:8300
       restart: on-failure
-
-
-  # splunk-forwarder:
-  #   image: splunk/universalforwarder:latest
-  #   container_name: splunk_forwarder
-  #   environment:
-  #     - SPLUNK_START_ARGS=--accept-license
-  #     - SPLUNK_SERVER=45.9.30.21:8088  # Splunk'ın HTTP Event Collector (HEC) adresi
-  #     - SPLUNK_TOKEN=af30f512-baba-43d9-867d-3d5b27ed33e1  
-  #     # HEC için belirlenen token
-  #     - SPLUNK_PASSWORD=2537131Marufg.  # Splunk yönetici şifresi
-  #   volumes:
-  #     - ./splunk-config:/opt/splunkforwarder/etc/system/local  # Splunk yapılandırma dosyalarının bağlı olduğu dizin
-  #     - ./nginx-logs/modsec:/var/log/modsec # Dizin montajı
-
-  #   networks:
-  #     - app-network
-  #   restart: always
 
 networks:
   app-network:

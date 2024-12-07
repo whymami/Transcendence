@@ -1,8 +1,23 @@
+DOCKER_COMPOSE = sudo docker-compose
+ENV_FILE_PATH = ./transback/.env
 
-COMMAND = docker compose
+start:
+	@echo "Docker servisleri başlatılıyor..."
+	$(DOCKER_COMPOSE) up -d
+	@rm -f $(ENV_FILE_PATH)
 
+stop:
+	@echo "Docker servisleri durduruluyor..."
+	$(DOCKER_COMPOSE) down
 
-up:  $(COMMAND) up --build
+re:
+	@echo "Docker servisleri yeniden başlatılıyor..."
+	$(DOCKER_COMPOSE) down
+	$(DOCKER_COMPOSE) up -d
 
-down:  $(COMMAND) down
+build:
+	@echo "Docker servisleri yeniden başlatılıyor..."
+	$(DOCKER_COMPOSE) down
+	$(DOCKER_COMPOSE) up --build
 
+.PHONY: start stop clean
