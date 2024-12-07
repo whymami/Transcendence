@@ -91,18 +91,56 @@ class PongConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         if hasattr(self, 'player_number') and self.player_number in [1, 2]:
-            self.rooms[self.room_id]["players"] -= 1
+            if self.room_id in self.rooms:
+                self.rooms[self.room_id]["players"] -= 1
 
-            if self.rooms[self.room_id]["players"] == 0:
-                # Son oyuncu çıktığında odayı temizle
-                MatchmakingConsumer.mark_room_as_finished(self.room_id)
-                if self.room_id in self.rooms:
-                    del self.rooms[self.room_id]
+                if self.rooms[self.room_id]["players"] == 0:
+                    # Oyun verilerini al
+                    game_state = self.rooms[self.room_id]["game_state"]
+                    
+                    # Sadece winner varsa kaydet
+                    if game_state.get("winner"):
+                        player1_name = game_state.get("player1_name")
+                        player2_name = game_state.get("player2_name")
+                        player1_score = game_state["score"]["player1"]
+                        player2_score = game_state["score"]["player2"]
 
-            await self.channel_layer.group_discard(
-                self.room_group_name,
-                self.channel_name,
-            )
+                        print(f"Saving game - P1: {player1_name}({player1_score}), P2: {player2_name}({player2_score})")
+
+                        # Veritabanına kaydet
+                        try:
+                            from transbackend.models import Game
+                            User = get_user_model()
+                            
+                            print("Getting player1 from database...")
+                            player1_user = await database_sync_to_async(User.objects.get)(username=player1_name)
+                            print("Getting player2 from database...")
+                            player2_user = await database_sync_to_async(User.objects.get)(username=player2_name)
+
+                            print("Creating game record...")
+                            await database_sync_to_async(Game.objects.create)(
+                                player1=player1_user,
+                                player2=player2_user,
+                                player1_score=player1_score,
+                                player2_score=player2_score,
+                                end_time=now()
+                            )
+                            print("Game saved successfully!")
+                                
+                        except Exception as e:
+                            print(f"Game save error (detailed): {str(e)}")
+                            import traceback
+                            print(traceback.format_exc())
+
+                    # Son oyuncu çıktığında odayı temizle
+                    MatchmakingConsumer.mark_room_as_finished(self.room_id)
+                    if self.room_id in self.rooms:
+                        del self.rooms[self.room_id]
+
+                await self.channel_layer.group_discard(
+                    self.room_group_name,
+                    self.channel_name,
+                )
 
     async def receive(self, text_data):
         data = json.loads(text_data)
@@ -117,19 +155,14 @@ class PongConsumer(AsyncWebsocketConsumer):
         self.rooms[self.room_id]["game_state"]["paddle2"]["y"] = max(0, min(100, self.rooms[self.room_id]["game_state"]["paddle2"]["y"]))
 
     async def start_game(self):
+        print("Game started!")
         try:
             while (self.room_id in self.rooms and 
                    self.rooms[self.room_id]["players"] == 2):
+                print(f"Game loop - Players: {self.rooms[self.room_id]['players']}")
                 if self.rooms[self.room_id]["game_state"]["winner"]:
                     winner = self.rooms[self.room_id]["game_state"]["winner"]
                     
-                    # Oyun verilerini al
-                    game_state = self.rooms[self.room_id]["game_state"]
-                    player1_name = game_state.get("player1_name")
-                    player2_name = game_state.get("player2_name")
-                    player1_score = game_state["score"]["player1"]
-                    player2_score = game_state["score"]["player2"]
-
                     # Kazananı bildir
                     await self.channel_layer.group_send(
                         self.room_group_name,
@@ -139,37 +172,11 @@ class PongConsumer(AsyncWebsocketConsumer):
                         }
                     )
 
-                    # Veritabanına kaydet
-                    try:
-                        from .models import Game, User
-                        
-                        # Kullanıcıları asenkron olarak al
-                        player1_user = await database_sync_to_async(User.objects.get)(username=player1_name)
-                        player2_user = await database_sync_to_async(User.objects.get)(username=player2_name)
-
-                        # Oyunu kaydet
-                        await database_sync_to_async(Game.objects.create)(
-                            player1=player1_user,
-                            player2=player2_user,
-                            player1_score=player1_score,
-                            player2_score=player2_score,
-                            end_time=now()
-                        )
-                    except Exception as e:
-                        print(f"Game save error: {e}")
-
                     # Oyuncuları odadan çıkar
                     await self.channel_layer.group_send(
                         self.room_group_name,
                         {"type": "disconnect_all"}
                     )
-
-                    # Odayı temizle
-                    if self.room_id in self.rooms:
-                        del self.rooms[self.room_id]
-                    
-                    # Matchmaking'e odanın bittiğini bildir
-                    MatchmakingConsumer.mark_room_as_finished(self.room_id)
                     break
 
                 self.update_game_state()
@@ -183,6 +190,8 @@ class PongConsumer(AsyncWebsocketConsumer):
                 await asyncio.sleep(0.03)
         except Exception as e:
             print(f"Game error: {e}")
+            import traceback
+            print(traceback.format_exc())
             await self.close()
 
     async def disconnect_all(self, event):
@@ -216,16 +225,25 @@ class PongConsumer(AsyncWebsocketConsumer):
         # Skor kontrolü
         if ball["x"] <= 0:
             self.rooms[self.room_id]["game_state"]["score"]["player2"] += 1
+            print(f"Score update - Player 2 scored! Current score: {self.rooms[self.room_id]['game_state']['score']}")
             self.reset_ball()
         elif ball["x"] >= 100:
             self.rooms[self.room_id]["game_state"]["score"]["player1"] += 1
+            print(f"Score update - Player 1 scored! Current score: {self.rooms[self.room_id]['game_state']['score']}")
             self.reset_ball()
 
         # Kazanan kontrolü
-        if self.rooms[self.room_id]["game_state"]["score"]["player1"] >= 10:
-            self.rooms[self.room_id]["game_state"]["winner"] = self.rooms[self.room_id]["game_state"]["player1_name"]
-        elif self.rooms[self.room_id]["game_state"]["score"]["player2"] >= 10:
-            self.rooms[self.room_id]["game_state"]["winner"] = self.rooms[self.room_id]["game_state"]["player2_name"]
+        score = self.rooms[self.room_id]["game_state"]["score"]
+        print(f"Checking winner - Current score: P1({score['player1']}) vs P2({score['player2']})")
+        
+        if score["player1"] >= 10:
+            winner = self.rooms[self.room_id]["game_state"]["player1_name"]
+            print(f"Player 1 ({winner}) wins!")
+            self.rooms[self.room_id]["game_state"]["winner"] = winner
+        elif score["player2"] >= 10:
+            winner = self.rooms[self.room_id]["game_state"]["player2_name"]
+            print(f"Player 2 ({winner}) wins!")
+            self.rooms[self.room_id]["game_state"]["winner"] = winner
 
     def reset_ball(self):
         self.rooms[self.room_id]["game_state"]["ball"] = {
