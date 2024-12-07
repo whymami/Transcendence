@@ -56,7 +56,7 @@
 
             if (response.ok) {
                 localStorage.removeItem("username")
-                showToast('success', data.message);
+                showToast('success', data?.message || gettext('error'));
                 setTimeout(() => {
                     if (username_verify) {
                         history.pushState({}, "", "/settings");
@@ -66,10 +66,10 @@
                     urlLocationHandler();
                 }, 2000)
             } else {
-                showToast('error', data?.error || gettext("An error occurred. Please try again."));
+                showToast('error', data?.error || data?.message || gettext('error'));
             }
         } catch (error) {
-            showToast('error', error?.error || gettext("An error occurred. Please try again."));
+            showToast('error', error?.error || error?.message || gettext('error'));
         } finally {
             btn.textContent = gettext("Verify");
             btn.disabled = false;
@@ -94,12 +94,12 @@
             });
             const data = await response.json();
             if (response.ok) {
-                showToast('success', data.message);
+                showToast('success', data?.message || gettext('error'));
             } else {
-                showToast('error', data?.error || gettext("An error occurred. Please try again."));
+                showToast('error', data?.error || data?.message || gettext('error'));
             }
         } catch (error) {
-            showToast('error', error?.error || gettext("An error occurred. Please try again."));
+            showToast('error', error?.error || error?.message || gettext('error'));
         }
     });
 }

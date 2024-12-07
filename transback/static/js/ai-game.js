@@ -65,7 +65,15 @@
             ai_paddleLeftY += ai_paddleSpeed;
         }
 
+        if (ai_keysPressed['ArrowUp'] && ai_paddleRightY > 0) {
+            ai_paddleRightY -= ai_paddleSpeed;
+        }
+        if (ai_keysPressed['ArrowDown'] && ai_paddleRightY < ai_canvas.offsetHeight - ai_paddleHeight) {
+            ai_paddleRightY += ai_paddleSpeed;
+        }
+
         ai_paddleLeft.style.top = ai_paddleLeftY + 'px';
+        ai_paddleRight.style.top = ai_paddleRightY + 'px';
     }
 
     function ai_simulateKeyPress(key) {

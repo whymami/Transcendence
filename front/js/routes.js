@@ -14,7 +14,7 @@ async function connectWebSocket() {
   statusSocket = new WebSocket(`${wsProtocol}//${window.location.host}/ws/online-status/?token=${token}`);
 
   statusSocket.onopen = function () {
-    console.log("WebSocket connection opened.");
+
   };
 
   statusSocket.onmessage = function (event) {
@@ -25,7 +25,7 @@ async function connectWebSocket() {
   };
 
   statusSocket.onclose = function () {
-    console.log("WebSocket connection closed.");
+
   };
 }
 
@@ -168,14 +168,12 @@ const urlLocationHandler = async () => {
   if (window.gameSocket) {
     window.gameSocket.close(1000, "Connection closed by client.");
     window.gameSocket = null;
-    console.log("WebSocket disconnected. gameSocket");
 
   }
 
   if (window.matchmakingSocket) {
     window.matchmakingSocket.close(1000, "Connection closed by client.");
     window.matchmakingSocket = null;
-    console.log("WebSocket disconnected. matchmakingSocket");
 
   }
 
@@ -196,13 +194,6 @@ const urlLocationHandler = async () => {
   if (route.endPoint == "/api/profile/") {
     const search = new URLSearchParams(window.location.search);
     username = search.get('username');
-  }
-
-  if (!publicPages.includes(location) && !token) {
-    showToast("error", "Please log in to access this page.");
-    history.pushState({}, "", "/login");
-    urlLocationHandler();
-    return;
   }
 
   try {
@@ -259,9 +250,8 @@ const urlLocationHandler = async () => {
     container.innerHTML = parsedHtml.body.innerHTML;
 
   } catch (error) {
-    console.error("Error:", error);
-    showToast("error", "Error: " + error,);
-    container.innerHTML = "Error: " + error;
+    showToast("error", error?.error || error,);
+    container.innerHTML = error?.error || error;
   } finally {
     route = null;
   }
@@ -299,8 +289,7 @@ async function pullHeader(repull = false) {
       });
 
     }).catch(error => {
-      console.error('Error:', error);
-      showToast("error", 'Error: ' + error, 'error');
+      showToast("error", error?.error || error,);
     });
 }
 
@@ -342,7 +331,7 @@ async function refreshAccessToken() {
     } else {
       eraseCookie('access_token');
       eraseCookie('refresh_token');
-      showToast("error", 'Session expired, please log in again.');
+      showToast("error", response?.error || response?.message || response || "Session expired, please log in again.");
       history.pushState({}, "", "/login");
       urlLocationHandler();
       return null;

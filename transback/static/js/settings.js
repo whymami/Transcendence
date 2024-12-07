@@ -118,7 +118,7 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
 
             if (response.ok) {
                 console.log(gettext("Profile updated successfully:"), result);
-                showToast("success", gettext("Settings saved successfully!"));
+                showToast("success", result?.message || gettext('error'));
                 if (emailChanged) {
                     let query = new URLSearchParams();
                     if (username) {
@@ -134,11 +134,11 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
                 urlLocationHandler();
             } else {
                 console.error(gettext("Error:"), result);
-                showToast("error", gettext("An error occurred: ") + (result?.error || result?.detail || gettext('Unknown error')));
+                showToast("error", result?.error || result?.detail || gettext('error'));
             }
         } catch (error) {
             console.error("Error:", error);
-            showToast("error", error.error);
+            showToast("error", error?.error || error?.message || gettext('error'));
         } finally {
             usernameInput.disabled = false;
             emailInput.disabled = false;

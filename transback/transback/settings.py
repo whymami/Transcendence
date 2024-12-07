@@ -160,6 +160,8 @@ LANGUAGE_CODE = 'en-US'
 
 TIME_ZONE = 'UTC'
 
+FILE_CHARSET = 'utf-8'
+DEFAULT_CHARSET = 'utf-8'
 USE_I18N = True
 USE_L10N = True
 

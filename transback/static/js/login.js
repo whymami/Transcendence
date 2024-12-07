@@ -78,19 +78,19 @@ async function login() {
 
     const data = await response.json();
     if (!response.ok) {
-      showToast('error', data?.error || gettext('An error occurred while logging in.'));
+      showToast('error', data?.error || data?.message || data || gettext('An error occurred while logging in.'));
       return;
     }
 
     localStorage.setItem('username', username);
 
-    showToast('success', data.message);
+    showToast('success', data?.message || data);
     history.pushState({}, "", "/2fa");
     urlLocationHandler();
 
   } catch (error) {
     console.error('Error:', error?.message);
-    showToast('error', gettext('An error occurred while logging in.'));
+    showToast('error', error?.error || error?.message || error || gettext('An error occurred while logging in.'));
   } finally {
     loginBtn.textContent = gettext("Login");
     loginBtn.disabled = false;

@@ -7,6 +7,7 @@ from transbackend.models import User, Friendship
 from transbackend.serializers import FriendshipSerializer
 from django.db.models import Q
 from transbackend.utils.response_utils import json_response
+from django.utils.translation import gettext as _
 
 class FriendListView(APIView):
     permission_classes = [IsAuthenticated]
@@ -45,9 +46,9 @@ class FriendRequestView(APIView):
 
             if existing_friendship:
                 if existing_friendship.status == Friendship.ACCEPTED:
-                    return JsonResponse({"error": "You are already friends with this user"}, status=400)
+                    return JsonResponse({"error": _("You are already friends with this user")}, status=400)
                 elif existing_friendship.status == Friendship.PENDING:
-                    return JsonResponse({"error": "A friend request is already pending"}, status=400)
+                    return JsonResponse({"error": _("A friend request is already pending")}, status=400)
                 elif existing_friendship.status == Friendship.REJECTED:
                     existing_friendship.delete()
                 
@@ -56,9 +57,9 @@ class FriendRequestView(APIView):
                 receiver=receiver
             )
             
-            return JsonResponse({"message": "Friend request sent successfully"}, status=201)
+            return JsonResponse({"message": _("Friend request sent successfully")}, status=201)
         except User.DoesNotExist:
-            return JsonResponse({"error": "User not found"}, status=404)
+            return JsonResponse({"error": _("User not found")}, status=404)
 
 class FriendRequestResponseView(APIView):
     permission_classes = [IsAuthenticated]
@@ -77,20 +78,20 @@ class FriendRequestResponseView(APIView):
             ).first()
 
             if not friendship:
-                return json_response(error="Friend request not found", status=404)
+                return json_response(error=_("Friend request not found"), status=404)
 
             if action == 'accept':
                 friendship.status = Friendship.ACCEPTED
                 friendship.save()
-                return json_response(message="Friend request accepted")
+                return json_response(message=_("Friend request accepted"))
             elif action == 'reject':
                 friendship.delete()
-                return json_response(message="Friend request rejected")
+                return json_response(message=_("Friend request rejected"))
             elif action == 'remove':
                 friendship.delete()
-                return json_response(message="Friend removed")
+                return json_response(message=_("Friend removed"))
             else:
-                return json_response(error="Invalid action", status=400)
+                return json_response(error=_("Invalid action"), status=400)
 
         except User.DoesNotExist:
-            return json_response(error="User not found", status=404)
+            return json_response(error=_("User not found"), status=404)

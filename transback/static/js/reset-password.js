@@ -50,9 +50,9 @@ document.getElementById('resetPasswordForm').addEventListener('submit', async fu
             });
             const data = await response.json();
             if (response.ok) {
-                showToast('success', 'Password reset successful.');
+                showToast('success', data?.message || gettext('error'));
             } else {
-                showToast('error', data.error);
+                showToast('error', data?.error || data?.message || gettext('error'));
             }
         } catch (error) {
             console.error('Password reset error:', error);

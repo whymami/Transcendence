@@ -94,12 +94,12 @@ async function register() {
 
         if (!response.ok) {
             const errorData = await response.json();
-            showToast('error', errorData.error || gettext('Registration failed.'));
+            showToast('error', errorData?.error || errorData?.message || errorData || gettext('error'));
             return;
         }
 
         const data = await response.json();
-        showToast('success', gettext('Registration successful. Redirecting...'));
+        showToast('success', data?.message || data || gettext('error'));
         localStorage.setItem("username", username);
 
         setTimeout(() => {
@@ -109,7 +109,7 @@ async function register() {
 
     } catch (error) {
         console.error('Error:', error);
-        generalError.textContent = gettext('An error occurred. Please try again later.');
+        generalError.textContent = error?.error || error?.message || error || gettext('error');
     } finally {
         registerBtn.textContent = gettext("Register");
         registerBtn.disabled = false;

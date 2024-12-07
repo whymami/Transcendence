@@ -52,11 +52,11 @@ async function verify2FA() {
             history.pushState({}, "", "/");
             urlLocationHandler();
         } else {
-            showToast('error', data.error || gettext("An error occurred. Please try again."));
+            showToast('error', data?.error || data?.message  || gettext("An error occurred. Please try again."));
         }
     } catch (error) {
         console.error('Error:', error?.message);
-        showToast('error', error?.error || gettext("An error occurred. Please try again."));
+        showToast('error', error?.error || error?.message  || gettext("An error occurred. Please try again."));
     } finally {
         codeInput.disabled = false;
         verifyButton.disabled = false;
@@ -81,11 +81,11 @@ twoFa_resendLink.addEventListener("click", async () => {
         });
         const data = await response.json();
         if (response.ok) {
-            showToast('success', data.message);
+            showToast('success', data?.message || data);
         } else {
-            showToast('error', data?.error || gettext("An error occurred. Please try again."));
+            showToast('error', data?.error || data?.message  || gettext("An error occurred. Please try again."));
         }
     } catch (error) {
-        showToast('error', error?.error || gettext("An error occurred. Please try again."));
+        showToast('error', error?.error || error?.message || gettext("An error occurred. Please try again."));
     }
 });

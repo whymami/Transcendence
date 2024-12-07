@@ -1,0 +1,646 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-12-07 16:11+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+#: transback/transback/settings.py:150
+msgid "English"
+msgstr "İngilizce"
+
+#: transback/transback/settings.py:151
+msgid "Turkish"
+msgstr "Türkçe"
+
+#: transback/transback/settings.py:152
+msgid "French"
+msgstr "Fransızca"
+
+#: transback/transbackend/consumers.py:81
+msgid "Waiting for other player..."
+msgstr "Diğer oyuncu bekleniyor..."
+
+#: transback/transbackend/consumers.py:85
+msgid "Game starting!"
+msgstr "Oyun başlıyor!"
+
+#: transback/transbackend/consumers.py:155
+#, python-brace-format
+msgid "{winner} won!"
+msgstr "{winner} kazandı!"
+
+#: transback/transbackend/consumers.py:315
+msgid "Reconnecting to active game..."
+msgstr "Aktif oyuna yeniden bağlanılıyor..."
+
+#: transback/transbackend/consumers.py:350
+msgid "Match found!"
+msgstr "Eşleşme bulundu!"
+
+#: transback/transbackend/serializers.py:26
+msgid "Username already in use"
+msgstr "Kullanıcı adı zaten kullanımda"
+
+#: transback/transbackend/serializers.py:30
+msgid "Email already in use"
+msgstr "E-posta zaten kullanımda"
+
+#: transback/transbackend/serializers.py:55
+#: transback/transbackend/serializers.py:59
+msgid "Invalid username or password"
+msgstr "Geçersiz kullanıcı adı veya şifre"
+
+#: transback/transbackend/services/user_service.py:35
+msgid "Verification code is required."
+msgstr "Doğrulama kodu gerekli."
+
+#: transback/transbackend/services/user_service.py:40
+#: transback/transbackend/services/user_service.py:67
+msgid "Verification code must be 6 digits."
+msgstr "Doğrulama kodu 6 haneli olmalıdır."
+
+#: transback/transbackend/services/user_service.py:44
+#: transback/transbackend/services/user_service.py:71
+msgid "Invalid verification code format."
+msgstr "Geçersiz doğrulama kodu formatı."
+
+#: transback/transbackend/services/user_service.py:47
+msgid "Invalid verification code."
+msgstr "Geçersiz doğrulama kodu."
+
+#: transback/transbackend/services/user_service.py:50
+msgid "Verification code has expired."
+msgstr "Doğrulama kodunun süresi doldu."
+
+#: transback/transbackend/services/user_service.py:62
+msgid "Verification code is missing."
+msgstr "Doğrulama kodu eksik."
+
+#: transback/transbackend/services/user_service.py:74
+msgid "Invalid or expired verification code."
+msgstr "Geçersiz veya süresi dolmuş doğrulama kodu."
+
+#: transback/transbackend/templates/2fa.html:3
+#: transback/transbackend/templates/2fa.html:8
+msgid "2FA Verification"
+msgstr "2FA Doğrulama"
+
+#: transback/transbackend/templates/2fa.html:9
+msgid "Enter the code sent to your phone"
+msgstr "Telefonunuza gönderilen kodu girin"
+
+#: transback/transbackend/templates/2fa.html:13
+msgid "2FA Code"
+msgstr "2FA Kodu"
+
+#: transback/transbackend/templates/2fa.html:17
+#: transback/transbackend/templates/verify.html:17
+msgid "Enter 6-digit code"
+msgstr "6 haneli kodu girin"
+
+#: transback/transbackend/templates/2fa.html:23
+#: transback/transbackend/templates/verify.html:23
+msgid "Verify"
+msgstr "Doğrula"
+
+#: transback/transbackend/templates/2fa.html:26
+#: transback/transbackend/templates/verify.html:26
+msgid "Didn't receive a code?"
+msgstr "Kod almadınız mı?"
+
+#: transback/transbackend/templates/2fa.html:26
+#: transback/transbackend/templates/verify.html:26
+msgid "Resend Code"
+msgstr "Kodu Yeniden Gönder"
+
+#: transback/transbackend/templates/404.html:4
+#: transback/transbackend/templates/404.html:31
+msgid "Page Not Found"
+msgstr "Sayfa Bulunamadı"
+
+#: transback/transbackend/templates/404.html:30
+msgid "404"
+msgstr "404"
+
+#: transback/transbackend/templates/404.html:33
+msgid "The page you are looking for does not exist or has been moved."
+msgstr "Aradığınız sayfa mevcut değil veya taşınmış."
+
+#: transback/transbackend/templates/404.html:35
+msgid "Return to Homepage"
+msgstr "Ana Sayfaya Dön"
+
+#: transback/transbackend/templates/ai-game.html:3
+#: transback/transbackend/templates/two-game.html:4
+msgid "Pong Game"
+msgstr "Pong Oyunu"
+
+#: transback/transbackend/templates/ai-game.html:9
+#: transback/transbackend/templates/tournament.html:37
+#: transback/transbackend/templates/two-game.html:10
+msgid "Press Space to Start"
+msgstr "Başlamak için Boşluk Tuşuna Basın"
+
+#: transback/transbackend/templates/friends.html:3
+#: transback/transbackend/templates/friends.html:60
+#: transback/transbackend/templates/home.html:52
+msgid "Friends"
+msgstr "Arkadaşlar"
+
+#: transback/transbackend/templates/friends.html:11
+msgid "Pending Friend Requests"
+msgstr "Bekleyen Arkadaşlık İstekleri"
+
+#: transback/transbackend/templates/friends.html:41
+msgid "Accept"
+msgstr "Kabul Et"
+
+#: transback/transbackend/templates/friends.html:47
+msgid "Reject"
+msgstr "Reddet"
+
+#: transback/transbackend/templates/friends.html:52
+msgid "No pending friend requests"
+msgstr "Bekleyen arkadaşlık isteği yok"
+
+#: transback/transbackend/templates/friends.html:90
+msgid "Remove"
+msgstr "Kaldır"
+
+#: transback/transbackend/templates/friends.html:95
+msgid "No friends"
+msgstr "Arkadaş yok"
+
+#: transback/transbackend/templates/header.html:23
+#: transback/transbackend/templates/header.html:55
+#: transback/transbackend/templates/home.html:9
+msgid "Home"
+msgstr "Ana Sayfa"
+
+#: transback/transbackend/templates/header.html:26
+#: transback/transbackend/templates/header.html:58
+msgid "Logout"
+msgstr "Çıkış Yap"
+
+#: transback/transbackend/templates/header.html:28
+#: transback/transbackend/templates/header.html:60
+#: transback/transbackend/templates/home.html:94
+#: transback/transbackend/templates/home.html:110
+#: transback/transbackend/templates/login.html:10
+msgid "Login"
+msgstr "Giriş Yap"
+
+#: transback/transbackend/templates/home.html:19
+#: transback/transbackend/templates/home.html:84
+msgid "Play Local"
+msgstr "Yerel Oyna"
+
+#: transback/transbackend/templates/home.html:28
+#: transback/transbackend/templates/home.html:93
+msgid "Play games locally on your device"
+msgstr "Oyunları cihazınızda yerel olarak oynayın"
+
+#: transback/transbackend/templates/home.html:29
+#: transback/transbackend/templates/home.html:45
+#: transback/transbackend/templates/local.html:23
+msgid "Start"
+msgstr "Başla"
+
+#: transback/transbackend/templates/home.html:36
+#: transback/transbackend/templates/home.html:101
+msgid "Play Online"
+msgstr "Çevrimiçi Oyna"
+
+#: transback/transbackend/templates/home.html:44
+#: transback/transbackend/templates/home.html:109
+msgid "Play with other players online"
+msgstr "Diğer oyuncularla çevrimiçi oyna"
+
+#: transback/transbackend/templates/home.html:60
+msgid "Manage your friends list"
+msgstr "Arkadaş listenizi yönetin"
+
+#: transback/transbackend/templates/home.html:61
+#: transback/transbackend/templates/home.html:77
+msgid "View"
+msgstr "Görüntüle"
+
+#: transback/transbackend/templates/home.html:68
+msgid "All Users"
+msgstr "Tüm Kullanıcılar"
+
+#: transback/transbackend/templates/home.html:76
+msgid "Browse all registered users"
+msgstr "Tüm kayıtlı kullanıcılara göz atın"
+
+#: transback/transbackend/templates/local.html:4
+msgid "Local Game"
+msgstr "Yerel Oyun"
+
+#: transback/transbackend/templates/local.html:14
+msgid "Play Against AI"
+msgstr "Yapay Zekaya Karşı Oyna"
+
+#: transback/transbackend/templates/local.html:22
+msgid "Play against computer"
+msgstr "Bilgisayara karşı oyna"
+
+#: transback/transbackend/templates/local.html:30
+msgid "Local Multiplayer"
+msgstr "Yerel Çok Oyunculu"
+
+#: transback/transbackend/templates/local.html:38
+msgid "Play with friends locally"
+msgstr "Arkadaşlarınızla yerel olarak oynayın"
+
+#: transback/transbackend/templates/local.html:41
+msgid "2 Players"
+msgstr "2 Oyuncu"
+
+#: transback/transbackend/templates/local.html:44
+msgid "4 Players"
+msgstr "4 Oyuncu"
+
+#: transback/transbackend/templates/local.html:53
+msgid "Tournament"
+msgstr "Turnuva"
+
+#: transback/transbackend/templates/local.html:61
+msgid "Create a tournament and compete with your friends"
+msgstr "Turnuva oluşturun ve arkadaşlarınızla yarışın"
+
+#: transback/transbackend/templates/local.html:64
+msgid "Go To Tournament"
+msgstr "Turnuvaya Git"
+
+#: transback/transbackend/templates/login.html:14
+msgid "Welcome Back"
+msgstr "Tekrar Hoşgeldiniz"
+
+#: transback/transbackend/templates/login.html:15
+msgid "Please login to your account"
+msgstr "Lütfen hesabınıza giriş yapın"
+
+#: transback/transbackend/templates/login.html:19
+#: transback/transbackend/templates/register.html:17
+#: transback/transbackend/templates/settings.html:27
+msgid "Username"
+msgstr "Kullanıcı Adı"
+
+#: transback/transbackend/templates/login.html:20
+#: transback/transbackend/templates/register.html:22
+#: transback/transbackend/templates/settings.html:28
+msgid "Enter your username"
+msgstr "Kullanıcı adınızı girin"
+
+#: transback/transbackend/templates/login.html:25
+#: transback/transbackend/templates/register.html:38
+msgid "Password"
+msgstr "Şifre"
+
+#: transback/transbackend/templates/login.html:26
+#: transback/transbackend/templates/register.html:42
+msgid "Enter your password"
+msgstr "Şifrenizi girin"
+
+#: transback/transbackend/templates/login.html:40
+msgid "Log In"
+msgstr "Giriş Yap"
+
+#: transback/transbackend/templates/login.html:43
+msgid "Don't have an account?"
+msgstr "Hesabınız yok mu?"
+
+#: transback/transbackend/templates/login.html:44
+msgid "Register here"
+msgstr "Buradan kaydolun"
+
+#: transback/transbackend/templates/profile.html:18
+msgid "Profile Picture"
+msgstr "Profil Resmi"
+
+#: transback/transbackend/templates/profile.html:40
+msgid "Games Played:"
+msgstr "Oynanan Oyunlar:"
+
+#: transback/transbackend/templates/profile.html:41
+msgid "Games Won:"
+msgstr "Kazanılan Oyunlar:"
+
+#: transback/transbackend/templates/profile.html:44
+msgid "Last 5 Games:"
+msgstr "Son 5 Oyun:"
+
+#: transback/transbackend/templates/profile.html:49
+msgid "No games played yet."
+msgstr "Henüz oyun oynanmadı."
+
+#: transback/transbackend/templates/profile.html:61
+msgid "Pending"
+msgstr "Beklemede"
+
+#: transback/transbackend/templates/profile.html:63
+msgid "Remove Friend"
+msgstr "Arkadaşı Kaldır"
+
+#: transback/transbackend/templates/profile.html:65
+msgid "Add Friend"
+msgstr "Arkadaş Ekle"
+
+#: transback/transbackend/templates/register.html:6
+#: transback/transbackend/templates/register.html:59
+msgid "Register"
+msgstr "Kayıt Ol"
+
+#: transback/transbackend/templates/register.html:12
+msgid "Create Account"
+msgstr "Hesap Oluştur"
+
+#: transback/transbackend/templates/register.html:13
+msgid "Fill in the details to create a new account"
+msgstr "Yeni bir hesap oluşturmak için detayları doldurun"
+
+#: transback/transbackend/templates/register.html:28
+#: transback/transbackend/templates/settings.html:33
+msgid "Email"
+msgstr "E-posta"
+
+#: transback/transbackend/templates/register.html:32
+#: transback/transbackend/templates/settings.html:34
+msgid "Enter your email"
+msgstr "E-posta adresinizi girin"
+
+#: transback/transbackend/templates/register.html:49
+msgid "Confirm Password"
+msgstr "Şifreyi Onayla"
+
+#: transback/transbackend/templates/register.html:53
+msgid "Confirm your password"
+msgstr "Şifrenizi onaylayın"
+
+#: transback/transbackend/templates/register.html:62
+msgid "Already have an account?"
+msgstr "Zaten hesabınız var mı?"
+
+#: transback/transbackend/templates/register.html:62
+msgid "Log in here"
+msgstr "Buradan giriş yapın"
+
+#: transback/transbackend/templates/reset-password.html:3
+#: transback/transbackend/templates/reset-password.html:8
+#: transback/transbackend/templates/reset-password.html:32
+msgid "Reset Password"
+msgstr "Şifreyi Sıfırla"
+
+#: transback/transbackend/templates/reset-password.html:12
+msgid "Current Password"
+msgstr "Mevcut Şifre"
+
+#: transback/transbackend/templates/reset-password.html:13
+msgid "Enter your current password"
+msgstr "Mevcut şifrenizi girin"
+
+#: transback/transbackend/templates/reset-password.html:19
+msgid "New Password"
+msgstr "Yeni Şifre"
+
+#: transback/transbackend/templates/reset-password.html:20
+msgid "Enter your new password"
+msgstr "Yeni şifrenizi girin"
+
+#: transback/transbackend/templates/reset-password.html:26
+msgid "Confirm New Password"
+msgstr "Yeni Şifreyi Onayla"
+
+#: transback/transbackend/templates/reset-password.html:27
+msgid "Re-enter your new password"
+msgstr "Yeni şifrenizi tekrar girin"
+
+#: transback/transbackend/templates/reset-password.html:33
+msgid "Password reset successful!"
+msgstr "Şifre başarıyla sıfırlandı!"
+
+#: transback/transbackend/templates/settings.html:3
+#: transback/transbackend/templates/settings.html:14
+msgid "User Profile"
+msgstr "Kullanıcı Profili"
+
+#: transback/transbackend/templates/settings.html:8
+msgid "Profile Settings"
+msgstr "Profil Ayarları"
+
+#: transback/transbackend/templates/settings.html:18
+msgid "Upload Profile Picture"
+msgstr "Profil Resmi Yükle"
+
+#: transback/transbackend/templates/settings.html:38
+msgid "Save Changes"
+msgstr "Değişiklikleri Kaydet"
+
+#: transback/transbackend/templates/settings.html:43
+msgid "Change Password"
+msgstr "Şifre Değiştir"
+
+#: transback/transbackend/templates/tournament.html:3
+#: transback/transbackend/templates/tournament.html:12
+msgid "Pong Tournament"
+msgstr "Pong Turnuvası"
+
+#: transback/transbackend/templates/tournament.html:15
+msgid "4 Player Tournament"
+msgstr "4 Oyunculu Turnuva"
+
+#: transback/transbackend/templates/tournament.html:18
+msgid "8 Player Tournament"
+msgstr "8 Oyunculu Turnuva"
+
+#: transback/transbackend/templates/tournament.html:24
+msgid "Enter Player Usernames"
+msgstr "Oyuncu Kullanıcı Adlarını Girin"
+
+#: transback/transbackend/templates/tournament.html:28
+msgid "Start Tournament Matches"
+msgstr "Turnuva Maçlarını Başlat"
+
+#: transback/transbackend/templates/tournament.html:44
+msgid "Round Info"
+msgstr "Tur Bilgisi"
+
+#: transback/transbackend/templates/tournament.html:47
+msgid "Restart Tournament"
+msgstr "Turnuvayı Yeniden Başlat"
+
+#: transback/transbackend/templates/users.html:5
+msgid "Users"
+msgstr "Kullanıcılar"
+
+#: transback/transbackend/templates/users.html:24
+msgid "Profile"
+msgstr "Profil"
+
+#: transback/transbackend/templates/verify.html:3
+#: transback/transbackend/templates/verify.html:8
+msgid "Email Verification"
+msgstr "E-posta Doğrulama"
+
+#: transback/transbackend/templates/verify.html:9
+msgid "Please enter the code sent to your email"
+msgstr "Lütfen e-postanıza gönderilen kodu girin"
+
+#: transback/transbackend/templates/verify.html:13
+msgid "Verification Code"
+msgstr "Doğrulama Kodu"
+
+#: transback/transbackend/views/auth.py:32
+msgid "Registration successful! A verification code has been sent to your email."
+msgstr "Kayıt başarılı! E-postanıza bir doğrulama kodu gönderildi."
+
+#: transback/transbackend/views/auth.py:56
+msgid "Your account is not verified. A verification code has been sent to your email."
+msgstr "Hesabınız doğrulanmadı. E-postanıza bir doğrulama kodu gönderildi."
+
+#: transback/transbackend/views/auth.py:61
+msgid "Verification code sent to your email."
+msgstr "Doğrulama kodu e-postanıza gönderildi."
+
+#: transback/transbackend/views/auth.py:67
+msgid "An unexpected error occurred."
+msgstr "Beklenmeyen bir hata oluştu."
+
+#: transback/transbackend/views/auth.py:83
+#: transback/transbackend/views/auth.py:85
+msgid "This field is required."
+msgstr "Bu alan zorunludur."
+
+#: transback/transbackend/views/auth.py:90
+msgid "Current password is incorrect"
+msgstr "Mevcut şifre yanlış"
+
+#: transback/transbackend/views/auth.py:95
+msgid "Password updated successfully"
+msgstr "Şifre başarıyla güncellendi"
+
+#: transback/transbackend/views/auth.py:98
+msgid "Invalid JSON format"
+msgstr "Geçersiz JSON formatı"
+
+#: transback/transbackend/views/auth.py:100
+msgid "An error occurred while resetting password"
+msgstr "Şifre sıfırlanırken bir hata oluştu"
+
+#: transback/transbackend/views/friend_views.py:49
+msgid "You are already friends with this user"
+msgstr "Bu kullanıcıyla zaten arkadaşsınız"
+
+#: transback/transbackend/views/friend_views.py:51
+msgid "A friend request is already pending"
+msgstr "Zaten bekleyen bir arkadaşlık isteği var"
+
+#: transback/transbackend/views/friend_views.py:60
+msgid "Friend request sent successfully"
+msgstr "Arkadaşlık isteği başarıyla gönderildi"
+
+#: transback/transbackend/views/friend_views.py:62
+#: transback/transbackend/views/friend_views.py:97
+msgid "User not found"
+msgstr "Kullanıcı bulunamadı"
+
+#: transback/transbackend/views/friend_views.py:81
+msgid "Friend request not found"
+msgstr "Arkadaşlık isteği bulunamadı"
+
+#: transback/transbackend/views/friend_views.py:86
+msgid "Friend request accepted"
+msgstr "Arkadaşlık isteği kabul edildi"
+
+#: transback/transbackend/views/friend_views.py:89
+msgid "Friend request rejected"
+msgstr "Arkadaşlık isteği reddedildi"
+
+#: transback/transbackend/views/friend_views.py:92
+msgid "Friend removed"
+msgstr "Arkadaş kaldırıldı"
+
+#: transback/transbackend/views/friend_views.py:94
+msgid "Invalid action"
+msgstr "Geçersiz işlem"
+
+#: transback/transbackend/views/template_views.py:93
+#: transback/transbackend/views/template_views.py:121
+msgid "(Won)"
+msgstr "(Kazandı)"
+
+#: transback/transbackend/views/template_views.py:93
+#: transback/transbackend/views/template_views.py:121
+msgid "(Lost)"
+msgstr "(Kaybetti)"
+
+#: transback/transbackend/views/template_views.py:164
+msgid "Username already exists."
+msgstr "Kullanıcı adı zaten mevcut."
+
+#: transback/transbackend/views/template_views.py:170
+msgid "Email already exists."
+msgstr "E-posta zaten mevcut."
+
+#: transback/transbackend/views/template_views.py:187
+msgid "Please check your new email for verification code before changes take effect."
+msgstr "Değişikliklerin etkili olması için lütfen yeni e-postanızdaki doğrulama kodunu kontrol edin."
+
+#: transback/transbackend/views/template_views.py:194
+msgid "Profile updated successfully!"
+msgstr "Profil başarıyla güncellendi!"
+
+#: transback/transbackend/views/template_views.py:197
+#: transback/transbackend/views/verify.py:46
+#: transback/transbackend/views/verify.py:90
+#: transback/transbackend/views/verify.py:112
+msgid "Invalid JSON data."
+msgstr "Geçersiz JSON verisi."
+
+#: transback/transbackend/views/template_views.py:211
+msgid "Failed to fetch users"
+msgstr "Kullanıcılar getirilemedi"
+
+#: transback/transbackend/views/template_views.py:218
+msgid "Local game page could not be loaded"
+msgstr "Yerel oyun sayfası yüklenemedi"
+
+#: transback/transbackend/views/verify.py:35
+msgid "Login successful!"
+msgstr "Giriş başarılı!"
+
+#: transback/transbackend/views/verify.py:41
+#: transback/transbackend/views/verify.py:85
+#: transback/transbackend/views/verify.py:107
+msgid "User not found."
+msgstr "Kullanıcı bulunamadı."
+
+#: transback/transbackend/views/verify.py:68
+msgid "Account verified successfully!"
+msgstr "Hesap başarıyla doğrulandı!"
+
+#: transback/transbackend/views/verify.py:72
+msgid "Unauthorized access"
+msgstr "Yetkisiz erişim"
+
+#: transback/transbackend/views/verify.py:81
+msgid "Email verified successfully!"
+msgstr "E-posta başarıyla doğrulandı!"
+
+#: transback/transbackend/views/verify.py:104
+msgid "A verification code has been sent to your email."
+msgstr "E-postanıza bir doğrulama kodu gönderildi."

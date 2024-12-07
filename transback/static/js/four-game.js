@@ -114,10 +114,14 @@
             }
         });
     }
+    
     function updateScore() {
-        document.getElementById("team1-score").innerText = team1Score;
-        document.getElementById("team2-score").innerText = team2Score;
+        const team1ScoreElement = document.getElementById("team1-score");
+        const team2ScoreElement = document.getElementById("team2-score");
+        team1ScoreElement.innerText = team1Score;
+        team2ScoreElement.innerText = team2Score;
     }
+
     function moveBall() {
         ballX += ballDX;
         ballY += ballDY;

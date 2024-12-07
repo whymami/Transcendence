@@ -15,17 +15,17 @@ async function sendFriendRequest(username) {
         });
         if (response.ok) {
             response = await response.json();
-            showToast('success', response.message || gettext('Arkadaşlık isteği gönderildi'));
+            showToast('success', response?.message || response || gettext('error'));
             const query = window.location.search;
             history.pushState({}, '', window.location.pathname + query);
             urlLocationHandler();
         } else {
             response = await response.json();
-            showToast('error', response?.error || gettext('Bir hata oluştu'));
+            showToast('error', response?.error || response?.message  || gettext('error'));
         }
     } catch (error) {
         console.error('Error:', error);
-        showToast('error', error?.error || gettext('Bir hata oluştu'));
+        showToast('error', error?.error || error?.message || gettext('error'));
     }
 }
 
@@ -56,17 +56,17 @@ async function sendFriend(username, status) {
         });
         if (response.ok) {
             response = await response.json();
-            showToast('success', response.message || gettext('Friend request sent'));
+            showToast('success', response?.message || gettext('error'));
             const query = window.location.search;
             history.pushState({}, '', window.location.pathname + query);
             urlLocationHandler();
         } else {
             response = await response.json();
-            showToast('error', response?.error || gettext('An error occurred'));
+            showToast('error', response?.error || response?.message || gettext('error'));
         }
     } catch (error) {
         console.error('Error:', error);
-        showToast('error', error?.error || gettext('1An error occurred'));
+        showToast('error', error?.error || error?.message || gettext('error'));
     }
 }
 

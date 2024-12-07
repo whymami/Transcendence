@@ -1,23 +1,3 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-#
-#, fuzzy
-msgid ""
-msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-12-06 17:38+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
-"MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n > 1);\n"
-
 #: transback/static/js/2fa.js:5 transback/static/js/verify.js:10
 msgid "You need to log in to access this page."
 msgstr "Bu sayfaya erişmek için giriş yapmanız gerekiyor."
@@ -26,27 +6,27 @@ msgstr "Bu sayfaya erişmek için giriş yapmanız gerekiyor."
 msgid "Invalid verify code"
 msgstr "Geçersiz doğrulama kodu"
 
-#: transback/static/js/2fa.js:26 transback/static/js/verify.js:34
+#: transback/static/js/2fa.js:28 transback/static/js/verify.js:34
 msgid "Verifying..."
 msgstr "Doğrulanıyor..."
 
-#: transback/static/js/2fa.js:52 transback/static/js/2fa.js:56
-#: transback/static/js/2fa.js:81 transback/static/js/2fa.js:84
-#: transback/static/js/verify.js:65 transback/static/js/verify.js:68
-#: transback/static/js/verify.js:92 transback/static/js/verify.js:95
+#: transback/static/js/2fa.js:55 transback/static/js/2fa.js:59
+#: transback/static/js/2fa.js:86 transback/static/js/2fa.js:89
+#: transback/static/js/verify.js:69 transback/static/js/verify.js:72
+#: transback/static/js/verify.js:99 transback/static/js/verify.js:102
 msgid "An error occurred. Please try again."
 msgstr "Bir hata oluştu. Lütfen tekrar deneyin."
 
-#: transback/static/js/2fa.js:60 transback/static/js/verify.js:70
+#: transback/static/js/2fa.js:63 transback/static/js/verify.js:74
 msgid "Verify"
 msgstr "Doğrula"
 
-#: transback/static/js/friends.js:15 transback/static/js/profile.js:55
+#: transback/static/js/friends.js:19 transback/static/js/profile.js:59
 msgid "Friend request sent"
 msgstr "Arkadaşlık isteği gönderildi"
 
-#: transback/static/js/friends.js:19 transback/static/js/friends.js:23
-#: transback/static/js/profile.js:61
+#: transback/static/js/friends.js:23 transback/static/js/friends.js:27
+#: transback/static/js/profile.js:65
 msgid "An error occurred"
 msgstr "Bir hata oluştu"
 
@@ -55,33 +35,36 @@ msgstr "Bir hata oluştu"
 msgid "Username must be at least 4 characters long."
 msgstr "Kullanıcı adı en az 4 karakter uzunluğunda olmalıdır."
 
-#: transback/static/js/login.js:52 transback/static/js/register.js:64
-#, fuzzy
-#| msgid "Username must be at least 4 characters long."
+#: transback/static/js/login.js:46 transback/static/js/register.js:58
+#: transback/static/js/settings.js:63
+msgid "Username must be less than 10 characters."
+msgstr "Kullanıcı adı 10 karakterden az olmalıdır."
+
+#: transback/static/js/login.js:57 transback/static/js/register.js:69
 msgid "Password must be at least 6 characters long."
 msgstr "Şifre en az 6 karakter uzunluğunda olmalıdır."
 
-#: transback/static/js/login.js:59 transback/static/js/register.js:77
+#: transback/static/js/login.js:65 transback/static/js/register.js:83
 msgid "Loading..."
 msgstr "Yükleniyor..."
 
-#: transback/static/js/login.js:72 transback/static/js/login.js:84
+#: transback/static/js/login.js:81 transback/static/js/login.js:93
 msgid "An error occurred while logging in."
 msgstr "Giriş yaparken bir hata oluştu."
 
-#: transback/static/js/login.js:86
+#: transback/static/js/login.js:95
 msgid "Login"
-msgstr "Giriş"
+msgstr "Giriş Yap"
 
-#: transback/static/js/profile.js:16
-msgid "Arkadaşlık isteği gönderildi"
+#: transback/static/js/profile.js:18
+msgid "Arkadalk istei gnderildi"
 msgstr "Arkadaşlık isteği gönderildi"
 
-#: transback/static/js/profile.js:22 transback/static/js/profile.js:26
-msgid "Bir hata oluştu"
+#: transback/static/js/profile.js:24 transback/static/js/profile.js:28
+msgid "Bir hata olutu"
 msgstr "Bir hata oluştu"
 
-#: transback/static/js/profile.js:65
+#: transback/static/js/profile.js:69
 msgid "1An error occurred"
 msgstr "Bir hata oluştu"
 
@@ -89,27 +72,27 @@ msgstr "Bir hata oluştu"
 msgid "Error loading SVG:"
 msgstr "SVG yüklenirken hata oluştu:"
 
-#: transback/static/js/register.js:59 transback/static/js/settings.js:64
+#: transback/static/js/register.js:64 transback/static/js/settings.js:69
 msgid "Please enter a valid email address."
 msgstr "Lütfen geçerli bir e-posta adresi girin."
 
-#: transback/static/js/register.js:69
+#: transback/static/js/register.js:74
 msgid "Passwords do not match."
 msgstr "Şifreler eşleşmiyor."
 
-#: transback/static/js/register.js:89
+#: transback/static/js/register.js:97
 msgid "Registration failed."
-msgstr "Kayıt başarısız."
+msgstr "Kayıt başarısız oldu."
 
-#: transback/static/js/register.js:94
+#: transback/static/js/register.js:102
 msgid "Registration successful. Redirecting..."
 msgstr "Kayıt başarılı. Yönlendiriliyor..."
 
-#: transback/static/js/register.js:104
+#: transback/static/js/register.js:112
 msgid "An error occurred. Please try again later."
 msgstr "Bir hata oluştu. Lütfen daha sonra tekrar deneyin."
 
-#: transback/static/js/register.js:106
+#: transback/static/js/register.js:114
 msgid "Register"
 msgstr "Kayıt Ol"
 
@@ -121,45 +104,41 @@ msgstr "Dosya boyutu 1MB'dan küçük olmalıdır."
 msgid "Please select a valid image file (JPEG, PNG, GIF)."
 msgstr "Lütfen geçerli bir resim dosyası seçin (JPEG, PNG, GIF)."
 
-#: transback/static/js/settings.js:78
+#: transback/static/js/settings.js:83
 msgid "Saving..."
 msgstr "Kaydediliyor..."
 
-#: transback/static/js/settings.js:113
+#: transback/static/js/settings.js:120
 msgid "Profile updated successfully:"
 msgstr "Profil başarıyla güncellendi:"
 
-#: transback/static/js/settings.js:114
+#: transback/static/js/settings.js:121
 msgid "Settings saved successfully!"
 msgstr "Ayarlar başarıyla kaydedildi!"
 
-#: transback/static/js/settings.js:129
+#: transback/static/js/settings.js:136
 msgid "Error:"
 msgstr "Hata:"
 
-#: transback/static/js/settings.js:130
+#: transback/static/js/settings.js:137
 msgid "An error occurred: "
 msgstr "Bir hata oluştu: "
 
-#: transback/static/js/settings.js:130
+#: transback/static/js/settings.js:137
 msgid "Unknown error"
 msgstr "Bilinmeyen hata"
 
-#: transback/static/js/settings.js:140
+#: transback/static/js/settings.js:147
 msgid "Save"
 msgstr "Kaydet"
 
 #: transback/static/js/tournament.js:51
-#, fuzzy
-#| msgid "Please enter a valid email address."
 msgid "Please enter player names."
 msgstr "Lütfen oyuncu isimlerini girin."
 
 #: transback/static/js/tournament.js:53
-#, fuzzy
-#| msgid "Please enter a valid email address."
 msgid "Please enter a valid number of players (4 or 8)."
-msgstr "Lütfen geçerli oyuncu sayısını girin (4 veya 8)."
+msgstr "Lütfen geçerli bir oyuncu sayısı girin (4 veya 8)."
 
 #: transback/static/js/tournament.js:61
 msgid "Player"
@@ -167,11 +146,9 @@ msgstr "Oyuncu"
 
 #: transback/static/js/tournament.js:85
 msgid "Each player name must be unique."
-msgstr "Her oyuncu ismi benzersiz olmalıdır."
+msgstr "Her oyuncu adı benzersiz olmalıdır."
 
 #: transback/static/js/tournament.js:95
-#, fuzzy
-#| msgid "Please enter a valid email address."
 msgid "Please enter all player names."
 msgstr "Lütfen tüm oyuncu isimlerini girin."
 
@@ -179,10 +156,8 @@ msgstr "Lütfen tüm oyuncu isimlerini girin."
 msgid "Match"
 msgstr "Maç"
 
-#: transback/static/js/tournament.js:261
+#: transback/static/js/tournament.js:277
 msgid ""
 "Tournament restarted. Refresh the page or re-enter player names to start a "
 "new tournament."
-msgstr ""
-"Turnuva yeniden başlatıldı. Yeni bir turnuva başlatmak için sayfayı yenileyin "
-"veya oyuncu isimlerini tekrar girin."
+msgstr "Turnuva yeniden başlatıldı. Yeni bir turnuva başlatmak için sayfayı yenileyin veya oyuncu isimlerini tekrar girin."

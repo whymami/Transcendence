@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from transbackend.models import User, Game, Friendship
 from transbackend.services.user_service import UserService
+from django.utils.translation import gettext as _
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -22,11 +23,11 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     def validate(self, data):
         # Check username first
         if User.objects.filter(username=data['username']).exists():
-            raise serializers.ValidationError("Username already in use")
+            raise serializers.ValidationError(_("Username already in use"))
             
         # Then check email
         if User.objects.filter(email=data['email'], is_verified=True).exists():
-            raise serializers.ValidationError("Email already in use")
+            raise serializers.ValidationError(_("Email already in use"))
             
         return data
 
@@ -51,11 +52,11 @@ class LoginSerializer(serializers.Serializer):
         try:
             user = User.objects.get(username=username)
             if not user.check_password(password):
-                raise serializers.ValidationError("Invalid username or password")
+                raise serializers.ValidationError(_("Invalid username or password"))
             data['user'] = user
             return data
         except User.DoesNotExist:
-            raise serializers.ValidationError("Invalid username or password")
+            raise serializers.ValidationError(_("Invalid username or password"))
 
 class FriendshipSerializer(serializers.ModelSerializer):
     sender = UserSerializer(read_only=True)

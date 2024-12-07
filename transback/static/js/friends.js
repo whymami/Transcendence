@@ -16,15 +16,15 @@ async function actionFriend(username, action) {
         });
         if (response.ok) {
             response = await response.json();
-            showToast('success', response.message || gettext('Friend request sent'));
+            showToast('success', response?.message || gettext('Friend request sent'));
             urlLocationHandler();
         } else {
             response = await response.json();
-            showToast('error', response?.error || gettext('An error occurred'));
+            showToast('error', response?.error || response?.message  || gettext('An error occurred'));
         }
     } catch (error) {
         console.error('Error:', error);
-        showToast('error', error?.error || gettext('An error occurred'));
+        showToast('error', error?.error || error?.message  || gettext('An error occurred'));
     }
 }
 
