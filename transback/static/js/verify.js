@@ -29,6 +29,7 @@
             codeInput.focus();
         }
         const lang = await getCookie('lang') || 'en-US';
+        const access_token = await getCookie('access_token');
         try {
             btn.textContent = gettext("Verifying...");
             btn.disabled = true;
@@ -38,6 +39,9 @@
                 headers: {
                     "Content-Type": "application/json",
                     "Accept-Language": lang,
+                    ...(access_token && {
+                        "Authorization": `Bearer ${access_token}`
+                    })
                 },
                 body: JSON.stringify({
                     username: verify_username,

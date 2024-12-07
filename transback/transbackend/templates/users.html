@@ -9,7 +9,7 @@
   <div class="users-container">
     <div class="users-list">
       {% for user in users %}
-      <div class="user-card">
+      <div class="user-card" data-username="{{ user.username }}">
         <div class="user-image">
           <img
             src="{% if user.profile_picture %}{{ user.profile_picture }}{% else %}{% static 'images/default-profile.webp' %}{% endif %}"
@@ -19,7 +19,7 @@
           />
         </div>
         <div class="user-info">
-          <h3 class="username">{{ user.username }}</h3>
+          <h3 class="username" >{{ user.username }}</h3>
           <button class="go-to-profile-button">
             {% trans "Profile" %}
           </button>

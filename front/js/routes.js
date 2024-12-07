@@ -2,6 +2,8 @@ let status;
 let statusSocket;
 let username;
 let oldUsername;
+const publicPages = ['/login', '/register', '/reset-password', '/verify', '/2fa', '/',];
+
 
 async function connectWebSocket() {
   const token = await getAccessToken();
@@ -196,6 +198,13 @@ const urlLocationHandler = async () => {
     username = search.get('username');
   }
 
+  if (!publicPages.includes(location) && !token) {
+    showToast("error", "Please log in to access this page.");
+    history.pushState({}, "", "/login");
+    urlLocationHandler();
+    return;
+  }
+
   try {
     const response = await fetch(route.endPoint + `${username ? "?username=" + username : ""}`,
       {
@@ -303,7 +312,6 @@ pullHeader(false);
 async function refreshAccessToken() {
   const refreshToken = getCookie('refresh_token');
   const currentPath = window.location.pathname;
-  const publicPages = ['/login', '/register', '/reset-password', '/verify', '/2fa', '/',];
 
   if (!refreshToken) {
     eraseCookie('access_token');
