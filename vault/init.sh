@@ -31,8 +31,10 @@ vault kv put secret/myapp/config \
     DB_USER="$DB_USER" \
     DB_PASSWORD="$DB_PASSWORD" \
     DB_HOST="$DB_HOST" \
-    DB_PORT="$DB_PORT"
-
+    DB_PORT="$DB_PORT" \
+    POSTGRES_PASSWORD="$POSTGRES_PASSWORD" \
+    POSTGRES_USER="$DB_USER" \
+    POSTGRES_DB="$DB_NAME"
 echo "Secrets loaded into Vault"
 
 # list all secrets
