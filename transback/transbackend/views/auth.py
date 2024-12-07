@@ -2,9 +2,7 @@ from django.template.response import TemplateResponse
 from rest_framework.views import APIView
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from transbackend.serializers import serializers
-from transbackend.models import User
 from .permissions import IsAnonymousUser
-from rest_framework.permissions import AllowAny
 from transbackend.services.user_service import UserService
 from transbackend.utils.response_utils import json_response
 from transbackend.serializers import UserRegistrationSerializer, UserSerializer, LoginSerializer

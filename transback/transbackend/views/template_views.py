@@ -10,6 +10,7 @@ from django.db.models import Q
 from transbackend.utils.response_utils import json_response
 from transbackend.models import Friendship
 from transbackend.services.user_service import UserService
+from django.utils.translation import gettext as _
 
 class HeaderView(APIView):
     permission_classes = [AllowAny]
@@ -89,7 +90,7 @@ class ProfileView(APIView):
                     user_score = game.player2_score
                     opponent_score = game.player1_score
 
-                result = "(Won)" if game.winner == user else "(Lost)"
+                result = _("(Won)") if game.winner == user else _("(Lost)")
                 match_time = game.start_time.strftime("%Y-%m-%d %H:%M")
 
                 last_games.append(f"{user.username} vs {opponent} - Score: {user_score}-{opponent_score} {result} - {match_time}")
@@ -117,7 +118,7 @@ class ProfileView(APIView):
                 user_score = game.player2_score
                 opponent_score = game.player1_score
 
-            result = "(Won)" if game.winner == user else "(Lost)"
+            result = _("(Won)") if game.winner == user else _("(Lost)")
             match_time = game.start_time.strftime("%Y-%m-%d %H:%M")
 
             last_games.append(f"{user.username} vs {opponent} - Score: {user_score}-{opponent_score} {result} - {match_time}")
@@ -160,13 +161,13 @@ class UserSettingsView(APIView):
             if data.get('username') and data.get('username') != "":
                 user.username = data.get('username')
                 if User.objects.filter(username=user.username).exclude(id=user.id).exists():
-                    return JsonResponse({"error": "Username already exists."}, status=400)
+                    return JsonResponse({"error": _("Username already exists.")}, status=400)
 
             if data.get('email') and data.get('email') != "":
                 new_email = data.get('email')
                 original_email = user.email
                 if User.objects.filter(email=new_email).exclude(id=user.id).exists():
-                    return JsonResponse({"error": "Email already exists."}, status=400)
+                    return JsonResponse({"error": _("Email already exists.")}, status=400)
                 email_changed = True
 
             if data.get('profile_picture') and data.get('profile_picture') != "":
@@ -183,17 +184,17 @@ class UserSettingsView(APIView):
                 user.new_email = new_email
                 user.save()
                 return JsonResponse({
-                    "message": "Please check your new email for verification code before changes take effect.",
+                    "message": _("Please check your new email for verification code before changes take effect."),
                     "requires_verification": True,
                     "email": new_email,
                     "original_email": original_email
                 }, status=200)
             else:
                 user.save()
-                return JsonResponse({"message": "Profile updated successfully!"}, status=200)
+                return JsonResponse({"message": _("Profile updated successfully!")}, status=200)
 
         except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON data."}, status=400)
+            return JsonResponse({"error": _("Invalid JSON data.")}, status=400)
 
 class UserListView(APIView):
     permission_classes = [IsAuthenticated]
@@ -208,11 +209,11 @@ class UserListView(APIView):
             )
             return TemplateResponse(request, 'users.html', {"users": users})
         except Exception as e:
-            return json_response(error="Failed to fetch users", status=500)
+            return json_response(error=_("Failed to fetch users"), status=500)
 
 class LocalView(APIView):
     def get(self, request):
         try:
             return TemplateResponse(request, 'local.html')
         except Exception as e:
-            return json_response(error="Yerel oyun sayfası yüklenemedi", status=500)
+            return json_response(error=_("Local game page could not be loaded"), status=500)
