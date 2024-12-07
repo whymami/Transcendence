@@ -1,12 +1,16 @@
 async function actionFriend(username, action) {
     const token = await getAccessToken();
 
+    const lang = await getCookie('lang') || 'en-US';
+
     try {
         let response = await fetch('/api/friends/response/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${token}`,
+                "Accept-Language": lang,
+
             },
             body: JSON.stringify({ username: username, action: action })
         });

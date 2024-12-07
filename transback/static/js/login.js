@@ -37,8 +37,13 @@ async function login() {
 
   let isValid = true;
 
-  if(username.length < 4){
+  if (username.length < 4) {
     usernameError.textContent = gettext("Username must be at least 4 characters long.");
+    isValid = false;
+  }
+
+  if (username.length > 10) {
+    usernameError.textContent = gettext("Username must be less than 10 characters.");
     isValid = false;
   }
 
@@ -54,6 +59,7 @@ async function login() {
   }
 
   if (!isValid) return;
+  const lang = await getCookie('lang') || 'en-US';
 
   try {
     loginBtn.textContent = gettext("Loading...");
@@ -61,10 +67,13 @@ async function login() {
     passwordInput.disabled = true;
     usernameInput.disabled = true;
     lang = getCookie('lang');
-    console.log(lang);
     const response = await fetch('/api/login/', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Accept-Language': lang },
+      headers: {
+        'Content-Type': 'application/json',
+        "Accept-Language": lang,
+
+      },
       body: JSON.stringify({ username, password })
     });
 

@@ -59,6 +59,11 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
         isValid = false;
     }
 
+    if (username.length > 10) {
+        showError('usernameError', gettext("Username must be less than 10 characters."));
+        isValid = false;
+    }
+
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
         showError('emailError', gettext("Please enter a valid email address."));
@@ -97,13 +102,15 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
             } else {
                 formData.append('profile_picture', "");
             }
+            const lang = await getCookie('lang') || 'en-US';
 
             const response = await fetch('/api/settings/', {
                 method: 'POST',
                 body: formData,
                 headers: {
                     'Accept': 'application/json',
-                    "Authorization": "Bearer " + token
+                    "Authorization": "Bearer " + token,
+                    "Accept-Language": lang,
                 }
             });
 
