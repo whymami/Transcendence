@@ -10,4 +10,14 @@ stop:
 	@echo "Docker servisleri durduruluyor..."
 	$(DOCKER_COMPOSE) down
 
+re:
+	@echo "Docker servisleri yeniden başlatılıyor..."
+	$(DOCKER_COMPOSE) down
+	$(DOCKER_COMPOSE) up -d
+
+build:
+	@echo "Docker servisleri yeniden başlatılıyor..."
+	$(DOCKER_COMPOSE) down
+	$(DOCKER_COMPOSE) up --build
+
 .PHONY: start stop clean

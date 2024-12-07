@@ -1,4 +1,14 @@
 #!/bin/bash
+
+sleep 5
+
+if [ -s /vault/token/root_token.txt ]; then
+    echo "Root token already exists"
+else
+    echo "Root token does not exist"
+    exit 1
+fi
+
 if [ "$DATABASE" = "postgres" ]
 then
     echo "Waiting for PostgreSQL..."

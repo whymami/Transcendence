@@ -38,5 +38,7 @@ echo "Secrets loaded into Vault"
 # list all secrets
 vault kv get secret/myapp/config
 
+
+
 # Keep the script running or exit
 tail -f /dev/null
