@@ -9,6 +9,14 @@ else
     exit 1
 fi
 
+export VAULT_ADDR='http://vault:8300'
+export VAULT_TOKEN=$(cat /vault/token/root_token.txt)
+
+export POSTGRES_USER=$(vault kv get -field=DB_USER secret/myapp/config)
+export POSTGRES_PASSWORD=$(vault kv get -field=DB_PASSWORD secret/myapp/config)
+export POSTGRES_DB=$(vault kv get -field=DB_NAME secret/myapp/config)
+
+
 if [ "$DATABASE" = "postgres" ]
 then
     echo "Waiting for PostgreSQL..."
@@ -17,6 +25,7 @@ then
     # done
     echo "PostgreSQL started"
 fi
+
 
 echo "Applying database migrations"
 python manage.py makemigrations
