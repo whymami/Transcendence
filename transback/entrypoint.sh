@@ -23,6 +23,20 @@ echo "Applying database migrations"
 python manage.py makemigrations
 python manage.py migrate
 
+# Check if superuser exists, and create if it doesn't
+echo "Checking for superuser"
+python manage.py shell <<EOF
+from django.contrib.auth.models import User
+from django.db.utils import IntegrityError
+from transback.vaultclient import get_secret
+try:
+    User.objects.get(username='admin')
+    print("Superuser already exists")
+except User.DoesNotExist:
+    print("Creating superuser")
+    User.objects.create_superuser('admin', 'admin@example.com', '1234')
+EOF
+
 echo "Collecting static files"
 python manage.py collectstatic --noinput
 
