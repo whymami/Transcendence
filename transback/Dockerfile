@@ -21,6 +21,8 @@ COPY . /transback/
 COPY ./entrypoint.sh /transback/entrypoint.sh
 RUN chmod +x /transback/entrypoint.sh
 
+RUN psql -U admin -d DragonBall
+
 # Run `compilemessages` to compile .po files into .mo files
 RUN django-admin compilemessages
 
