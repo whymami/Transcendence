@@ -16,6 +16,7 @@ def create_superUser():
 
 def main():
 
+    create_superUser()
 
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'transback.settings')
