@@ -275,7 +275,7 @@
         tournament_matches = [];
         tournament_players = [];
         showToast('info', gettext("Tournament restarted. Refresh the page or re-enter player names to start a new tournament."));
-        history.pushState({}, "", "/tournament");
+        history.pushState({}, "", "/local/game/tournament");
         urlLocationHandler();
     }
 
