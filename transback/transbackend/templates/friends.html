@@ -63,17 +63,17 @@
         {% if friends %} {% for friend in friends %}
         <div class="user-card">
           <div class="user-info">
-            {% if request.profile_picture %}
+            {% if friend.profile_picture %}
             <img
-              src="{{ request.profile_picture.url }}"
-              alt="{{ request.username }}"
+              src="{{ friend.profile_picture.url }}"
+              alt="{{ friend.username }}"
               class="user-avatar"
               onerror="this.src='{% static 'images/default-profile.webp' %}'"
             />
             {% else %}
             <img
               src="{% static 'images/default-profile.webp' %}"
-              alt="{{ request.username }}"
+              alt="{{ friend.username }}"
               class="user-avatar"
             />
             {% endif %}
