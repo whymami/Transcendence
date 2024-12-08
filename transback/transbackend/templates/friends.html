@@ -16,7 +16,7 @@
           <div class="user-info">
             {% if request.profile_picture %}
             <img
-              src="{{ request.profile_picture.url }}"
+              src="{{ request.profile_picture }}"
               alt="{{ request.username }}"
               class="user-avatar"
               onerror="this.src='{% static 'images/default-profile.webp' %}'"
@@ -65,7 +65,7 @@
           <div class="user-info">
             {% if friend.profile_picture %}
             <img
-              src="{{ friend.profile_picture.url }}"
+              src="{{ friend.profile_picture }}"
               alt="{{ friend.username }}"
               class="user-avatar"
               onerror="this.src='{% static 'images/default-profile.webp' %}'"
