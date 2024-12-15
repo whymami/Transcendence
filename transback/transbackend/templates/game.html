@@ -330,7 +330,7 @@
           ctx.font = `${canvas.height * 0.06}px Arial`;
           ctx.textAlign = "center";
           ctx.fillText(
-            `${winner} wins! Returning to the home screen in ${countdown}s`,
+            `${winner} ${countdown}s`,
             canvas.width / 2,
             canvas.height / 2
           );
@@ -361,7 +361,7 @@
             ctx.fillStyle = "white";
             ctx.font = `${canvas.height * 0.04}px Arial`;
             ctx.fillText(
-              "Waiting for game state...",
+              "...",
               canvas.width / 3,
               canvas.height / 2
             );

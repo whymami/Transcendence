@@ -148,3 +148,15 @@ document.getElementById('userSettingsForm').addEventListener('submit', async fun
         }
     }
 });
+
+{
+    const changes = document.querySelectorAll('.change-password-link');
+    changes.forEach((link) => {
+      link.addEventListener('click', (e) => {
+        e.preventDefault();
+        const href = link.getAttribute('href');
+        history.pushState({}, '', href);
+        urlLocationHandler();
+      });
+    });
+}

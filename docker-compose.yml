@@ -23,10 +23,10 @@ services:
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./transback:/app
-      - ./transback/static:/app/static  # Django statik dosyaları
-      - ./transback/profile_pictures:/app/profile_pictures  # Django profil resimleri
-      - ./transback/transbackend/templates:/app/templates  # Django template dosyaları
-      - ./transback/locale:/app/locale  # Django çeviri dosyaları
+      - ./transback/static:/app/static
+      - ./transback/profile_pictures:/app/profile_pictures
+      - ./transback/transbackend/templates:/app/templates
+      - ./transback/locale:/app/locale
       - shared-data:/vault/token/
       - ssl-certs:/etc/nginx/ssl/
     ports:
@@ -42,13 +42,13 @@ services:
 
   nginx:
     build:
-      context: ./nginx  # Dockerfile kullanılarak imaj oluşturulacak
+      context: ./nginx
     volumes:
-      - ./front:/usr/share/nginx/html  # Frontend dosyalarının Nginx ile paylaşımı
-      - ./transback/static:/static  # Django uygulamasının statik dosyaları
-      - ./transback/profile_pictures:/profile_pictures  # Django profil resimleri
-      - ./nginx-logs/modsec:/var/log/modsec # Dizin montajı
-      - ssl-certs:/etc/nginx/ssl/  # Sertifikaları paylaşma
+      - ./front:/usr/share/nginx/html
+      - ./transback/static:/static
+      - ./transback/profile_pictures:/profile_pictures
+      - ./nginx-logs/modsec:/var/log/modsec
+      - ssl-certs:/etc/nginx/ssl/
       - shared-data:/vault/token/
     ports:
       - "80:80"
@@ -59,10 +59,10 @@ services:
     networks:
       - app-network
     environment:
-      - BACKEND=http://web:8000  # Backend servisine bağlantı adresi
+      - BACKEND=http://web:8000
       - VAULT_ADDR=http://vault:8300
       - VAULT_TOKEN_FILE=/vault/token/root_token.txt
-
+    
   vault:
     build:
       context: ./vault
@@ -78,7 +78,7 @@ services:
       - app-network
     environment:
       VAULT_ADDR: http://localhost:8300
-      restart: on-failure
+    restart: on-failure
 
 networks:
   app-network:
